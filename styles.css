@@ -63,7 +63,7 @@ header {
 }
 
 /* Center logo when chat is empty */
-#chat-app:has(#chat-container:empty) #logo {
+#chat-app.empty-chat #logo {
     margin: 0 auto;
     width: 150px;
 }
