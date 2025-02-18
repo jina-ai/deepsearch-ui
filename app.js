@@ -41,6 +41,7 @@ const toggleApiKeyBtnText = toggleApiKeyBtn.querySelector('span');
 const getApiKeyBtn = document.getElementById('get-api-key');
 const apiKeyDialog = document.getElementById('api-key-dialog');
 const dialogCloseBtn = document.querySelector('.dialog-close');
+let md;
 
 // Constants
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
@@ -236,26 +237,51 @@ function showErrorWithAction(message, buttonText, onClick) {
   scrollToBottom();
 }
 
-const md = window.markdownit({
-  html: true,
-  linkify: true,
-  typographer: true,
-  highlight: function (str, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return '<pre><code class="hljs">' +
-               hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
-               '</code></pre>';
-      } catch (__) {}
+if (window.markdownit) {
+  md = window.markdownit({
+    html: true,
+    linkify: true,
+    typographer: true,
+    highlight: function (str, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+        try {
+          return '<pre><code class="hljs">' +
+                 hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+                 '</code></pre>';
+        } catch (__) {}
+      }
+  
+      return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
     }
-
-    return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
-  }
-})
-.use(window.markdownitFootnote);
+  })
+  .use(window.markdownitFootnote);
+}
 
 function renderMarkdown(content) {
-  return md.render(content);
+  if (!md) {
+    md = window.markdownit({
+      html: true,
+      linkify: true,
+      typographer: true,
+      highlight: function (str, lang) {
+        if (lang && hljs.getLanguage(lang)) {
+          try {
+            return '<pre><code class="hljs">' +
+                   hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+                   '</code></pre>';
+          } catch (__) {}
+        }
+    
+        return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
+      }
+    })
+    .use(window.markdownitFootnote);
+  }
+  if (md) {
+    return md.render(content);
+  } else {
+    return content;
+  }
 }
 
 // Message handling functions
