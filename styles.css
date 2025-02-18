@@ -49,10 +49,10 @@ body {
 }
 
 /* Center layout when chat is empty */
-#chat-app:has(#chat-container:empty) {
+#chat-app.empty-chat {
     justify-content: center;
 }
-#chat-app:has(#chat-container:empty) #main-container {
+#chat-app.empty-chat #main-container {
     display: none;
 }
 
@@ -221,7 +221,7 @@ header {
 }
 
 /* Adjust input area when chat is empty */
-#chat-app:has(#chat-container:empty) #input-area {
+#chat-app.empty-chat #input-area {
     position: relative;
     box-shadow: none;
     padding: 0;
@@ -233,20 +233,20 @@ header {
 }
 
 /* Adjust input width when chat is empty */
-#chat-app:has(#chat-container:empty) #message-input {
+#chat-app.empty-chat #message-input {
     margin-bottom: 20px;
     margin-top: 40px;
 }
 
 /* Ensure send button is properly centered */
-#chat-app:has(#chat-container:empty) #send-button {
+#chat-app.empty-chat #send-button {
     margin: 0;
     width: auto;
     display: unset;
 }
 
 /* Hide clear button when chat is empty */
-#chat-app:has(#chat-container:empty) #clear-button {
+#chat-app.empty-chat #clear-button {
     display: none;
 }
 
