@@ -591,15 +591,6 @@ header {
     padding: 1.5rem 0;
 }
 
-.markdown .footnotes::before {
-    content: '';
-    position: absolute;
-    left: 1.5rem;  /* Changed from 0 to add padding */
-    right: 1.5rem; /* Changed from 0 to add padding */
-    height: 1px;
-    background: var(--bg-color-400); /* Using your theme variable instead of hardcoded #e5e7eb */
-}
-
 .markdown code {
     white-space: pre-line;
     font-size: var(--body-size);
