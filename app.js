@@ -40,7 +40,9 @@ const toggleApiKeyBtn = document.getElementById('toggle-api-key');
 const toggleApiKeyBtnText = toggleApiKeyBtn.querySelector('span');
 const getApiKeyBtn = document.getElementById('get-api-key');
 const apiKeyDialog = document.getElementById('api-key-dialog');
-const dialogCloseBtn = document.querySelector('.dialog-close');
+const helpButton = document.getElementById('help-button');
+const helpDialog = document.getElementById('help-dialog');
+const dialogCloseBtns = document.querySelectorAll('.dialog-close');
 let md;
 
 // Constants
@@ -531,6 +533,30 @@ messageInput.addEventListener('keydown', (event) => {
   if (event.key === "Enter") {
     sendMessage();
   }
+});
+
+// Help dialog event listeners
+helpButton.addEventListener('click', () => {
+  helpDialog.style.display = 'flex';
+});
+
+// Close dialogs when clicking outside
+[apiKeyDialog, helpDialog].forEach(dialog => {
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      dialog.style.display = 'none';
+    }
+  });
+});
+
+// Close button event listeners
+dialogCloseBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dialog = btn.closest('.dialog-overlay');
+    if (dialog) {
+      dialog.style.display = 'none';
+    }
+  });
 });
 
 // URL Parameter handling
