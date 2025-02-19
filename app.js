@@ -534,8 +534,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+let autoScrollEnabled = true; // Flag to track auto-scroll state
 // Auto-scroll setup
 const observer = new MutationObserver((mutations) => {
+  if (!autoScrollEnabled) return;
   mutations.forEach((mutation) => {
     if (mutation.type === 'childList') {
       scrollToBottom();
@@ -544,6 +546,20 @@ const observer = new MutationObserver((mutations) => {
 });
 
 observer.observe(chatContainer, { childList: true, subtree: true });
+
+mainContainer.addEventListener('scroll', () => {
+  // Check if the user has scrolled up from the bottom
+  const isAtBottom = mainContainer.scrollTop + mainContainer.clientHeight >= mainContainer.scrollHeight;
+
+  // If the user has scrolled up, disable auto-scroll
+  if (!isAtBottom) {
+    autoScrollEnabled = false;
+  } else {
+    // If the user scrolls back to the bottom, re-enable auto-scroll
+    autoScrollEnabled = true;
+    scrollToBottom(); // Ensure it's scrolled to the bottom when re-enabled
+  }
+});
 
 // Update toggleApiKeyBtn click handler
 toggleApiKeyBtn.addEventListener('click', () => {
