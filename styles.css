@@ -194,14 +194,14 @@ header {
         margin-right: 10px;
     }
 
-    #input-area {
+    #chat-app:not(.empty-chat) #input-area {
         top: unset;
         bottom: 0;
         border-top: 1px solid var(--input-focus-shadow);
         border-bottom: none;
     }
 
-    .footer {
+    #chat-app:not(.empty-chat) .footer {
         bottom: unset;
         top: 0;
         border-bottom: 1px solid var(--bg-color-400);
