@@ -180,8 +180,8 @@ a {
     }
 
     #chat-app:not(.empty-chat) #logo {
-        width: 24px;
-        height: 24px;
+        width: 32px;
+        height: 32px;
     }
 
     #chat-app:not(.empty-chat) #input-area {
