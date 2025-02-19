@@ -193,6 +193,20 @@ header {
         width: 50px;
         margin-right: 10px;
     }
+
+    #input-area {
+        top: unset;
+        bottom: 0;
+        border-top: 1px solid var(--input-focus-shadow);
+        border-bottom: none;
+    }
+
+    .footer {
+        bottom: unset;
+        top: 0;
+        border-bottom: 1px solid var(--bg-color-400);
+        border-top: none;
+    }
 }
 
 /* Remove margin when empty */
@@ -464,8 +478,27 @@ header {
     align-items: center;
 }
 
-#toggle-api-key .action-icon {
+#toggle-api-key .action-icon,
+#help-button .action-icon {
     margin-right: 8px;
+}
+
+.help-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.help-list li {
+    padding: 8px 0;
+    color: var(--text-color);
+    font-size: var(--body-size);
+    line-height: 1.5;
+    border-bottom: 1px solid var(--bg-color-300);
+}
+
+.help-list li:last-child {
+    border-bottom: none;
 }
 
 #error-icon {
