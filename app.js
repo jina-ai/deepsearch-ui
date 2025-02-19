@@ -102,14 +102,23 @@ toggleApiKeyBtn.addEventListener('click', () => {
   apiKeyDialog.style.display = 'flex';
 });
 
-dialogCloseBtn.addEventListener('click', () => {
-  apiKeyDialog.style.display = 'none';
+// Close dialogs when clicking outside
+[apiKeyDialog, helpDialog].forEach(dialog => {
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      dialog.style.display = 'none';
+    }
+  });
 });
 
-apiKeyDialog.addEventListener('click', (e) => {
-  if (e.target === apiKeyDialog) {
-    apiKeyDialog.style.display = 'none';
-  }
+// Close button event listeners
+dialogCloseBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dialog = btn.closest('.dialog-overlay');
+    if (dialog) {
+      dialog.style.display = 'none';
+    }
+  });
 });
 
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
