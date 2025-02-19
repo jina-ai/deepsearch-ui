@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="320px" height="320px" viewBox="0 0 320 320" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>J-white</title>
+    <g id="J-white" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="revised-logo" transform="translate(49, 56)" fill="#FFFFFF" fill-rule="nonzero">
+            <circle id="椭圆形" cx="51.7647059" cy="155.294118" r="51.7647059"></circle>
+            <path d="M207.058824,0 C214.176471,0 220,5.82352941 220,12.9411765 L220,103.529412 C220,157.235294 176.647059,200.588235 122.941176,200.588235 L116.470588,200.588235 L116.470588,103.529412 L116.470588,12.9411765 C116.470588,5.82352941 122.294118,0 129.411765,0 L207.058824,0 Z" id="形状"></path>
+        </g>
+    </g>
+</svg>
