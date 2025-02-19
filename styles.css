@@ -283,13 +283,18 @@ button:focus {
     display: none;
 }
 
-
-
 #clear-button {
     color: var(--negative);
 }
 
+#clear-button .action-icon {
+    color: inherit;
+}
 
+#loading-indicator {
+    display: flex;
+    align-items: center;
+}
 
 .message {
     margin: 20px 0;
@@ -427,9 +432,13 @@ button:focus {
     align-items: center;
 }
 
-#toggle-api-key .action-icon,
-#help-button .action-icon {
+#toggle-api-key .action-icon {
     margin-right: 8px;
+}
+
+#help-button {
+    display: flex;
+    align-items: center;
 }
 
 .help-list {
