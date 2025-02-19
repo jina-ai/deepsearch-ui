@@ -78,15 +78,7 @@ header {
     margin-right: 20px;
 }
 
-.header-buttons {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-top: 100px;
-    gap: 8px;
-}
-
-.header-button, .action-button, .copy-button {
+button {
     padding: 0 16px;
     height: 44px;
     border-radius: 4px;
@@ -95,8 +87,10 @@ header {
     font-weight: 500;
     cursor: pointer;
     background-color: var(--bg-color-100);
-    color: var(--text-color);
     transition: all 0.2s;
+    font-family: arial, sans-serif;
+    color: var(--text-secondary);
+    text-decoration: none;
 }
 
 .buttons-container {
@@ -105,14 +99,15 @@ header {
     gap: 10px;
 }
 
-.header-button:hover, .action-button:hover, .copy-button:hover {
+button:hover {
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
     border-color: var(--bg-color-400);
+    background-color: var(--bg-color-200);
 }
 
-.action-button {
-    border: 1px solid var(--bg-color-400);
-    margin-left: 8px;
+button:focus {
+    border: 1px solid var(--primary);
+    outline: none;
 }
 
 /* Modified: Added explicit height for calculations */
@@ -132,26 +127,7 @@ header {
     height: 44px;
 }
 
-.footer .header-button {
-    font-size: var(--body-size);
-    font-family: arial, sans-serif;
-    color: var(--text-secondary);
-    text-decoration: none;
-    background: transparent;
-    border: 1px solid transparent;
-    cursor: pointer;
-}
 
-.footer .header-button:hover {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-    background-color: var(--bg-color-200);
-    border: 1px solid var(--bg-color-400);
-}
-
-.footer .header-button:focus {
-    border: 1px solid var(--primary);
-    outline: none;
-}
 
 .footer .buttons-group {
     display: flex;
@@ -165,9 +141,6 @@ header {
     text-decoration: none;
 }
 
-.add-key-btn {
-    color: var(--primary);
-}
 
 .get-key-btn {
     background-color: var(--bg-color-100);
@@ -306,47 +279,17 @@ header {
     border-color: transparent;
 }
 
-#send-button, #clear-button {
-    padding: 0 16px;
-    height: 44px;
-    border-radius: 4px;
-    border: 1px solid transparent;
-    font-size: var(--body-size);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
 #send-button {
-    background-color: var(--bg-color-200);
-    color: var(--text-color);
     display: none;
 }
 
-#send-button:hover {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-    border-color: var(--bg-color-400);
-}
 
-#send-button:focus {
-    border: 1px solid var(--primary);
-    outline: none;
-}
 
 #clear-button {
-    background-color: var(--bg-color-200);
     color: var(--negative);
 }
 
-#clear-button:hover {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-    border-color: var(--bg-color-400);
-}
 
-#clear-button:focus {
-    border: 1px solid var(--primary);
-    outline: none;
-}
 
 .message {
     margin: 20px 0;
@@ -418,11 +361,6 @@ header {
     transition: all 0.2s;
 }
 
-.dialog-close:hover {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-    border-color: var(--bg-color-400);
-    background-color: var(--bg-color-200);
-}
 
 .dialog-close:focus {
     border: 1px solid var(--primary);
@@ -478,10 +416,6 @@ header {
     margin-left: auto
 }
 
-#save-api-key:hover {
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-    border-color: var(--bg-color-400);
-}
 
 #save-api-key:focus {
     border: 1px solid var(--primary);
