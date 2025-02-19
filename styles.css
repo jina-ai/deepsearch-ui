@@ -22,6 +22,7 @@
     --bg-color-200: #434948;
     --bg-color-300: #5b605f;
     --bg-color-400: #747978;
+    --negative: #ff4d4d;
     --text-color: #e8eaed;
     --text-secondary: #969ba1;
     --input-focus-shadow: rgba(232, 234, 237, 0.16);
@@ -609,4 +610,60 @@ body {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* Message appearance animation */
+.message {
+    animation: messageAppear 0.3s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dialog transition improvements */
+
+
+
+.dialog-overlay.visible .dialog {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Enhanced dialog close button */
+.dialog-close:hover {
+    background-color: var(--bg-color-100);
+}
+
+.dialog-close:active {
+    transform: scale(0.92);
+}
+
+button,
+.dialog-close,
+#message-input,
+#api-key-input,
+.get-key-btn,
+#save-api-key,
+.action-icon,
+.think-section,
+.think-header,
+.footer a,
+.message {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Refine button transitions */
+button {
+    transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
