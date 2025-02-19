@@ -1,8 +1,9 @@
 :root {
     --bg-color: #ffffff;
-    --bg-color-200: #f0f0f0;
-    --bg-color-300: #e1e1e1;
-    --bg-color-400: #d3d3d3;
+    --bg-color-400: #c5c5c5;
+    --bg-color-100: #f0f0f0;
+    --bg-color-200: #e1e1e1;
+    --bg-color-300: #d3d3d3;
     --primary: #009191;
     --negative: #910000;
     --disabled: #f2f2f2;
@@ -17,9 +18,10 @@
 
 [data-theme="dark"] {
     --bg-color: #171e1d;
-    --bg-color-200: #2c3332;
-    --bg-color-300: #434948;
-    --bg-color-400: #5b605f;
+    --bg-color-100: #2c3332;
+    --bg-color-200: #434948;
+    --bg-color-300: #5b605f;
+    --bg-color-400: #747978;
     --text-color: #e8eaed;
     --text-secondary: #969ba1;
     --input-focus-shadow: rgba(232, 234, 237, 0.16);
@@ -41,11 +43,13 @@ body {
     flex-direction: column;
 }
 
+/* Modified: Use flex and proper padding instead of manual calculations */
 #main-container {
+    flex: 1;
     width: 100%;
-    height: calc(100% - 140px);
     overflow-y: auto;
-    margin-top: 86px;
+    padding-top: 86px; /* Height of input area */
+    padding-bottom: 54px; /* Height of footer */
 }
 
 /* Center layout when chat is empty */
@@ -111,6 +115,7 @@ header {
     margin-left: 8px;
 }
 
+/* Modified: Added explicit height for calculations */
 .footer {
     position: fixed;
     bottom: 0;
@@ -121,9 +126,10 @@ header {
     justify-content: space-between;
     gap: 10px;
     padding: 5px 10px;
-    background: var(--bg-color-200);
-    border-top: 1px solid var(--bg-color-400);
+    background: var(--bg-color-100);
+    border-top: 1px solid var(--bg-color-200);
     z-index: 1000;
+    height: 44px;
 }
 
 .footer .header-button {
@@ -164,7 +170,7 @@ header {
 }
 
 .get-key-btn {
-    background-color: var(--bg-color-200);
+    background-color: var(--bg-color-100);
     color: var(--text-color);
     font-weight: 500;
     border: 1px solid transparent;
@@ -183,7 +189,7 @@ header {
     margin-left: 125px;
 }
 
-/* on mobile make margin-left 25px */
+/* Modified: Updated mobile styles to adjust main container padding */
 @media (max-width: 768px) {
     #chat-container {
         margin-left: 25px;
@@ -191,21 +197,27 @@ header {
 
     #logo {
         width: 50px;
-        margin-right: 10px;
+        margin: unset;
     }
 
     #chat-app:not(.empty-chat) #input-area {
         top: unset;
         bottom: 0;
-        border-top: 1px solid var(--input-focus-shadow);
+        border-top: 1px solid var(--bg-color-200);
         border-bottom: none;
     }
 
     #chat-app:not(.empty-chat) .footer {
         bottom: unset;
         top: 0;
-        border-bottom: 1px solid var(--bg-color-400);
+        border-bottom: 1px solid var(--bg-color-200);
         border-top: none;
+    }
+
+    /* Added: Adjust main container padding for swapped elements */
+    #chat-app:not(.empty-chat) #main-container {
+        padding-top: 54px;  /* Now the footer height */
+        padding-bottom: 86px; /* Now the input area height */
     }
 }
 
@@ -216,19 +228,21 @@ header {
     padding: 0;
 }
 
+/* Modified: Added explicit height for calculations */
 #input-area {
     position: fixed;
-    top: 0; /* Changed from bottom to top */
+    top: 0;
     left: 0;
     right: 0;
     padding: 20px;
     align-items: center;
     display: flex;
     gap: 10px;
-    background: var(--bg-color);
+    background: var(--bg-color-100);
     transition: all 0.3s ease;
     z-index: 99;
-    border-bottom: 1px solid var(--input-focus-shadow); /* Changed from -2px to 2px to cast shadow downward */
+    border-bottom: 1px solid var(--input-focus-shadow);
+    height: 46px;
 }
 
 #thinking-animation-icon {
@@ -245,6 +259,7 @@ header {
     gap: 20px;
     border: unset;
     background: unset;
+    height: auto; /* Modified: Allow height to adjust in empty state */
 }
 
 /* Adjust input width when chat is empty */
@@ -270,7 +285,7 @@ header {
     max-width: calc(100% - 200px);
     height: 44px;
     padding: 0 16px 0 48px; /* Added left padding for icon */
-    border: 1px solid var(--bg-color-400);
+    border: 1px solid var(--bg-color-200);
     border-radius: 24px;
     background-color: var(--bg-color);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-search'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
@@ -320,7 +335,7 @@ header {
 
 #clear-button {
     background-color: var(--bg-color-200);
-    color: var(--text-color);
+    color: var(--negative);
 }
 
 #clear-button:hover {
@@ -340,7 +355,7 @@ header {
     max-width: 90%;
     line-height: 1.5;
     width: fit-content;
-    background-color: var(--bg-color-200);
+    background-color: var(--bg-color-100);
 }
 
 .user-message {
@@ -416,7 +431,7 @@ header {
 
 #api-key-input {
     padding: 12px;
-    border: 1px solid var(--bg-color-400);
+    border: 1px solid var(--bg-color-200);
     border-radius: 4px;
     font-size: var(--body-size);
     background: var(--bg-color);
@@ -453,7 +468,7 @@ header {
 }
 
 #save-api-key {
-    background-color: var(--bg-color-200);
+    background-color: var(--bg-color-100);
     color: var(--text-color);
     font-weight: 500;
     border: 1px solid transparent;
