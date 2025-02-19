@@ -57,6 +57,7 @@ body {
 #chat-app.empty-chat {
     justify-content: center;
 }
+
 #chat-app.empty-chat #main-container {
     display: none;
 }
@@ -129,7 +130,6 @@ button:focus {
 }
 
 
-
 .footer .buttons-group {
     display: flex;
 }
@@ -190,8 +190,12 @@ button:focus {
 
     /* Added: Adjust main container padding for swapped elements */
     #chat-app:not(.empty-chat) #main-container {
-        padding-top: 54px;  /* Now the footer height */
+        padding-top: 54px; /* Now the footer height */
         padding-bottom: 86px; /* Now the input area height */
+    }
+
+    #chat-app:not(.empty-chat) #message-input {
+        max-width: 100%;
     }
 }
 
@@ -327,16 +331,6 @@ button:focus {
     justify-content: center;
 }
 
-.dialog {
-    background: var(--bg-color);
-    border-radius: 8px;
-    padding: 24px;
-    width: 400px;
-    max-width: 90vw;
-    box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14),
-    0 9px 46px 8px rgba(0, 0, 0, 0.12),
-    0 11px 15px -7px rgba(0, 0, 0, 0.2);
-}
 
 .dialog-header {
     display: flex;
@@ -582,12 +576,12 @@ button:focus {
 }
 
 .markdown a {
- color: var(--primary);
+    color: var(--primary);
 }
 
 .markdown .footnotes {
     font-size: var(--secondary-size);
-        position: relative;
+    position: relative;
     padding: 1.5rem 0;
 }
 
@@ -603,13 +597,13 @@ button:focus {
 
 body {
     transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #input-area {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-                background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 
@@ -630,7 +624,6 @@ body {
 }
 
 /* Dialog transition improvements */
-
 
 
 .dialog-overlay.visible .dialog {
@@ -664,6 +657,53 @@ button,
 /* Refine button transitions */
 button {
     transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dialog animation fix */
+.dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+
+    /* Change display to be always flex, but use visibility and opacity for animation */
+    display: flex;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.225s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.225s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.dialog-overlay.visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dialog {
+    background: var(--bg-color);
+    border-radius: 8px;
+    padding: 24px;
+    width: 400px;
+    max-width: 80vw;
+    box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0 9px 46px 8px rgba(0, 0, 0, 0.12),
+    0 11px 15px -7px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.225s cubic-bezier(0.0, 0.0, 0.2, 1),
+    opacity 0.225s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+.dialog-overlay.visible .dialog {
+    transform: translateY(0);
+    opacity: 1;
 }

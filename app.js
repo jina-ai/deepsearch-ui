@@ -80,26 +80,10 @@ function initializeApiKey() {
   toggleApiKeyBtnText.textContent = savedKey ? UI_STRINGS.buttons.updateKey : UI_STRINGS.buttons.addKey;
 }
 
-function handleApiKeySave() {
-  const key = apiKeyInput.value.trim();
-  if (key) {
-    localStorage.setItem('api_key', key);
-    getApiKeyBtn.style.display = 'none';
-    toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.updateKey;
-  } else {
-    localStorage.removeItem('api_key');
-    getApiKeyBtn.style.display = 'block';
-    toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.addKey;
-  }
-  apiKeyDialog.style.display = 'none';
-}
 
 // Initialize API key
 initializeApiKey();
 
-toggleApiKeyBtn.addEventListener('click', () => {
-  apiKeyDialog.style.display = 'flex';
-});
 
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
@@ -530,20 +514,11 @@ helpButton.addEventListener('click', () => {
 [apiKeyDialog, helpDialog].forEach(dialog => {
   dialog.addEventListener('click', (e) => {
     if (e.target === dialog) {
-      dialog.style.display = 'none';
+      dialog.classList.remove('visible');
     }
   });
 });
 
-// Close button event listeners
-dialogCloseBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const dialog = btn.closest('.dialog-overlay');
-    if (dialog) {
-      dialog.style.display = 'none';
-    }
-  });
-});
 
 // URL Parameter handling
 document.addEventListener('DOMContentLoaded', () => {
@@ -565,3 +540,40 @@ const observer = new MutationObserver((mutations) => {
 });
 
 observer.observe(chatContainer, { childList: true, subtree: true });
+
+// Update toggleApiKeyBtn click handler
+toggleApiKeyBtn.addEventListener('click', () => {
+  apiKeyDialog.classList.add('visible');
+});
+
+// Update dialog close handlers
+dialogCloseBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dialog = btn.closest('.dialog-overlay');
+    if (dialog) {
+      dialog.classList.remove('visible');
+    }
+  });
+});
+
+
+
+// Update help button click handler
+helpButton.addEventListener('click', () => {
+  helpDialog.classList.add('visible');
+});
+
+// Update handleApiKeySave function
+function handleApiKeySave() {
+  const key = apiKeyInput.value.trim();
+  if (key) {
+    localStorage.setItem('api_key', key);
+    getApiKeyBtn.style.display = 'none';
+    toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.updateKey;
+  } else {
+    localStorage.removeItem('api_key');
+    getApiKeyBtn.style.display = 'block';
+    toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.addKey;
+  }
+  apiKeyDialog.classList.remove('visible');
+}
