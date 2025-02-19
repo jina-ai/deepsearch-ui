@@ -64,7 +64,7 @@ themeToggle.addEventListener('click', () => {
 
   themeLightIcon.style.display = newTheme === 'dark' ? 'block' : 'none';
   themeDarkIcon.style.display = newTheme === 'light' ? 'block' : 'none';
-  logo.src = `jina-${newTheme}.svg`;
+  updateLogo(logo, newTheme);
   
   const hlTheme = newTheme === 'light' ? 'vs' : 'vs2015';
   const hlThemeElement = document.getElementById('hljs-theme');
@@ -269,6 +269,9 @@ function updateEmptyState() {
     chatApp.classList.add('empty-chat');
   } else {
     chatApp.classList.remove('empty-chat');
+  }
+  if (window.updateLogo) {
+    updateLogo(logo, document.documentElement.getAttribute('data-theme'));
   }
 }
 

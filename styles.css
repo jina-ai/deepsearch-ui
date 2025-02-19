@@ -179,6 +179,11 @@ a {
         margin: unset;
     }
 
+    #chat-app:not(.empty-chat) #logo {
+        width: 24px;
+        height: 24px;
+    }
+
     #chat-app:not(.empty-chat) #input-area {
         top: unset;
         bottom: 0;
