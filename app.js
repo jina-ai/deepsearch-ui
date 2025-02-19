@@ -489,20 +489,24 @@ async function sendMessage() {
         markdownDiv.innerHTML = renderMarkdown(markdownContent);
         const copyButton = createCopyButton(markdownContent);
         assistantMessageDiv.appendChild(copyButton);
+        existingMessages.push({
+          role: 'assistant',
+          content: markdownContent,
+        });
       }
     } else {
       const jsonResult = await res.json();
       if (jsonResult) {
         assistantMessageDiv.textContent = jsonResult.choices[0].message.content;
+        existingMessages.push({
+          role: 'assistant',
+          content: jsonResult.choices[0].message.content
+        });
       } else {
         throw new Error('Empty response from server.');
       }
     }
 
-    existingMessages.push({
-      role: 'assistant',
-      content: assistantMessageDiv.textContent
-    });
 
   } catch (error) {
     if (error.name !== 'AbortError') {
