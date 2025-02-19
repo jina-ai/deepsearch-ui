@@ -94,7 +94,7 @@ header {
     font-size: var(--body-size);
     font-weight: 500;
     cursor: pointer;
-    background-color: var(--bg-color-200);
+    background-color: var(--bg-color-100);
     color: var(--text-color);
     transition: all 0.2s;
 }
@@ -241,7 +241,7 @@ header {
     background: var(--bg-color-100);
     transition: all 0.3s ease;
     z-index: 99;
-    border-bottom: 1px solid var(--input-focus-shadow);
+    border-bottom: 1px solid var(--bg-color-200);
     height: 46px;
 }
 
@@ -351,7 +351,7 @@ header {
 .message {
     margin: 20px 0;
     padding: 16px;
-    border-radius: 8px;
+    border-radius: 20px;
     max-width: 90%;
     line-height: 1.5;
     width: fit-content;
@@ -535,14 +535,15 @@ header {
     margin: 16px 0;
     color: var(--text-secondary);
     background: var(--bg-color-200);
-    border-radius: 8px;
+    border-radius: 15px;
     padding: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
-    transition: box-shadow 0.2s;
+    transition: all 0.2s;
 }
 
 .think-section:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 2px 3px rgba(0, 0, 0, 0.12);
+    background-color: var(--bg-color-300);
 }
 
 .think-header {
@@ -575,9 +576,6 @@ header {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23e8eaed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-compass'%3E%3Ccircle cx='12' cy='12' r='10'%3E%3C/circle%3E%3Cpolygon points='16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76'%3E%3C/polygon%3E%3C/svg%3E");
 }
 
-.think-header:hover {
-    background-color: var(--bg-color-300);
-}
 
 .think-wrapper {
     display: flex;
