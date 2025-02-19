@@ -5,25 +5,12 @@ function initializeAppearance() {
   const logo = document.getElementById('logo');
   const themeLightIcon = document.getElementById('light-icon');
   const themeDarkIcon = document.getElementById('dark-icon');
-  if (logo) {
-    updateLogo(logo, savedTheme);
-  }
   if (themeLightIcon) {
     themeLightIcon.style.display = savedTheme === 'dark' ? 'block' : 'none';
   }
   if (themeDarkIcon) {
     themeDarkIcon.style.display = savedTheme === 'light' ? 'block' : 'none';
   }
-}
-
-// Update the logo
-function updateLogo(logo, theme) {
-  const isNotEmptyChat = !document.getElementById('chat-app').classList.contains('empty-chat');
-  const largeLogoSrc = `jina-${theme}.svg`;
-  const smallLogoSrc = `j-${theme}.svg`;
-  const isMobile = window.innerWidth <= 768;
-
-  logo.src = isNotEmptyChat && isMobile ? smallLogoSrc : largeLogoSrc;
 }
 
 // Check the current color scheme
@@ -42,4 +29,3 @@ if (typeof window !== 'undefined') {
 
 // Export for app.js
 window.initializeAppearance = initializeAppearance;
-window.updateLogo = updateLogo;

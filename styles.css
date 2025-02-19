@@ -78,6 +78,20 @@ header {
     height: auto;
     margin-right: 20px;
 }
+#small-logo {
+    display: none;
+}
+
+[data-theme="dark"] #logo {
+   svg *[fill] {
+        fill: #ffffff;
+   }
+}
+[data-theme="dark"] #small-logo {
+    #revised-logo, #revised-logo-1, #revised-logo-2 {
+        fill: #ffffff;
+    }
+}
 
 button {
     padding: 0 16px;
@@ -180,6 +194,11 @@ a {
     }
 
     #chat-app:not(.empty-chat) #logo {
+        display: none;
+    }
+
+    #chat-app:not(.empty-chat) #small-logo {
+        display: block;
         width: 32px;
         height: 32px;
     }
