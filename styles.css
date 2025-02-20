@@ -77,24 +77,20 @@ header {
     width: 75px;
     height: auto;
     margin-right: 20px;
+    display: flex;
+    align-items: center;
 }
 #small-logo {
     display: none;
-}
-#small-logo svg {
     width: 32px;
     height: 32px;
 }
 
-[data-theme="dark"] #logo {
-   circle[fill], path[fill] {
-        fill: #ffffff;
-   }
-}
-[data-theme="dark"] #small-logo {
-    circle[fill], path[fill] {
-        fill: #ffffff;
-    }
+[data-theme="dark"] #logo circle,
+[data-theme="dark"] #logo path,
+[data-theme="dark"] #small-logo circle,
+[data-theme="dark"] #small-logo path {
+    fill: #ffffff;
 }
 
 button {
