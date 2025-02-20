@@ -79,9 +79,11 @@ header {
     margin-right: 20px;
 }
 #small-logo {
+    display: none;
+}
+#small-logo svg {
     width: 32px;
     height: 32px;
-    display: none;
 }
 
 [data-theme="dark"] #logo {
@@ -190,8 +192,8 @@ a {
 
     #chat-app:not(.empty-chat) #small-logo {
         display: flex;
-        width: 32px;
-        height: 32px;
+        align-items: center;
+        flex-shrink: 0;
     }
 
     #chat-app:not(.empty-chat) #input-area {
