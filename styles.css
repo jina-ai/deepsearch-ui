@@ -79,16 +79,18 @@ header {
     margin-right: 20px;
 }
 #small-logo {
+    width: 32px;
+    height: 32px;
     display: none;
 }
 
 [data-theme="dark"] #logo {
-   svg *[fill] {
+   circle[fill], path[fill] {
         fill: #ffffff;
    }
 }
 [data-theme="dark"] #small-logo {
-    #revised-logo, #revised-logo-1, #revised-logo-2 {
+    circle[fill], path[fill] {
         fill: #ffffff;
     }
 }
@@ -187,7 +189,7 @@ a {
     }
 
     #chat-app:not(.empty-chat) #small-logo {
-        display: block;
+        display: flex;
         width: 32px;
         height: 32px;
     }

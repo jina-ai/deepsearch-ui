@@ -2,8 +2,8 @@
 const theme = localStorage.getItem('theme') || 'light';
 const hlTheme = theme === 'light' ? 'vs' : 'vs2015';
 const scripts = [
-  { type: 'style', url: `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/${hlTheme}.min.css` },
-  { type: 'script', url: 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js' }
+  { type: 'style', url: `third-party/${hlTheme}.min.css` },
+  { type: 'script', url: 'third-party/highlight.min.js' }
 ];
 
 async function loadResource(resource) {
