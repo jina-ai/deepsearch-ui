@@ -281,13 +281,14 @@ function markdownItTableWrapper(md) {
   };
 }
 
-function renderMarkdown(content) {
+function renderMarkdown(content, returnElement = false) {
   if (!md) {
     initializeMarkdown();
   }
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = content;
   if (md) {
     const rendered = md.render(content);
-    const tempDiv = document.createElement('div');
     tempDiv.innerHTML = rendered;
     
     const footnotes = tempDiv.querySelector('.footnotes');
@@ -296,9 +297,8 @@ function renderMarkdown(content) {
       footnotes.replaceWith(referencesSection);
     }
     
-    return tempDiv.innerHTML;
   }
-  return content;
+  return returnElement ? tempDiv : tempDiv.innerHTML;
 }
 
 // Message handling functions
@@ -512,7 +512,8 @@ async function sendMessage() {
       }
 
       if (markdownContent) {
-        markdownDiv.innerHTML = renderMarkdown(markdownContent);
+        const markdown = renderMarkdown(markdownContent, true);
+        markdownDiv.replaceChildren(markdown);
         const copyButton = createCopyButton(markdownContent);
         assistantMessageDiv.appendChild(copyButton);
         existingMessages.push({

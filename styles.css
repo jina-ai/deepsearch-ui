@@ -469,12 +469,6 @@ a {
 
 /* References section styles */
 .references-header::before {
-    content: '';
-    width: 16px;
-    height: 16px;
-    margin-right: 8px;
-    background-repeat: no-repeat;
-    background-position: center;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23202124' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-bookmark'%3E%3Cpath d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'%3E%3C/path%3E%3C/svg%3E");
 }
 
@@ -482,6 +476,13 @@ a {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23e8eaed' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-bookmark'%3E%3Cpath d='M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z'%3E%3C/path%3E%3C/svg%3E");
 }
 
+.references-section {
+    margin-top: 48px;
+    margin-bottom: 0;
+}
+
+/* Think section & references styles */
+.think-section,
 .references-section {
     margin: 16px 0;
     color: var(--text-secondary);
@@ -492,89 +493,27 @@ a {
     cursor: pointer;
 }
 
+.think-section:hover,
 .references-section:hover {
     background-color: var(--bg-color-200);
     box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
     border-color: var(--bg-color-400);
 }
 
+.think-header,
 .references-header {
     display: flex;
     align-items: center;
-    padding: 8px;
+    padding: 8px 28px 8px 8px;
     font-weight: 500;
     color: var(--text-color);
-    transition: background-color 0.2s;
-    border-radius: 4px;
-    position: relative;
-    padding-right: 28px;
-}
-
-.references-header:after {
-    content: '';
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
     transition: all 0.2s ease;
-}
-
-[data-theme="dark"] .references-header:after {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23969ba1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
-}
-
-.references-header.expanded:after {
-    transform: translateY(-50%) rotate(90deg);
-}
-
-.references-content {
-    padding: 12px;
-    display: none;
-    margin-top: 4px;
-    font-size: var(--secondary-size);
-    word-break: break-word;
-    max-height: 30vh;
-    overflow-y: auto;
+    border-radius: 4px;
     position: relative;
 }
 
-.references-content.expanded {
-    display: block;
-}
-
-/* Think section styles */
-.think-section {
-    margin: 16px 0;
-    color: var(--text-secondary);
-    border-radius: 16px;
-    border: 1px solid var(--bg-color-200);
-    padding: 16px;
-    transition: all 0.2s;
-    cursor: pointer;
-}
-
-.think-section:hover {
-    background-color: var(--bg-color-200);
-    box-shadow: 0 1px 1px rgba(0, 0, 0, .1);
-    border-color: var(--bg-color-400);
-}
-
-.think-header {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-    font-weight: 500;
-    color: var(--text-color);
-    transition: background-color 0.2s;
-    border-radius: 4px;
-}
-
-.think-header::before {
+.think-header::before,
+.references-header::before {
     content: '';
     width: 16px;
     height: 16px;
@@ -600,14 +539,8 @@ a {
     cursor: pointer;
 }
 
-.think-header {
-    position: relative;
-    padding-right: 28px;
-    flex: 1;
-    transition: all 0.2s ease;
-}
-
-.think-header:after {
+.think-header:after,
+.references-header:after {
     content: '';
     position: absolute;
     right: 8px;
@@ -621,28 +554,34 @@ a {
     transition: all 0.2s ease;
 }
 
-[data-theme="dark"] .think-header:after {
+[data-theme="dark"] .think-header:after,
+[data-theme="dark"] .references-header:after {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23969ba1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3E%3Cpolyline points='9 18 15 12 9 6'%3E%3C/polyline%3E%3C/svg%3E");
 }
 
-.think-header.expanded:after {
+.think-header.expanded:after,
+.references-header.expanded:after {
     transform: translateY(-50%) rotate(90deg);
 }
 
-.think-content {
+.think-content,
+.references-content {
     padding: 12px;
     display: none;
     margin-top: 4px;
     font-size: var(--secondary-size);
-    font-family: 'Roboto Mono', 'Courier New', monospace;
     word-break: break-word;
     max-height: 30vh;
     overflow-y: auto;
     position: relative;
 }
 
+.think-content {
+    font-family: 'Roboto Mono', 'Courier New', monospace;
+}
 
-.think-content.expanded {
+.think-content.expanded,
+.references-content.expanded {
     display: block;
 }
 
@@ -664,8 +603,7 @@ table, th, td {
 }
 
 .markdown .footnotes-sep {
-    margin-top: 3rem;
-    border-top: 1px solid var(--bg-color-200);
+    display: none;
 }
 
 .markdown a {
