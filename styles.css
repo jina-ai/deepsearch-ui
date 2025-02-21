@@ -561,22 +561,6 @@ a {
     position: relative;
 }
 
-.think-content::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 30px;
-    background: linear-gradient(to bottom, var(--bg-color) 0%, transparent 100%);
-    opacity: 0;
-    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
-}
-
-.think-content.auto-scrolling::before {
-    opacity: 1;
-}
 
 .think-content.expanded {
     display: block;
@@ -588,6 +572,15 @@ a {
 
 .markdown {
     padding: 1rem;
+}
+
+table {
+    width: 100%;
+}
+
+table, th, td {
+    border: 1px solid var(--bg-color-100);
+    border-collapse: collapse;
 }
 
 .markdown .footnotes-sep {
