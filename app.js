@@ -89,6 +89,30 @@ initializeApiKey();
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
 // Message display functions
+function createReferencesSection(content) {
+    const section = document.createElement('div');
+    section.classList.add('references-section');
+
+    const header = document.createElement('div');
+    header.classList.add('references-header');
+    header.textContent = 'References';
+
+    const contentDiv = document.createElement('div');
+    contentDiv.classList.add('references-content');
+    contentDiv.innerHTML = content;
+
+    header.addEventListener('click', (e) => {
+        e.stopPropagation();
+        contentDiv.classList.toggle('expanded');
+        header.classList.toggle('expanded');
+        contentDiv.style.display = contentDiv.classList.contains('expanded') ? 'block' : 'none';
+    });
+
+    section.appendChild(header);
+    section.appendChild(contentDiv);
+    return section;
+}
+
 function createThinkSection(messageDiv) {
   const thinkSection = document.createElement('div');
   thinkSection.classList.add('think-section');
@@ -262,10 +286,19 @@ function renderMarkdown(content) {
     initializeMarkdown();
   }
   if (md) {
-    return md.render(content);
-  } else {
-    return content;
+    const rendered = md.render(content);
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = rendered;
+    
+    const footnotes = tempDiv.querySelector('.footnotes');
+    if (footnotes) {
+      const referencesSection = createReferencesSection(footnotes.innerHTML);
+      footnotes.replaceWith(referencesSection);
+    }
+    
+    return tempDiv.innerHTML;
   }
+  return content;
 }
 
 // Message handling functions
