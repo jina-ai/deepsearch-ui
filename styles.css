@@ -556,6 +556,8 @@ a {
     font-size: var(--secondary-size);
     font-family: 'Roboto Mono', 'Courier New', monospace;
     word-break: break-word;
+    max-height: 50vh;
+    overflow-y: auto;
 }
 
 .think-content.expanded {

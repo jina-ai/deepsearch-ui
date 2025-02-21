@@ -410,7 +410,9 @@ async function sendMessage() {
                     if (thinkEndIndex !== -1) {
                       thinkContent += tempContent.substring(0, thinkEndIndex);
                       if (thinkSectionElement) {
-                        thinkSectionElement.querySelector('.think-content').textContent = thinkContent;
+                        const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                        thinkContentElement.textContent = thinkContent;
+                        thinkContentElement.scrollTop = thinkContentElement.scrollHeight;
                       }
                       inThinkSection = false;
                       tempContent = tempContent.substring(thinkEndIndex + "</think>".length);
@@ -429,6 +431,7 @@ async function sendMessage() {
                       if (thinkSectionElement) {
                         const thinkContentElement = thinkSectionElement.querySelector('.think-content');
                         thinkContentElement.textContent = thinkContent;
+                        thinkContentElement.scrollTop = thinkContentElement.scrollHeight;
                         const animationElement = thinkSectionElement.querySelector('#thinking-animation');
                         if (!animationElement) {
                           thinkContentElement.appendChild(thinkingAnimation);
@@ -448,8 +451,9 @@ async function sendMessage() {
                       tempContent = tempContent.substring(thinkStartIndex + "<think>".length);
                       thinkSectionElement = createThinkSection(assistantMessageDiv);
                       thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
-                      thinkSectionElement.querySelector('.think-content').textContent = thinkContent;
                       const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                      thinkContentElement.textContent = thinkContent;
+                      thinkContentElement.scrollTop = thinkContentElement.scrollHeight;
                       thinkContentElement.style.display = 'block';
 
                       if (thinkHeaderElement) {
