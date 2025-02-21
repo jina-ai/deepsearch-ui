@@ -412,7 +412,9 @@ async function sendMessage() {
                       if (thinkSectionElement) {
                         const thinkContentElement = thinkSectionElement.querySelector('.think-content');
                         thinkContentElement.textContent = thinkContent;
+                        thinkContentElement.classList.add('auto-scrolling');
                         thinkContentElement.scrollTop = thinkContentElement.scrollHeight;
+                        setTimeout(() => thinkContentElement.classList.remove('auto-scrolling'), 1000);
                       }
                       inThinkSection = false;
                       tempContent = tempContent.substring(thinkEndIndex + "</think>".length);
@@ -431,7 +433,9 @@ async function sendMessage() {
                       if (thinkSectionElement) {
                         const thinkContentElement = thinkSectionElement.querySelector('.think-content');
                         thinkContentElement.textContent = thinkContent;
+                        thinkContentElement.classList.add('auto-scrolling');
                         thinkContentElement.scrollTop = thinkContentElement.scrollHeight;
+                        setTimeout(() => thinkContentElement.classList.remove('auto-scrolling'), 1000);
                         const animationElement = thinkSectionElement.querySelector('#thinking-animation');
                         if (!animationElement) {
                           thinkContentElement.appendChild(thinkingAnimation);

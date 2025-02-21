@@ -556,8 +556,26 @@ a {
     font-size: var(--secondary-size);
     font-family: 'Roboto Mono', 'Courier New', monospace;
     word-break: break-word;
-    max-height: 50vh;
+    max-height: 30vh;
     overflow-y: auto;
+    position: relative;
+}
+
+.think-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    background: linear-gradient(to bottom, var(--bg-color) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.think-content.auto-scrolling::before {
+    opacity: 1;
 }
 
 .think-content.expanded {
