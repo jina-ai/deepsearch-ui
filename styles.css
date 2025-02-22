@@ -684,6 +684,57 @@ ol.footnotes-list {
     overflow-x: auto;
 }
 
+/* Favicon container styles */
+.references-favicons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    border-top: 1px solid var(--bg-color-200);
+    margin-top: 8px;
+}
+
+.favicon-list {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.favicon-item {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background-color: var(--bg-color-200);
+    position: relative;
+}
+
+.favicon-item img {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+}
+
+.favicon-item:hover::after {
+    content: attr(data-url);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-color);
+    color: var(--text-color);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: var(--secondary-size);
+    white-space: nowrap;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.sources-count {
+    color: var(--text-secondary);
+    font-size: var(--secondary-size);
+}
+
 body {
     transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.3s cubic-bezier(0.4, 0, 0.2, 1);

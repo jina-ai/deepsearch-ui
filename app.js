@@ -52,6 +52,7 @@ let isLoading = false;
 let abortController = null;
 let existingMessages = [];
 let md;
+let visitedURLs = [];
 
 
 
@@ -72,7 +73,17 @@ initializeApiKey();
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
 // Message display functions
-function createReferencesSection(content) {
+function createReferencesSection(content, visitedURLs = []) {
+    console.log('Creating references section with URLs:', visitedURLs);
+    // For testing
+    if (visitedURLs.length === 0) {
+        visitedURLs = [
+            'https://jina.ai',
+            'https://www.linkedin.com/company/jina-ai/'
+        ];
+        console.log('Using test URLs:', visitedURLs);
+    }
+
     const section = document.createElement('div');
     section.classList.add('references-section');
 
@@ -93,6 +104,43 @@ function createReferencesSection(content) {
 
     section.appendChild(header);
     section.appendChild(contentDiv);
+
+    if (visitedURLs?.length > 0) {
+        const faviconContainer = document.createElement('div');
+        faviconContainer.classList.add('references-favicons');
+
+        const faviconList = document.createElement('div');
+        faviconList.classList.add('favicon-list');
+
+        visitedURLs.forEach(url => {
+            const faviconItem = document.createElement('div');
+            faviconItem.classList.add('favicon-item');
+            faviconItem.setAttribute('data-url', url);
+
+            const img = document.createElement('img');
+            try {
+                const domain = new URL(url).hostname;
+                img.src = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+                img.onerror = () => {
+                    img.src = 'favicon.ico'; // Fallback to default favicon
+                };
+            } catch (e) {
+                img.src = 'favicon.ico'; // Fallback for invalid URLs
+            }
+
+            faviconItem.appendChild(img);
+            faviconList.appendChild(faviconItem);
+        });
+
+        const sourcesCount = document.createElement('div');
+        sourcesCount.classList.add('sources-count');
+        sourcesCount.textContent = `${visitedURLs.length} sources`;
+
+        faviconContainer.appendChild(faviconList);
+        faviconContainer.appendChild(sourcesCount);
+        section.appendChild(faviconContainer);
+    }
+
     return section;
 }
 
@@ -263,7 +311,8 @@ function markdownItTableWrapper(md) {
   };
 }
 
-function renderMarkdown(content, returnElement = false) {
+function renderMarkdown(content, returnElement = false, visitedURLs = []) {
+  console.log('Rendering markdown with URLs:', visitedURLs);
   if (!md) {
     initializeMarkdown();
   }
@@ -273,12 +322,11 @@ function renderMarkdown(content, returnElement = false) {
     const rendered = md.render(content);
     tempDiv.innerHTML = rendered;
 
-    const footnotes = tempDiv.querySelector('.footnotes');
-    if (footnotes) {
-      const referencesSection = createReferencesSection(footnotes.innerHTML);
-      footnotes.replaceWith(referencesSection);
-    }
+    // Always create references section
+    const referencesSection = createReferencesSection('', visitedURLs);
+    tempDiv.appendChild(referencesSection);
 
+    console.log('Added references section to markdown');
   }
   return returnElement ? tempDiv : tempDiv.innerHTML;
 }
@@ -412,7 +460,11 @@ async function sendMessage() {
               if (partialBrokenData) {
                 const json = JSON.parse(partialBrokenData);
                 partialBrokenData = '';
-                const content = json.choices[0].delta.content;
+                const content = json.choices[0]?.delta?.content || '';
+                // Store visitedURLs from the final chunk if provided
+                if (json.visitedURLs) {
+                    visitedURLs = json.visitedURLs;
+                }
                 removeLoadingIndicator(assistantMessageDiv);
 
                 let tempContent = content;
@@ -498,7 +550,26 @@ async function sendMessage() {
       }
 
       if (markdownContent) {
-        const markdown = renderMarkdown(markdownContent, true);
+        // Extract URLs from the markdown content
+        const urlRegex = /\[.*?\]\((https?:\/\/[^\s)]+)\)/g;
+        const matches = markdownContent.matchAll(urlRegex);
+        visitedURLs = Array.from(matches, m => m[1]);
+        
+        // Debug logging
+        console.log('Extracted URLs:', visitedURLs);
+        console.log('Markdown content:', markdownContent);
+
+        // If no URLs found in markdown links, try extracting raw URLs
+        if (visitedURLs.length === 0) {
+          const rawUrlRegex = /(https?:\/\/[^\s]+)/g;
+          const rawMatches = markdownContent.match(rawUrlRegex);
+          if (rawMatches) {
+            visitedURLs = rawMatches;
+            console.log('Found raw URLs:', visitedURLs);
+          }
+        }
+
+        const markdown = renderMarkdown(markdownContent, true, visitedURLs);
         markdownDiv.replaceChildren(markdown);
         const copyButton = createCopyButton(markdownContent);
         assistantMessageDiv.appendChild(copyButton);
