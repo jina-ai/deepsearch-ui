@@ -24,9 +24,7 @@ const UI_STRINGS = {
 };
 
 // DOM Elements - grouped at the top for better organization
-const themeToggle = document.getElementById('theme-toggle');
-const themeLightIcon = document.getElementById('light-icon');
-const themeDarkIcon = document.getElementById('dark-icon');
+
 const logo = document.getElementById('logo');
 const mainContainer = document.getElementById('main-container');
 const chatContainer = document.getElementById('chat-container');
@@ -56,24 +54,7 @@ let abortController = null;
 let existingMessages = [];
 let md;
 
-// Theme toggle handler - fixed logic
-themeToggle.addEventListener('click', () => {
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-  document.documentElement.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  // Show the opposite icon of new theme to indicate what you'll switch to next
-
-  themeLightIcon.style.display = newTheme === 'dark' ? 'block' : 'none';
-  themeDarkIcon.style.display = newTheme === 'light' ? 'block' : 'none';
-
-  const hlTheme = newTheme === 'light' ? 'vs' : 'vs2015';
-  const hlThemeElement = document.getElementById('hljs-theme');
-  if (hlThemeElement) {
-    hlThemeElement.href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/${hlTheme}.min.css`;
-  }
-});
 
 // API Key Management
 function initializeApiKey() {
@@ -563,9 +544,18 @@ updateEmptyState();
 
 // Settings functionality
 function initializeSettings() {
+    // Initialize search bar position
     const isSearchBarBottom = localStorage.getItem('search_bar_bottom') === 'true';
     searchBarBottom.checked = isSearchBarBottom;
     document.body.classList.toggle('search-bar-bottom', isSearchBarBottom);
+
+    // Initialize theme
+    const savedTheme = localStorage.getItem('theme') || getCurrentColorScheme();
+    const themeToggleInput = document.getElementById('theme-toggle-input');
+    themeToggleInput.checked = savedTheme === 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('dark-icon').style.display = savedTheme === 'dark' ? 'block' : 'none';
+    document.getElementById('light-icon').style.display = savedTheme === 'dark' ? 'none' : 'block';
 }
 
 settingsButton.addEventListener('click', () => {
@@ -584,6 +574,20 @@ searchBarBottom.addEventListener('change', (e) => {
     const isBottom = e.target.checked;
     localStorage.setItem('search_bar_bottom', isBottom);
     document.body.classList.toggle('search-bar-bottom', isBottom);
+});
+
+const themeToggleInput = document.getElementById('theme-toggle-input');
+themeToggleInput.addEventListener('change', (e) => {
+    const theme = e.target.checked ? 'dark' : 'light';
+    localStorage.setItem('theme', theme);
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('dark-icon').style.display = theme === 'dark' ? 'block' : 'none';
+    document.getElementById('light-icon').style.display = theme === 'dark' ? 'none' : 'block';
+    const hlTheme = theme === 'light' ? 'vs' : 'vs2015';
+    const hlThemeElement = document.getElementById('hljs-theme');
+    if (hlThemeElement) {
+        hlThemeElement.href = `third-party/${hlTheme}.min.css`;
+    }
 });
 
 // Initialize settings on load
