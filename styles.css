@@ -754,11 +754,13 @@ button,
     display: none;
     opacity: 0;
     transition: opacity 0.225s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
 }
 
 .dialog-overlay.visible {
     display: flex;
     opacity: 1;
+    pointer-events: auto;
 }
 
 .dialog {
