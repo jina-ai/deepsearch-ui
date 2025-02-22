@@ -797,6 +797,26 @@ button,
     border-width: 0;
 }
 
+/* Bottom search bar layout */
+body.search-bar-bottom #input-area {
+    top: unset;
+    bottom: 0;
+    border-top: 1px solid var(--bg-color-200);
+    border-bottom: none;
+}
+
+body.search-bar-bottom .footer {
+    bottom: unset;
+    top: 0;
+    border-bottom: 1px solid var(--bg-color-200);
+    border-top: none;
+}
+
+body.search-bar-bottom #main-container {
+    padding-top: 54px;
+    padding-bottom: 86px;
+}
+
 /* Toggle switch styles */
 .settings-option {
     display: flex;
