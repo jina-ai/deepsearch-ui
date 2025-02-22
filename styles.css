@@ -14,6 +14,8 @@
     --subtitle-size: 16px;
     --body-size: 14px;
     --secondary-size: 12px;
+    --bg-color-opacity: rgba(0, 0, 0, 0.1);
+
 }
 
 [data-theme="dark"] {
@@ -25,6 +27,7 @@
     --text-color: #e8eaed;
     --text-secondary: #969ba1;
     --input-focus-shadow: rgba(232, 234, 237, 0.16);
+    --bg-color-opacity: rgba(255, 255, 255, 0.1);
 }
 
 body {
@@ -80,6 +83,7 @@ header {
     display: flex;
     align-items: center;
 }
+
 #small-logo {
     display: none;
     width: 32px;
@@ -143,11 +147,15 @@ button:focus {
 
 
 .footer button {
-    background-color: var(--bg-color);
+    background-color: var(--bg-color-opacity);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    -moz-backdrop-filter: blur(20px);
+    -o-backdrop-filter: blur(20px);
 }
 
 .footer button:hover {
-    background-color: var(--bg-color-100);
+    background-color: rgba(var(--bg-color-200), 0.5);
 }
 
 .footer .buttons-group {
@@ -174,6 +182,11 @@ a {
     padding: 20px 20px 20px 0;
     max-width: 868px;
     margin-left: 125px;
+}
+
+
+#chat-app:not(.empty-chat) #input-area button {
+    background: unset;
 }
 
 /* Modified: Updated mobile styles to adjust main container padding */
@@ -203,6 +216,7 @@ a {
         border-top: 1px solid var(--bg-color-200);
         border-bottom: none;
     }
+
 
     #chat-app:not(.empty-chat) .footer {
         bottom: unset;
@@ -238,7 +252,11 @@ a {
     align-items: center;
     display: flex;
     gap: 10px;
-    background: var(--bg-color-100);
+    background-color: var(--bg-color-opacity);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    -moz-backdrop-filter: blur(20px);
+    -o-backdrop-filter: blur(20px);
     z-index: 99;
     border-bottom: 1px solid var(--bg-color-200);
     height: 46px;
@@ -675,6 +693,7 @@ ol.footnotes-list {
 .markdown table thead {
     background-color: var(--bg-color-300);
 }
+
 .markdown table th,
 .markdown table td {
     padding: 4px;
