@@ -74,6 +74,11 @@ saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
 // Message display functions
 function createReferencesSection(content, visitedURLs = []) {
+    // Don't create section if no content and no URLs
+    if (!content && (!visitedURLs || visitedURLs.length === 0)) {
+        return null;
+    }
+
     const section = document.createElement('div');
     section.classList.add('references-section');
 
@@ -314,12 +319,17 @@ function renderMarkdown(content, returnElement = false, visitedURLs = []) {
 
     const footnotes = tempDiv.querySelector('.footnotes');
     const footnoteContent = footnotes ? footnotes.innerHTML : '';
-    const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
     
-    if (footnotes) {
-      footnotes.replaceWith(referencesSection);
-    } else {
-      tempDiv.appendChild(referencesSection);
+    // Create references section if there are footnotes or visitedURLs
+    const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
+    if (referencesSection) {
+      if (footnotes) {
+        footnotes.replaceWith(referencesSection);
+      } else {
+        tempDiv.appendChild(referencesSection);
+      }
+    } else if (footnotes) {
+      footnotes.remove();
     }
   }
   return returnElement ? tempDiv : tempDiv.innerHTML;
