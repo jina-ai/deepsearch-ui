@@ -832,7 +832,7 @@ body.search-bar-bottom #main-container {
 }
 
 @media (max-width: 768px) {
-    .settings-option.search-bar-position {
+    .settings-option.search-bar-bottom {
         display: none;
     }
 }
