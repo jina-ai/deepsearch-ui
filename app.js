@@ -42,6 +42,9 @@ const freeUserRPMInfo = document.getElementById('free-user-rpm');
 const apiKeyDialog = document.getElementById('api-key-dialog');
 const helpButton = document.getElementById('help-button');
 const helpDialog = document.getElementById('help-dialog');
+const settingsButton = document.getElementById('settings-button');
+const settingsDialog = document.getElementById('settings-dialog');
+const searchBarBottom = document.getElementById('search-bar-bottom');
 const dialogCloseBtns = document.querySelectorAll('.dialog-close');
 
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
@@ -557,6 +560,26 @@ async function sendMessage() {
 
 // Initialize empty state
 updateEmptyState();
+
+// Settings functionality
+function initializeSettings() {
+    const isSearchBarBottom = localStorage.getItem('search_bar_bottom') === 'true';
+    searchBarBottom.checked = isSearchBarBottom;
+    document.body.classList.toggle('search-bar-bottom', isSearchBarBottom);
+}
+
+settingsButton.addEventListener('click', () => {
+    settingsDialog.classList.add('visible');
+});
+
+searchBarBottom.addEventListener('change', (e) => {
+    const isBottom = e.target.checked;
+    localStorage.setItem('search_bar_bottom', isBottom);
+    document.body.classList.toggle('search-bar-bottom', isBottom);
+});
+
+// Initialize settings on load
+initializeSettings();
 
 
 // Event Listeners
