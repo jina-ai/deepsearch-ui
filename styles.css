@@ -746,23 +746,19 @@ button,
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 1000;
+    z-index: 2000;
     align-items: center;
     justify-content: center;
 
     /* Change display to be always flex, but use visibility and opacity for animation */
-    display: flex;
-    visibility: hidden;
+    display: none;
     opacity: 0;
-    transition: opacity 0.225s cubic-bezier(0.4, 0, 0.2, 1),
-    visibility 0.225s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none;
+    transition: opacity 0.225s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dialog-overlay.visible {
-    visibility: visible;
+    display: flex;
     opacity: 1;
-    pointer-events: auto;
 }
 
 .dialog {
@@ -803,6 +799,7 @@ body.search-bar-bottom #input-area {
     bottom: 0;
     border-top: 1px solid var(--bg-color-200);
     border-bottom: none;
+    z-index: 10;
 }
 
 body.search-bar-bottom .footer {
@@ -810,11 +807,14 @@ body.search-bar-bottom .footer {
     top: 0;
     border-bottom: 1px solid var(--bg-color-200);
     border-top: none;
+    z-index: 10;
 }
 
 body.search-bar-bottom #main-container {
     padding-top: 54px;
     padding-bottom: 86px;
+    position: relative;
+    z-index: 5;
 }
 
 /* Toggle switch styles */
