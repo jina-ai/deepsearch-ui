@@ -88,6 +88,15 @@
                 </svg>
                 <span class="sr-only">Help</span>
             </button>
+            <button id="settings-button" aria-label="Settings">
+                <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                     aria-hidden="true">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                <span class="sr-only">Settings</span>
+            </button>
             <button id="toggle-api-key" class="icon-button" aria-label="Upgrade to higher rate limit">
                 <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -184,5 +193,24 @@
         </div>
     </div>
 </div>
+<!-- Settings dialog -->
+<div class="dialog-overlay" id="settings-dialog" role="dialog" aria-labelledby="settings-dialog-title" aria-modal="true">
+    <div class="dialog">
+        <div class="dialog-header">
+            <span class="dialog-title" id="settings-dialog-title">Settings</span>
+            <button class="dialog-close" aria-label="Close settings dialog">&times;</button>
+        </div>
+        <div class="dialog-content">
+            <div class="settings-option">
+                <label class="toggle-switch">
+                    <input type="checkbox" id="search-bar-bottom">
+                    <span class="toggle-slider"></span>
+                    <span class="toggle-label">Search bar at bottom</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
