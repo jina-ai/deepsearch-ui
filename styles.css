@@ -207,7 +207,6 @@ a {
     #chat-app:not(.empty-chat) .footer {
         bottom: unset;
         top: 0;
-        border-bottom: 1px solid var(--bg-color-200);
         border-top: none;
     }
 
