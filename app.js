@@ -322,11 +322,17 @@ function renderMarkdown(content, returnElement = false, visitedURLs = []) {
     const rendered = md.render(content);
     tempDiv.innerHTML = rendered;
 
-    // Always create references section
-    const referencesSection = createReferencesSection('', visitedURLs);
-    tempDiv.appendChild(referencesSection);
+    const footnotes = tempDiv.querySelector('.footnotes');
+    const footnoteContent = footnotes ? footnotes.innerHTML : '';
+    const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
+    
+    if (footnotes) {
+      footnotes.replaceWith(referencesSection);
+    } else {
+      tempDiv.appendChild(referencesSection);
+    }
 
-    console.log('Added references section to markdown');
+    console.log('Added references section with footnotes and favicons');
   }
   return returnElement ? tempDiv : tempDiv.innerHTML;
 }
