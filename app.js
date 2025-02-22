@@ -572,6 +572,14 @@ settingsButton.addEventListener('click', () => {
     settingsDialog.classList.add('visible');
 });
 
+// Close dialog when clicking close button
+dialogCloseBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const dialog = btn.closest('.dialog-overlay');
+        dialog.classList.remove('visible');
+    });
+});
+
 searchBarBottom.addEventListener('change', (e) => {
     const isBottom = e.target.checked;
     localStorage.setItem('search_bar_bottom', isBottom);
