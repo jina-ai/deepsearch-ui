@@ -1,4 +1,3 @@
-// UI Strings
 const UI_STRINGS = {
     buttons: {
         send: 'Deep Search',
@@ -554,8 +553,6 @@ function initializeSettings() {
     const themeToggleInput = document.getElementById('theme-toggle-input');
     themeToggleInput.checked = savedTheme === 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    document.getElementById('dark-icon').style.display = savedTheme === 'dark' ? 'block' : 'none';
-    document.getElementById('light-icon').style.display = savedTheme === 'dark' ? 'none' : 'block';
 }
 
 settingsButton.addEventListener('click', () => {
