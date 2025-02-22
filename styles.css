@@ -831,6 +831,12 @@ body.search-bar-bottom #main-container {
     margin: 12px 0;
 }
 
+@media (max-width: 768px) {
+    .settings-option.search-bar-position {
+        display: none;
+    }
+}
+
 .toggle-switch {
     position: relative;
     display: inline-flex;
