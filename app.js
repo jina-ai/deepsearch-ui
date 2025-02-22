@@ -548,10 +548,6 @@ async function sendMessage() {
         const urlRegex = /\[.*?\]\((https?:\/\/[^\s)]+)\)/g;
         const matches = markdownContent.matchAll(urlRegex);
         visitedURLs = Array.from(matches, m => m[1]);
-        
-        // Debug logging
-        console.log('Extracted URLs:', visitedURLs);
-        console.log('Markdown content:', markdownContent);
 
         // If no URLs found in markdown links, try extracting raw URLs
         if (visitedURLs.length === 0) {
@@ -559,7 +555,6 @@ async function sendMessage() {
           const rawMatches = markdownContent.match(rawUrlRegex);
           if (rawMatches) {
             visitedURLs = rawMatches;
-            console.log('Found raw URLs:', visitedURLs);
           }
         }
 
