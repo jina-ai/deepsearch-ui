@@ -74,16 +74,6 @@ saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
 // Message display functions
 function createReferencesSection(content, visitedURLs = []) {
-    console.log('Creating references section with URLs:', visitedURLs);
-    // For testing
-    if (visitedURLs.length === 0) {
-        visitedURLs = [
-            'https://jina.ai',
-            'https://www.linkedin.com/company/jina-ai/'
-        ];
-        console.log('Using test URLs:', visitedURLs);
-    }
-
     const section = document.createElement('div');
     section.classList.add('references-section');
 
@@ -92,19 +82,20 @@ function createReferencesSection(content, visitedURLs = []) {
     header.textContent = 'References';
 
     const contentDiv = document.createElement('div');
-    contentDiv.classList.add('references-content');
+    contentDiv.classList.add('references-content', 'hidden');
     contentDiv.innerHTML = content;
 
     header.addEventListener('click', (e) => {
         e.stopPropagation();
-        contentDiv.classList.toggle('expanded');
+        contentDiv.classList.toggle('hidden');
         header.classList.toggle('expanded');
-        contentDiv.style.display = contentDiv.classList.contains('expanded') ? 'block' : 'none';
+        contentDiv.style.display = contentDiv.classList.contains('hidden') ? 'none' : 'block';
     });
 
     section.appendChild(header);
     section.appendChild(contentDiv);
 
+    // Add favicons section if URLs exist
     if (visitedURLs?.length > 0) {
         const faviconContainer = document.createElement('div');
         faviconContainer.classList.add('references-favicons');
@@ -312,7 +303,6 @@ function markdownItTableWrapper(md) {
 }
 
 function renderMarkdown(content, returnElement = false, visitedURLs = []) {
-  console.log('Rendering markdown with URLs:', visitedURLs);
   if (!md) {
     initializeMarkdown();
   }
@@ -331,8 +321,6 @@ function renderMarkdown(content, returnElement = false, visitedURLs = []) {
     } else {
       tempDiv.appendChild(referencesSection);
     }
-
-    console.log('Added references section with footnotes and favicons');
   }
   return returnElement ? tempDiv : tempDiv.innerHTML;
 }
