@@ -738,6 +738,9 @@ function loadAndDisplaySavedMessages() {
                         }
                     }
                 }
+            } else if (message.role === 'user') {
+                // Ensure user message content is displayed
+                messageDiv.textContent = message.content;
             }
         });
         
