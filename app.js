@@ -63,6 +63,16 @@ function initializeApiKey() {
     toggleApiKeyBtnText.textContent = savedKey ? UI_STRINGS.buttons.updateKey : UI_STRINGS.buttons.addKey;
 }
 
+// Chat Message Persistence
+function saveChatMessages() {
+    localStorage.setItem('chat_messages', JSON.stringify(existingMessages));
+}
+
+function loadChatMessages() {
+    const savedMessages = localStorage.getItem('chat_messages');
+    return savedMessages ? JSON.parse(savedMessages) : [];
+}
+
 
 // Initialize API key
 initializeApiKey();
@@ -419,6 +429,8 @@ function clearMessages() {
     chatContainer.innerHTML = '';
     existingMessages = [];
     abortController?.abort();
+    // Clear messages from localStorage
+    localStorage.removeItem('chat_messages');
     updateEmptyState();
 }
 
@@ -436,6 +448,8 @@ async function sendMessage() {
     messageInput.value = '';
     // To clear the badge
     clearFaviconBadge();
+    // Save messages to localStorage
+    saveChatMessages();
 
     const assistantMessageDiv = displayMessage('assistant', '');
 
@@ -630,6 +644,8 @@ async function sendMessage() {
                     role: 'assistant',
                     content: markdownContent,
                 });
+                // Save messages to localStorage
+                saveChatMessages();
                 // Check if the Favicon Badge API is supported
                 setFaviconBadge();
                 playNotificationSound();
@@ -642,6 +658,8 @@ async function sendMessage() {
                     role: 'assistant',
                     content: jsonResult.choices[0].message.content
                 });
+                // Save messages to localStorage
+                saveChatMessages();
             } else {
                 throw new Error('Empty response from server.');
             }
@@ -673,6 +691,65 @@ async function sendMessage() {
 
 // Initialize empty state
 updateEmptyState();
+
+// Load and display saved messages
+function loadAndDisplaySavedMessages() {
+    existingMessages = loadChatMessages();
+    
+    if (existingMessages.length > 0) {
+        // Display saved messages
+        existingMessages.forEach(message => {
+            const messageDiv = displayMessage(message.role, message.content);
+            
+            if (message.role === 'assistant') {
+                // Remove loading indicator
+                removeLoadingIndicator(messageDiv);
+                
+                // Create markdown div
+                const markdownDiv = document.createElement('div');
+                markdownDiv.classList.add('markdown');
+                messageDiv.appendChild(markdownDiv);
+                
+                // Render markdown content
+                const markdown = renderMarkdown(message.content, true);
+                markdownDiv.replaceChildren(markdown);
+                
+                // Add copy button
+                const copyButton = createCopyButton(message.content);
+                messageDiv.appendChild(copyButton);
+                
+                // Check for think content
+                if (message.content.includes('<think>') && message.content.includes('</think>')) {
+                    const thinkStartIndex = message.content.indexOf('<think>');
+                    const thinkEndIndex = message.content.indexOf('</think>');
+                    
+                    if (thinkStartIndex !== -1 && thinkEndIndex !== -1) {
+                        const thinkContent = message.content.substring(thinkStartIndex + '<think>'.length, thinkEndIndex);
+                        
+                        // Create think section
+                        const thinkSectionElement = createThinkSection(messageDiv);
+                        const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                        thinkContentElement.textContent = thinkContent;
+                        
+                        // Update think header
+                        const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
+                        if (thinkHeaderElement) {
+                            thinkHeaderElement.textContent = UI_STRINGS.think.toggle;
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Update empty state
+        updateEmptyState();
+        // Scroll to bottom
+        scrollToBottom();
+    }
+}
+
+// Call the function to load and display saved messages
+loadAndDisplaySavedMessages();
 
 // Settings functionality
 function initializeSettings() {
