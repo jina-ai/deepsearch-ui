@@ -640,9 +640,16 @@ async function sendMessage() {
                 markdownDiv.replaceChildren(markdown);
                 const copyButton = createCopyButton(markdownContent);
                 assistantMessageDiv.appendChild(copyButton);
+                
+                // Include think content in the message if it exists
+                let messageContent = markdownContent;
+                if (thinkContent) {
+                    messageContent = markdownContent + '<think>' + thinkContent + '</think>';
+                }
+                
                 existingMessages.push({
                     role: 'assistant',
-                    content: markdownContent,
+                    content: messageContent,
                 });
                 // Save messages to localStorage
                 saveChatMessages();
@@ -748,6 +755,31 @@ function loadAndDisplaySavedMessages() {
         updateEmptyState();
         // Scroll to bottom
         scrollToBottom();
+        
+        // Ensure isLoading is reset to false
+        isLoading = false;
+        // Ensure abortController is initialized
+        if (!abortController) {
+            abortController = new AbortController();
+        }
+        
+        // Ensure event listeners are properly set up
+        const messageInput = document.querySelector('input[type="search"]');
+        const sendButton = document.querySelector('button[aria-label="Send message"]');
+        
+        // Set up event listener for Enter key on message input
+        if (messageInput) {
+            messageInput.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+        
+        // Set up event listener for send button if it exists
+        if (sendButton) {
+            sendButton.addEventListener('click', sendMessage);
+        }
     }
 }
 
