@@ -70,7 +70,12 @@ function saveChatMessages() {
 
 function loadChatMessages() {
     const savedMessages = localStorage.getItem('chat_messages');
-    return savedMessages ? JSON.parse(savedMessages) : [];
+    try {
+        return savedMessages ? JSON.parse(savedMessages) : [];
+    } catch (e) {
+        console.error('Error parsing saved messages:', e);
+        return [];
+    }
 }
 
 
@@ -641,16 +646,12 @@ async function sendMessage() {
                 const copyButton = createCopyButton(markdownContent);
                 assistantMessageDiv.appendChild(copyButton);
                 
-                // Include think content in the message if it exists
-                let messageContent = markdownContent;
-                if (thinkContent) {
-                    messageContent = markdownContent + '<think>' + thinkContent + '</think>';
-                }
-                
                 existingMessages.push({
                     role: 'assistant',
-                    content: messageContent,
+                    content: markdownContent,
+                    think: thinkContent
                 });
+
                 // Save messages to localStorage
                 saveChatMessages();
                 // Check if the Favicon Badge API is supported
@@ -696,9 +697,6 @@ async function sendMessage() {
     }
 }
 
-// Initialize empty state
-updateEmptyState();
-
 // Load and display saved messages
 function loadAndDisplaySavedMessages() {
     existingMessages = loadChatMessages();
@@ -726,23 +724,14 @@ function loadAndDisplaySavedMessages() {
                 messageDiv.appendChild(copyButton);
                 
                 // Check for think content
-                if (message.content.includes('<think>') && message.content.includes('</think>')) {
-                    const thinkStartIndex = message.content.indexOf('<think>');
-                    const thinkEndIndex = message.content.indexOf('</think>');
+                if (message.think) {
+                    const thinkSectionElement = createThinkSection(messageDiv);
+                    const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                    thinkContentElement.textContent = message.think;
                     
-                    if (thinkStartIndex !== -1 && thinkEndIndex !== -1) {
-                        const thinkContent = message.content.substring(thinkStartIndex + '<think>'.length, thinkEndIndex);
-                        
-                        // Create think section
-                        const thinkSectionElement = createThinkSection(messageDiv);
-                        const thinkContentElement = thinkSectionElement.querySelector('.think-content');
-                        thinkContentElement.textContent = thinkContent;
-                        
-                        // Update think header
-                        const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
-                        if (thinkHeaderElement) {
-                            thinkHeaderElement.textContent = UI_STRINGS.think.toggle;
-                        }
+                    const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
+                    if (thinkHeaderElement) {
+                        thinkHeaderElement.textContent = UI_STRINGS.think.toggle;
                     }
                 }
             } else if (message.role === 'user') {
@@ -750,41 +739,17 @@ function loadAndDisplaySavedMessages() {
                 messageDiv.textContent = message.content;
             }
         });
-        
-        // Update empty state
-        updateEmptyState();
+    
         // Scroll to bottom
         scrollToBottom();
-        
-        // Ensure isLoading is reset to false
-        isLoading = false;
-        // Ensure abortController is initialized
-        if (!abortController) {
-            abortController = new AbortController();
-        }
-        
-        // Ensure event listeners are properly set up
-        const messageInput = document.querySelector('input[type="search"]');
-        const sendButton = document.querySelector('button[aria-label="Send message"]');
-        
-        // Set up event listener for Enter key on message input
-        if (messageInput) {
-            messageInput.addEventListener('keydown', function(event) {
-                if (event.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-        }
-        
-        // Set up event listener for send button if it exists
-        if (sendButton) {
-            sendButton.addEventListener('click', sendMessage);
-        }
     }
 }
 
 // Call the function to load and display saved messages
 loadAndDisplaySavedMessages();
+
+// Initialize empty state
+updateEmptyState();
 
 // Settings functionality
 function initializeSettings() {
@@ -860,6 +825,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (queryParam && messageInput) {
         messageInput.value = decodeURIComponent(queryParam);
+        clearMessages();
         sendMessage();
     }
 });
@@ -1032,7 +998,7 @@ function handleFootnoteClick(event) {
         // Expand the references section if it's not already expanded
         if (!referencesHeader.classList.contains('expanded')) {
             referencesHeader.classList.toggle('expanded');
-      referencesHeader.classList.toggle('collapsed');
+            referencesHeader.classList.toggle('collapsed');
             referencesContent.classList.toggle('expanded');
         }
 

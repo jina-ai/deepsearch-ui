@@ -486,6 +486,8 @@ a {
 
 .error-message span {
     line-height: 1.5rem;
+    text-align: left;
+    display: block;
 }
 
 .error-message {
