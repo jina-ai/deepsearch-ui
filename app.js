@@ -249,9 +249,10 @@ function createThinkSection(messageDiv) {
 
     const expanded = localStorage.getItem('think_section_expanded') === 'true';
     if (expanded) {
-        thinkHeader.classList.add('expanded');
+        thinkHeader.classList.remove('collapsed');
         thinkContent.classList.add('expanded');
     } else {
+        thinkHeader.classList.remove('expanded');
         thinkHeader.classList.add('collapsed');
     }
 
@@ -438,6 +439,19 @@ function clearMessages() {
     localStorage.removeItem('chat_messages');
     updateEmptyState();
 }
+
+const makeAllLinksOpenInNewTab = () => {
+    // Select all <a> tags on the page
+    const links = document.querySelectorAll('a');
+
+    // Add target="_blank" to each link
+    links.forEach(link => {
+        link.setAttribute('target', '_blank');
+
+        // Add rel="noopener" for security best practices
+        link.setAttribute('rel', 'noopener');
+    });
+};
 
 async function sendMessage() {
     const query = messageInput.value.trim();
@@ -739,6 +753,7 @@ function loadAndDisplaySavedMessages() {
                 messageDiv.textContent = message.content;
             }
         });
+        makeAllLinksOpenInNewTab();
     
         // Scroll to bottom
         scrollToBottom();
@@ -1021,15 +1036,3 @@ function handleFootnoteClick(event) {
 // Add the event listener to the chat container to handle all footnote clicks
 document.getElementById('chat-container').addEventListener('click', handleFootnoteClick);
 
-const makeAllLinksOpenInNewTab = () => {
-    // Select all <a> tags on the page
-    const links = document.querySelectorAll('a');
-
-    // Add target="_blank" to each link
-    links.forEach(link => {
-        link.setAttribute('target', '_blank');
-
-        // Add rel="noopener" for security best practices
-        link.setAttribute('rel', 'noopener');
-    });
-};
