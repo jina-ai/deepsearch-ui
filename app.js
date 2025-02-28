@@ -921,7 +921,7 @@ messageInput.addEventListener('input', function() {
     this.style.height = newHeight + 'px';
     
     // Adjust line-height based on content
-    this.style.lineHeight = this.value.includes('\n') ? '1.5' : '44px';
+    this.style.lineHeight = this.value.includes('\n') ? '1.2' : '44px';
     
     // Update padding based on content
     this.style.padding = this.value.includes('\n') ? '12px 16px 12px 48px' : '0 16px 0 48px';
