@@ -263,7 +263,7 @@ a {
     -o-backdrop-filter: blur(20px);
     z-index: 99;
     border-bottom: 1px solid var(--bg-color-200);
-    height: 46px;
+    min-height: 46px; /* Use min-height instead of fixed height */
 }
 
 #thinking-animation-icon {
@@ -282,6 +282,7 @@ a {
     background: unset;
     height: auto; /* Modified: Allow height to adjust in empty state */
     top: -10%;
+    min-height: unset; /* Reset min-height for empty chat */
 }
 
 /* Adjust input width when chat is empty */
@@ -307,19 +308,19 @@ a {
     max-width: 80vw;
     min-height: 44px;
     max-height: 200px; /* Maximum height constraint */
-    padding: 12px 16px 12px 48px; /* Adjusted padding for textarea */
+    padding: 0 16px 0 48px; /* Keep original input padding */
     border: 1px solid var(--bg-color-200);
     border-radius: 24px;
     background-color: var(--bg-color);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-search'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: 16px 14px; /* Adjusted for textarea */
+    background-position: 16px center;
     color: var(--text-color);
     font-size: var(--subtitle-size);
     transition: box-shadow 0.2s, height 0.2s;
     resize: none; /* Disable manual resizing */
-    overflow-y: auto; /* Enable scrolling when max height is reached */
-    line-height: 1.5; /* Consistent line height */
+    overflow-y: hidden; /* Hide scrollbar until max height is reached */
+    line-height: 44px; /* Match the original input height for single line */
     font-family: 'Roboto', Arial, sans-serif; /* Match body font */
 }
 

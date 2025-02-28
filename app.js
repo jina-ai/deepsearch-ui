@@ -768,6 +768,11 @@ updateEmptyState();
 
 // Initialize textarea height
 if (messageInput) {
+    // Set initial styling for single line appearance
+    messageInput.style.lineHeight = '44px';
+    messageInput.style.padding = '0 16px 0 48px';
+    messageInput.style.overflowY = 'hidden';
+    
     // Trigger the input event to set initial height
     const inputEvent = new Event('input', { bubbles: true });
     messageInput.dispatchEvent(inputEvent);
@@ -904,23 +909,22 @@ helpButton.addEventListener('click', () => {
 // Auto-resize textarea based on content
 messageInput.addEventListener('input', function() {
     // Reset height to auto to get the correct scrollHeight
-    this.style.height = 'auto';
+    this.style.height = '44px'; // Reset to original height
     
     // Calculate new height based on scrollHeight
     const newHeight = Math.min(this.scrollHeight, 200); // Max height: 200px
+    
+    // Only show scrollbar when max height is reached
+    this.style.overflowY = newHeight >= 200 ? 'auto' : 'hidden';
+    
+    // Set the new height
     this.style.height = newHeight + 'px';
     
-    // Update input area height for proper layout
-    const inputArea = document.getElementById('input-area');
-    if (inputArea) {
-        // Adjust the input area height based on the new textarea height
-        const heightDifference = newHeight - 44; // 44px is the original height
-        if (heightDifference > 0) {
-            inputArea.style.height = (46 + heightDifference) + 'px'; // 46px is the original input area height
-        } else {
-            inputArea.style.height = '46px';
-        }
-    }
+    // Adjust line-height based on content
+    this.style.lineHeight = this.value.includes('\n') ? '1.5' : '44px';
+    
+    // Update padding based on content
+    this.style.padding = this.value.includes('\n') ? '12px 16px 12px 48px' : '0 16px 0 48px';
 });
 
 // Update handleApiKeySave function
