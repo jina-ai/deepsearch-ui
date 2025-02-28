@@ -766,6 +766,13 @@ loadAndDisplaySavedMessages();
 // Initialize empty state
 updateEmptyState();
 
+// Initialize textarea height
+if (messageInput) {
+    // Trigger the input event to set initial height
+    const inputEvent = new Event('input', { bubbles: true });
+    messageInput.dispatchEvent(inputEvent);
+}
+
 // Settings functionality
 function initializeSettings() {
     // Initialize search bar position
@@ -818,7 +825,8 @@ initializeSettings();
 sendButton.addEventListener('click', sendMessage);
 clearButton.addEventListener('click', clearMessages);
 messageInput.addEventListener('keydown', (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault(); // Prevent default newline
         sendMessage();
     }
 });
@@ -891,6 +899,28 @@ dialogCloseBtns.forEach(btn => {
 // Update help button click handler
 helpButton.addEventListener('click', () => {
     helpDialog.classList.add('visible');
+});
+
+// Auto-resize textarea based on content
+messageInput.addEventListener('input', function() {
+    // Reset height to auto to get the correct scrollHeight
+    this.style.height = 'auto';
+    
+    // Calculate new height based on scrollHeight
+    const newHeight = Math.min(this.scrollHeight, 200); // Max height: 200px
+    this.style.height = newHeight + 'px';
+    
+    // Update input area height for proper layout
+    const inputArea = document.getElementById('input-area');
+    if (inputArea) {
+        // Adjust the input area height based on the new textarea height
+        const heightDifference = newHeight - 44; // 44px is the original height
+        if (heightDifference > 0) {
+            inputArea.style.height = (46 + heightDifference) + 'px'; // 46px is the original input area height
+        } else {
+            inputArea.style.height = '46px';
+        }
+    }
 });
 
 // Update handleApiKeySave function
