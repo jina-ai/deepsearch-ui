@@ -263,7 +263,7 @@ a {
     -o-backdrop-filter: blur(20px);
     z-index: 99;
     border-bottom: 1px solid var(--bg-color-200);
-    height: 46px;
+    min-height: 46px; /* Use min-height instead of fixed height */
 }
 
 #thinking-animation-icon {
@@ -282,6 +282,7 @@ a {
     background: unset;
     height: auto; /* Modified: Allow height to adjust in empty state */
     top: -10%;
+    min-height: unset; /* Reset min-height for empty chat */
 }
 
 /* Adjust input width when chat is empty */
@@ -305,8 +306,9 @@ a {
 #message-input {
     width: 600px;
     max-width: 80vw;
-    height: 44px;
-    padding: 0 16px 0 48px; /* Added left padding for icon */
+    min-height: 44px;
+    max-height: 200px; /* Maximum height constraint */
+    padding: 0 16px 0 48px; /* Keep original input padding */
     border: 1px solid var(--bg-color-200);
     border-radius: 24px;
     background-color: var(--bg-color);
@@ -315,7 +317,11 @@ a {
     background-position: 16px center;
     color: var(--text-color);
     font-size: var(--subtitle-size);
-    transition: box-shadow 0.2s;
+    transition: box-shadow 0.2s, height 0.2s;
+    resize: none; /* Disable manual resizing */
+    overflow-y: hidden; /* Hide scrollbar until max height is reached */
+    line-height: 44px; /* Match the original input height for single line */
+    font-family: 'Roboto', Arial, sans-serif; /* Match body font */
 }
 
 [data-theme="dark"] #message-input {

@@ -766,6 +766,18 @@ loadAndDisplaySavedMessages();
 // Initialize empty state
 updateEmptyState();
 
+// Initialize textarea height
+if (messageInput) {
+    // Set initial styling for single line appearance
+    messageInput.style.lineHeight = '44px';
+    messageInput.style.padding = '0 16px 0 48px';
+    messageInput.style.overflowY = 'hidden';
+    
+    // Trigger the input event to set initial height
+    const inputEvent = new Event('input', { bubbles: true });
+    messageInput.dispatchEvent(inputEvent);
+}
+
 // Settings functionality
 function initializeSettings() {
     // Initialize search bar position
@@ -818,7 +830,8 @@ initializeSettings();
 sendButton.addEventListener('click', sendMessage);
 clearButton.addEventListener('click', clearMessages);
 messageInput.addEventListener('keydown', (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault(); // Prevent default newline
         sendMessage();
     }
 });
@@ -891,6 +904,27 @@ dialogCloseBtns.forEach(btn => {
 // Update help button click handler
 helpButton.addEventListener('click', () => {
     helpDialog.classList.add('visible');
+});
+
+// Auto-resize textarea based on content
+messageInput.addEventListener('input', function() {
+    // Reset height to auto to get the correct scrollHeight
+    this.style.height = '44px'; // Reset to original height
+    
+    // Calculate new height based on scrollHeight
+    const newHeight = Math.min(this.scrollHeight, 200); // Max height: 200px
+    
+    // Only show scrollbar when max height is reached
+    this.style.overflowY = newHeight >= 200 ? 'auto' : 'hidden';
+    
+    // Set the new height
+    this.style.height = newHeight + 'px';
+    
+    // Adjust line-height based on content
+    this.style.lineHeight = this.value.includes('\n') ? '1.0' : '44px';
+    
+    // Update padding based on content
+    this.style.padding = this.value.includes('\n') ? '12px 16px 12px 48px' : '0 16px 0 48px';
 });
 
 // Update handleApiKeySave function
