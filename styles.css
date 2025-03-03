@@ -200,6 +200,9 @@ textarea::placeholder {
     max-width: 868px;
     width: calc(100% - 40px);
     margin: 0 auto;
+    position: sticky;
+    bottom: 0;
+    padding-top: env(safe-area-inset-bottom);
 }
 
 #thinking-animation-icon {
