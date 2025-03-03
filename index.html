@@ -39,45 +39,7 @@
 
 <body>
 <div id="chat-app" class="empty-chat">
-    <div id="input-area">
-        <svg id="logo" viewBox="0 0 240 100" xmlns="http://www.w3.org/2000/svg">
-            <circle fill="#E85F5F" cx="16" cy="84" r="16"/>
-            <circle fill="#F9C964" cx="100" cy="16" r="16"/>
-            <path fill="#008F8F"
-                  d="M64 36c2.2 0 4 1.8 4 4v28c0 16.6-13.4 30-30 30h-2V68 40c0-2.2 1.8-4 4-4h24zm48 0c2.2 0 4 1.8 4 4v40c0 2.2-1.8 4-4 4H88c-2.2 0-4-1.8-4-4V40c0-2.2 1.8-4 4-4h24zm36 0h2c16 0 28 12 28 28v16c0 2.2-1.8 4-4 4h-38c-2.2 0-4-1.8-4-4V40c0-2.2 1.8-4 4-4h12zm64 48c-12.8-0.8-22-11.2-22-24 0-13.2 10.8-24 24-24 12.8 0 23.2 9.2 24 22v22c0 2.2-1.8 4-4 4h-22z"/>
-        </svg>
-        <svg id="small-logo" viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
-            <g transform="translate(49, 56)">
-                <circle fill="#E85F5F" cx="52" cy="155" r="52"/>
-                <path fill="#008F8F" d="M207 0c7 0 13 6 13 13v90c0 54-43 98-97 98h-6V13c0-7 6-13 13-13h77z"/>
-            </g>
-        </svg>
-        <input type="search" id="message-input" maxlength="2000"
-               autocomplete="off" autocapitalize="off" spellcheck="false" data-form-type="other"
-               placeholder="Type your question here"
-               aria-label="Search query input"
-               enterkeyhint="search"
-               autofocus
-        />
-        <button id="send-button" aria-label="Deep Search">Deep Search</button>
-        <button id="clear-button" aria-label="Clear search">
-            <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                 aria-hidden="true">
-                <polyline points="3 6 5 6 21 6"></polyline>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                <line x1="10" y1="11" x2="10" y2="17"></line>
-                <line x1="14" y1="11" x2="14" y2="17"></line>
-            </svg>
-            <span class="sr-only">Clear</span>
-        </button>
-    </div>
-
-    <main id="main-container">
-        <div id="chat-container"></div>
-    </main>
-
-    <div class="footer">
+    <div id="settings-container">
         <div class="buttons-group">
             <!-- Fixed: Added descriptive text and aria-label -->
             <button id="help-button" aria-label="Help information">
@@ -99,10 +61,8 @@
                 </svg>
                 <span class="sr-only">Settings</span>
             </button>
-
-
         </div>
-        <div class="footer-text">
+        <div class="settings-text">
             <button id="toggle-api-key" class="icon-button" aria-label="Upgrade to higher rate limit">
                 <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -113,6 +73,39 @@
             </button>
         </div>
     </div>
+
+    <main id="main-container">
+        <div id="chat-container"></div>
+    </main>
+
+    <form id="input-area">
+        <svg id="logo" viewBox="0 0 240 100" xmlns="http://www.w3.org/2000/svg">
+            <circle fill="#E85F5F" cx="16" cy="84" r="16"/>
+            <circle fill="#F9C964" cx="100" cy="16" r="16"/>
+            <path fill="#008F8F"
+                  d="M64 36c2.2 0 4 1.8 4 4v28c0 16.6-13.4 30-30 30h-2V68 40c0-2.2 1.8-4 4-4h24zm48 0c2.2 0 4 1.8 4 4v40c0 2.2-1.8 4-4 4H88c-2.2 0-4-1.8-4-4V40c0-2.2 1.8-4 4-4h24zm36 0h2c16 0 28 12 28 28v16c0 2.2-1.8 4-4 4h-38c-2.2 0-4-1.8-4-4V40c0-2.2 1.8-4 4-4h12zm64 48c-12.8-0.8-22-11.2-22-24 0-13.2 10.8-24 24-24 12.8 0 23.2 9.2 24 22v22c0 2.2-1.8 4-4 4h-22z"/>
+        </svg>
+        <textarea type="search" id="message-input" maxlength="2000"
+               autocomplete="off" autocapitalize="off" spellcheck="false" data-form-type="other"
+               placeholder="Type your question here"
+               aria-label="Search query input"
+               enterkeyhint="search"
+               rows="1"
+               autofocus
+        ></textarea>
+        <button id="send-button" aria-label="Deep Search">Deep Search</button>
+        <button id="clear-button" aria-label="Clear search">
+            <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+            <span class="sr-only">Clear</span>
+        </button>
+    </form>
 </div>
 
 <!-- Add the dialog HTML -->

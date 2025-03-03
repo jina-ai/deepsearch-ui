@@ -465,6 +465,7 @@ async function sendMessage() {
     displayMessage('user', query);
     existingMessages.push({role: 'user', content: query});
     messageInput.value = '';
+    messageInput.style.height = 'auto';
     // To clear the badge
     clearFaviconBadge();
     // Save messages to localStorage
@@ -818,9 +819,15 @@ initializeSettings();
 sendButton.addEventListener('click', sendMessage);
 clearButton.addEventListener('click', clearMessages);
 messageInput.addEventListener('keydown', (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
         sendMessage();
     }
+});
+
+messageInput.addEventListener('input', () => {
+    messageInput.style.height = 'auto';
+    messageInput.style.height = `${messageInput.scrollHeight - 28}px`;
 });
 
 // Close dialogs when clicking outside

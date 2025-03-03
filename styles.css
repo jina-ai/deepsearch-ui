@@ -40,64 +40,6 @@ body {
     color: var(--text-color);
 }
 
-#chat-app {
-    position: relative;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-/* Modified: Use flex and proper padding instead of manual calculations */
-#main-container {
-    flex: 1;
-    width: 100%;
-    overflow-y: auto;
-    padding-top: 86px; /* Height of input area */
-    padding-bottom: 54px; /* Height of footer */
-}
-
-/* Center layout when chat is empty */
-#chat-app.empty-chat {
-    justify-content: center;
-}
-
-#chat-app.empty-chat #main-container {
-    display: none;
-}
-
-header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Center logo when chat is empty */
-#chat-app.empty-chat #logo {
-    margin: 0 auto;
-    width: 150px;
-}
-
-#logo {
-    width: 75px;
-    height: auto;
-    margin-right: 20px;
-    display: flex;
-    align-items: center;
-}
-
-#small-logo {
-    display: none;
-    width: 24px;
-    height: 24px;
-}
-
-[data-theme="dark"] #logo circle,
-[data-theme="dark"] #logo path,
-[data-theme="dark"] #small-logo circle,
-[data-theme="dark"] #small-logo path {
-    fill: #ffffff;
-}
-
 button {
     padding: 0 16px;
     height: 44px;
@@ -112,12 +54,8 @@ button {
     text-decoration: none;
     display: flex;
     align-items: center;
-}
-
-.buttons-container {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 button:hover {
@@ -130,12 +68,71 @@ button:focus {
     outline: none;
 }
 
+a {
+    text-decoration: none;
+}
+
+textarea::placeholder {
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: var(--subtitle-size);
+    color: var(--text-secondary);
+}
+
+.action-icon {
+    color: var(--text-secondary);
+}
+
+.link-button {
+    text-decoration: none;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+
+#chat-app {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Modified: Use flex and proper padding instead of manual calculations */
+#main-container {
+    flex: 1;
+    width: 100%;
+    overflow-y: auto;
+}
+
+#chat-app.empty-chat #main-container {
+    display: none;
+}
+
+#logo {
+    width: 75px;
+    height: auto;
+    margin-right: 20px;
+    align-items: center;
+    display: none;
+}
+
+/* Center logo when chat is empty */
+#chat-app.empty-chat #logo {
+    margin: 0 auto;
+    width: 150px;
+    display: flex;
+}
+
+[data-theme="dark"] #logo circle,
+[data-theme="dark"] #logo path {
+    fill: #ffffff;
+}
+
 /* Modified: Added explicit height for calculations */
-.footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+#settings-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -143,11 +140,11 @@ button:focus {
     padding: 5px 10px;
     z-index: 1000;
     height: 44px;
+    border-top: none;
 }
 
-
 #clear-button,
-.footer button,
+#settings-container button,
 .buttons-container button {
     background-color: unset;
     backdrop-filter: blur(20px);
@@ -158,26 +155,13 @@ button:focus {
 
 #clear-button:hover,
 .buttons-container button:hover,
-.footer button:hover {
+#settings-container button:hover {
     background-color: var(--bg-color-100);
 }
 
-.footer .buttons-group {
+#settings-container .buttons-group {
     display: flex;
 }
-
-.action-icon {
-    color: var(--text-secondary);
-}
-
-a {
-    text-decoration: none;
-}
-
-.link-button {
-    text-decoration: none;
-}
-
 
 #chat-container {
     flex-grow: 1;
@@ -185,59 +169,7 @@ a {
     min-height: 50px; /* Ensure container has height even when empty */
     padding: 20px;
     max-width: 868px;
-    margin-left: 105px;
-}
-
-/* Media query for smaller screens */
-@media (max-width: 868px) {
-    #chat-container {
-        margin-left: auto;
-        margin-right: auto;
-    }
-}
-
-
-
-/* Modified: Updated mobile styles to adjust main container padding */
-@media (max-width: 768px) {
-    #logo {
-        width: 50px;
-        margin: unset;
-    }
-
-    #chat-app:not(.empty-chat) #logo {
-        display: none;
-    }
-
-    /*#chat-app:not(.empty-chat) #small-logo {*/
-    /*    display: flex;*/
-    /*    align-items: center;*/
-    /*    flex-shrink: 0;*/
-    /*}*/
-    #chat-app:not(.empty-chat) #input-area {
-        top: unset;
-        bottom: 0;
-        border-top: 1px solid var(--bg-color-200);
-        border-bottom: none;
-        gap: 5px;
-    }
-
-
-    #chat-app:not(.empty-chat) .footer {
-        bottom: unset;
-        top: 0;
-        border-top: none;
-    }
-
-    /* Added: Adjust main container padding for swapped elements */
-    #chat-app:not(.empty-chat) #main-container {
-        padding-top: 54px; /* Now the footer height */
-        padding-bottom: 86px; /* Now the input area height */
-    }
-
-    #chat-app:not(.empty-chat) #message-input {
-        max-width: 100%;
-    }
+    margin: 0 auto;
 }
 
 /* Remove margin when empty */
@@ -249,21 +181,21 @@ a {
 
 /* Modified: Added explicit height for calculations */
 #input-area {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
     padding: 20px;
     align-items: center;
     display: flex;
-    gap: 10px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     -moz-backdrop-filter: blur(20px);
     -o-backdrop-filter: blur(20px);
     z-index: 99;
-    border-bottom: 1px solid var(--bg-color-200);
-    height: 46px;
+    gap: 5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 868px;
+    width: calc(100% - 40px);
+    margin: 0 auto;
 }
 
 #thinking-animation-icon {
@@ -282,6 +214,8 @@ a {
     background: unset;
     height: auto; /* Modified: Allow height to adjust in empty state */
     top: -10%;
+    margin: auto;
+    max-width: 600px;
 }
 
 /* Adjust input width when chat is empty */
@@ -303,23 +237,40 @@ a {
 }
 
 #message-input {
-    width: 600px;
-    max-width: 80vw;
-    height: 44px;
-    padding: 0 16px 0 48px; /* Added left padding for icon */
+    width: calc(100% - 40px);
+    resize: none;
+    max-height: 40vh;
+    height: auto;
     border: 1px solid var(--bg-color-200);
     border-radius: 24px;
     background-color: var(--bg-color);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-search'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: 16px center;
+    padding-left: 48px;
+    padding-top: 14px;
+    padding-bottom: 14px;
     color: var(--text-color);
     font-size: var(--subtitle-size);
+    font-family: 'Roboto', Arial, sans-serif;
     transition: box-shadow 0.2s;
+    overflow-y: auto;
 }
 
 [data-theme="dark"] #message-input {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23969ba1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-search'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+}
+
+#chat-app:not(.empty-chat) {
+    #message-input {
+        background-size: 24px;
+        background-position: top 12px left 16px; 
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(49, 56)'%3E%3Ccircle fill='%23E85F5F' cx='52' cy='155' r='52'/%3E%3Cpath fill='%23008F8F' d='M207 0c7 0 13 6 13 13v90c0 54-43 98-97 98h-6V13c0-7 6-13 13-13h77z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    [data-theme="dark"] #message-input {
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(49, 56)'%3E%3Ccircle fill='%23FFFFFF' cx='52' cy='155' r='52'/%3E%3Cpath fill='%23FFFFFF' d='M207 0c7 0 13 6 13 13v90c0 54-43 98-97 98h-6V13c0-7 6-13 13-13h77z'/%3E%3C/g%3E%3C/svg%3E");
+    }
 }
 
 #message-input:focus {
@@ -765,18 +716,6 @@ ol.footnotes-list {
     margin-left: 1em;
 }
 
-body {
-    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-#input-area {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-
 /* Message appearance animation */
 .message {
     animation: messageAppear 0.3s cubic-bezier(0.0, 0.0, 0.2, 1);
@@ -819,7 +758,7 @@ button,
 .action-icon,
 .think-section,
 .think-header,
-.footer a,
+#settings-container a,
 .message {
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -882,40 +821,11 @@ button,
     border-width: 0;
 }
 
-/* Bottom search bar layout */
-body.search-bar-bottom #input-area {
-    top: unset;
-    bottom: 0;
-    /*border-top: 1px solid var(--bg-color-200);*/
-    border-bottom: none;
-    z-index: 10;
-}
-
-body.search-bar-bottom .footer {
-    bottom: unset;
-    top: 0;
-    border-top: none;
-    z-index: 10;
-}
-
-body.search-bar-bottom #main-container {
-    padding-top: 54px;
-    padding-bottom: 86px;
-    position: relative;
-    z-index: 5;
-}
-
 /* Toggle switch styles */
 .settings-option {
     display: flex;
     align-items: center;
     margin: 12px 0;
-}
-
-@media (max-width: 768px) {
-    .settings-option.search-bar-bottom {
-        display: none;
-    }
 }
 
 .toggle-switch {
@@ -985,4 +895,32 @@ input:checked + .toggle-slider:before {
 .footnote-highlight {
     animation: highlightFootnote 2s ease-out;
     border-radius: 5px;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 868px) {
+    #chat-container {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* Modified: Updated mobile styles to adjust main container padding */
+@media (max-width: 768px) {
+    #logo {
+        width: 50px;
+        margin: unset;
+    }
+
+    #chat-app:not(.empty-chat) #input-area {
+        top: unset;
+        bottom: 0;
+        border-top: 1px solid var(--bg-color-200);
+        border-bottom: none;
+        gap: 5px;
+    }
+
+    .settings-option.search-bar-bottom {
+        display: none;
+    }
 }
