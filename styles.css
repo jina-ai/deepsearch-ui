@@ -202,7 +202,7 @@ textarea::placeholder {
     margin: 0 auto;
     position: sticky;
     bottom: 0;
-    padding-top: env(safe-area-inset-bottom);
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
 }
 
 #thinking-animation-icon {
