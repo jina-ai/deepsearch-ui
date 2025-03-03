@@ -400,6 +400,12 @@ function renderMarkdown(content, returnElement = false, visitedURLs = []) {
         const rendered = md.render(content);
         tempDiv.innerHTML = rendered;
 
+        const footnoteAnchors = tempDiv.querySelectorAll('.footnote-ref a');
+        footnoteAnchors.forEach(a => {
+            const text = a.textContent.replace(/[\[\]]/g, '');
+            a.textContent = text;
+        });
+
         const footnotes = tempDiv.querySelector('.footnotes');
         const footnoteContent = footnotes ? footnotes.innerHTML : '';
 
@@ -659,7 +665,7 @@ async function sendMessage() {
                 markdownDiv.replaceChildren(markdown);
                 const copyButton = createCopyButton(markdownContent);
                 assistantMessageDiv.appendChild(copyButton);
-                
+
                 existingMessages.push({
                     role: 'assistant',
                     content: markdownContent,
@@ -714,35 +720,35 @@ async function sendMessage() {
 // Load and display saved messages
 function loadAndDisplaySavedMessages() {
     existingMessages = loadChatMessages();
-    
+
     if (existingMessages.length > 0) {
         // Display saved messages
         existingMessages.forEach(message => {
             const messageDiv = displayMessage(message.role, message.content);
-            
+
             if (message.role === 'assistant') {
                 // Remove loading indicator
                 removeLoadingIndicator(messageDiv);
-                
+
                 // Create markdown div
                 const markdownDiv = document.createElement('div');
                 markdownDiv.classList.add('markdown');
                 messageDiv.appendChild(markdownDiv);
-                
+
                 // Render markdown content
                 const markdown = renderMarkdown(message.content, true);
                 markdownDiv.replaceChildren(markdown);
-                
+
                 // Add copy button
                 const copyButton = createCopyButton(message.content);
                 messageDiv.appendChild(copyButton);
-                
+
                 // Check for think content
                 if (message.think) {
                     const thinkSectionElement = createThinkSection(messageDiv);
                     const thinkContentElement = thinkSectionElement.querySelector('.think-content');
                     thinkContentElement.textContent = message.think;
-                    
+
                     const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
                     if (thinkHeaderElement) {
                         thinkHeaderElement.textContent = UI_STRINGS.think.toggle;
@@ -754,7 +760,7 @@ function loadAndDisplaySavedMessages() {
             }
         });
         makeAllLinksOpenInNewTab();
-    
+
         // Scroll to bottom
         scrollToBottom();
     }

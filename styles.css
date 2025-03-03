@@ -270,7 +270,7 @@ textarea::placeholder {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(49, 56)'%3E%3Ccircle fill='%23E85F5F' cx='52' cy='155' r='52'/%3E%3Cpath fill='%23008F8F' d='M207 0c7 0 13 6 13 13v90c0 54-43 98-97 98h-6V13c0-7 6-13 13-13h77z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
- [data-theme="dark"] #chat-app:not(.empty-chat) #message-input {
+[data-theme="dark"] #chat-app:not(.empty-chat) #message-input {
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 320 320' xmlns='http://www.w3.org/2000/svg'%3E%3Cg transform='translate(49, 56)'%3E%3Ccircle fill='%23FFFFFF' cx='52' cy='155' r='52'/%3E%3Cpath fill='%23FFFFFF' d='M207 0c7 0 13 6 13 13v90c0 54-43 98-97 98h-6V13c0-7 6-13 13-13h77z'/%3E%3C/g%3E%3C/svg%3E");
 }
 
@@ -912,4 +912,30 @@ input:checked + .toggle-slider:before {
         border-bottom: none;
         gap: 5px;
     }
+}
+
+.footnote-ref a {
+    display: inline-flex;
+    align-items: center;          /* Vertical centering */
+    justify-content: center;      /* Horizontal centering */
+    width: 1rem;
+    height: 1rem;
+    background-color: var(--bg-color-100);
+    color: var(--primary);
+    text-decoration: none;
+    border-radius: 50%;
+    font-size: 0.8em;
+    line-height: 1;               /* Ensures consistent height */
+    padding: 0;                   /* Removes any padding that might affect centering */
+    text-align: center;           /* Additional horizontal centering */
+    vertical-align: middle;       /* Additional vertical alignment */
+}
+
+.footnote-ref a:hover {
+    background-color: var(--bg-color-200);
+    text-decoration: none;
+}
+
+.footnote-ref a:hover::after {
+    width: 0;
 }
