@@ -19,3 +19,4 @@ if (typeof window !== 'undefined') {
 
 // Export for app.js
 window.initializeAppearance = initializeAppearance;
+window.getCurrentColorScheme = getCurrentColorScheme;

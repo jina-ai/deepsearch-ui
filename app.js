@@ -775,7 +775,7 @@ function initializeSettings() {
     document.body.classList.toggle('search-bar-bottom', isSearchBarBottom);
 
     // Initialize theme
-    const savedTheme = localStorage.getItem('theme') || getCurrentColorScheme();
+    const savedTheme = localStorage.getItem('theme') || (window.getCurrentColorScheme && getCurrentColorScheme());
     const themeToggleInput = document.getElementById('theme-toggle-input');
     themeToggleInput.checked = savedTheme === 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
