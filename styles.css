@@ -34,7 +34,9 @@
 body {
     font-family: 'Roboto', Arial, sans-serif;
     margin: 0;
-    height: 100vh;
+    height: -webkit-fill-available; /* For Safari on iOS */
+    height: 100vh; /* Fallback */
+    height: stretch; /* Standardized property */
     overflow: hidden;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -136,11 +138,14 @@ textarea::placeholder {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    position: sticky;
+    top: 0;
     gap: 10px;
     padding: 5px 10px;
     z-index: 1000;
     height: 44px;
     border-top: none;
+    padding-top: env(safe-area-inset-top);
 }
 
 
