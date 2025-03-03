@@ -878,6 +878,29 @@ input:checked + .toggle-slider:before {
     font-size: var(--body-size);
 }
 
+.settings-label {
+    color: var(--text-color);
+    font-size: var(--body-size);
+    margin-right: 12px;
+}
+
+.settings-select {
+    padding: 8px 12px;
+    border: 1px solid var(--bg-color-200);
+    border-radius: 4px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: var(--body-size);
+    cursor: pointer;
+    outline: none;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.settings-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 1px 6px var(--input-focus-shadow);
+}
+
 @keyframes highlightFootnote {
     0% {
         background-color: transparent;

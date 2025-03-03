@@ -1,25 +1,108 @@
-const UI_STRINGS = {
-    buttons: {
-        send: 'Deep Search',
-        clear: 'Clear',
-        addKey: 'Upgrade',
-        updateKey: 'Update Key',
-        getKey: 'Get API Key',
-        saveKey: 'Save',
-        purchase: 'Purchase More Tokens',
-        copy: 'Copy',
-        copied: '✓ Copied!'
-    },
-    think: {
-        initial: 'Thinking...',
-        toggle: 'Thoughts',
-        loading: 'Loading...'
-    },
-    errors: {
-        invalidKey: 'Invalid API key. Please update your key by click the button below".',
-        insufficientTokens: 'Insufficient tokens in your API key. Please purchase more tokens or swap to another key.',
-        rateLimit: 'You have reached the rate limit. Please try again later. You can also upgrade to a higher plan by clicking the button below.'
+// Load i18n translations
+let i18n = {};
+let currentLanguage = 'en';
+
+// Function to load i18n translations
+async function loadTranslations() {
+  try {
+    const response = await fetch('i18n.json');
+    i18n = await response.json();
+    applyTranslations();
+  } catch (error) {
+    console.error('Error loading translations:', error);
+  }
+}
+
+// Function to get translation for a key
+function t(key) {
+  const keys = key.split('.');
+  let value = i18n[currentLanguage];
+  
+  for (const k of keys) {
+    if (value && value[k]) {
+      value = value[k];
+    } else {
+      // Fallback to English if translation not found
+      let fallback = i18n['en'];
+      for (const k of keys) {
+        if (fallback && fallback[k]) {
+          fallback = fallback[k];
+        } else {
+          return key; // Return the key if no translation found
+        }
+      }
+      return fallback;
     }
+  }
+  
+  return value;
+}
+
+// Function to apply translations to the UI
+function applyTranslations() {
+  // Update document title and meta tags
+  document.title = t('title');
+  document.querySelector('meta[name="title"]').content = t('title');
+  document.querySelector('meta[name="description"]').content = t('description');
+  document.querySelector('meta[property="og:title"]').content = t('title');
+  document.querySelector('meta[property="og:description"]').content = t('description');
+  document.querySelector('meta[property="twitter:title"]').content = t('title');
+  document.querySelector('meta[property="twitter:description"]').content = t('description');
+  
+  // Update UI elements
+  document.querySelector('#settings-button .sr-only').textContent = t('buttons.settings');
+  document.querySelector('#new-chat-button span').textContent = t('buttons.new');
+  document.querySelector('#toggle-api-key span').textContent = t('buttons.upgrade');
+  document.querySelector('#help-button .sr-only').textContent = t('buttons.help');
+  document.querySelector('#message-input').placeholder = t('placeholders.messageInput');
+  document.querySelector('#send-button').textContent = t('buttons.send');
+  
+  // Update dialog elements
+  document.querySelector('#api-key-dialog-title').textContent = t('dialogs.apiKey.title');
+  document.querySelector('#free-user-rpm').innerHTML = t('dialogs.apiKey.freeUserRpm');
+  document.querySelector('.dialog-description').textContent = t('dialogs.apiKey.description');
+  document.querySelector('#api-key-input').placeholder = t('placeholders.apiKeyInput');
+  document.querySelector('#get-api-key button').textContent = t('buttons.getKey');
+  document.querySelector('#save-api-key').textContent = t('buttons.saveKey');
+  
+  document.querySelector('#help-dialog-title').textContent = t('dialogs.help.title');
+  const helpList = document.querySelector('.help-list');
+  helpList.innerHTML = '';
+  t('dialogs.help.list').forEach(item => {
+    const li = document.createElement('li');
+    li.innerHTML = item;
+    helpList.appendChild(li);
+  });
+  document.querySelector('#contact-us').textContent = t('buttons.contactUs');
+  
+  document.querySelector('#settings-dialog-title').textContent = t('dialogs.settings.title');
+  document.querySelector('.toggle-label').textContent = t('dialogs.settings.darkTheme');
+  document.querySelector('.settings-label').textContent = t('dialogs.settings.language');
+}
+
+// Initialize UI_STRINGS with translations
+const UI_STRINGS = {
+  buttons: {
+    send: () => t('buttons.send'),
+    clear: () => t('buttons.clear'),
+    addKey: () => t('buttons.addKey'),
+    updateKey: () => t('buttons.updateKey'),
+    getKey: () => t('buttons.getKey'),
+    saveKey: () => t('buttons.saveKey'),
+    purchase: () => t('buttons.purchase'),
+    copy: () => t('buttons.copy'),
+    copied: () => t('buttons.copied')
+  },
+  think: {
+    initial: () => t('think.initial'),
+    toggle: () => t('think.toggle'),
+    loading: () => t('think.loading')
+  },
+  errors: {
+    invalidKey: () => t('errors.invalidKey'),
+    insufficientTokens: () => t('errors.insufficientTokens'),
+    rateLimit: () => t('errors.rateLimit')
+  }
 };
 
 // DOM Elements - grouped at the top for better organization
@@ -778,6 +861,11 @@ function initializeSettings() {
     const themeToggleInput = document.getElementById('theme-toggle-input');
     themeToggleInput.checked = savedTheme === 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Initialize language
+    currentLanguage = localStorage.getItem('language') || (window.getBrowserLanguage && getBrowserLanguage()) || 'en';
+    const languageSelect = document.getElementById('language-select');
+    languageSelect.value = currentLanguage;
 }
 
 settingsButton.addEventListener('click', () => {
@@ -802,6 +890,15 @@ themeToggleInput.addEventListener('change', (e) => {
     if (hlThemeElement) {
         hlThemeElement.href = `third-party/${hlTheme}.min.css`;
     }
+});
+
+const languageSelect = document.getElementById('language-select');
+languageSelect.addEventListener('change', (e) => {
+    const language = e.target.value;
+    localStorage.setItem('language', language);
+    document.documentElement.setAttribute('data-language', language);
+    currentLanguage = language;
+    applyTranslations();
 });
 
 // Initialize settings on load
@@ -836,8 +933,10 @@ messageInput.addEventListener('input', () => {
 });
 
 
-// URL Parameter handling
-document.addEventListener('DOMContentLoaded', () => {
+// Load translations and handle URL parameters
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadTranslations();
+    
     const urlParams = new URLSearchParams(window.location.search);
     const queryParam = urlParams.get('q');
 
