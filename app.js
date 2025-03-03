@@ -789,6 +789,11 @@ function initializeSettings() {
     const themeToggleInput = document.getElementById('theme-toggle-input');
     themeToggleInput.checked = savedTheme === 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
+    
+    // Initialize chirp on done setting (default to true)
+    const chirpOnDone = localStorage.getItem('chirp_on_done') !== 'false';
+    const chirpOnDoneToggleInput = document.getElementById('chirp-on-done-toggle-input');
+    chirpOnDoneToggleInput.checked = chirpOnDone;
 }
 
 settingsButton.addEventListener('click', () => {
@@ -813,6 +818,12 @@ themeToggleInput.addEventListener('change', (e) => {
     if (hlThemeElement) {
         hlThemeElement.href = `third-party/${hlTheme}.min.css`;
     }
+});
+
+const chirpOnDoneToggleInput = document.getElementById('chirp-on-done-toggle-input');
+chirpOnDoneToggleInput.addEventListener('change', (e) => {
+    const chirpOnDone = e.target.checked;
+    localStorage.setItem('chirp_on_done', chirpOnDone);
 });
 
 // Initialize settings on load
@@ -963,8 +974,9 @@ function clearFaviconBadge() {
 
 
 function playNotificationSound() {
-    if (document.visibilityState === 'visible') {
-        // dont play sound if the tab is already visible
+    const chirpOnDone = localStorage.getItem('chirp_on_done') !== 'false';
+    if (document.visibilityState === 'visible' || chirpOnDone === false) {
+        // dont play sound if the tab is already visible or chirp on done is disabled
         return;
     }
     // Create audio context
