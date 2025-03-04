@@ -862,16 +862,13 @@ messageInput.addEventListener('input', () => {
 
 
 // URL Parameter handling
-document.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const queryParam = urlParams.get('q');
-
+function handleURLParams (queryParam) {
     if (queryParam && messageInput) {
         messageInput.value = decodeURIComponent(queryParam);
         clearMessages();
         sendMessage();
     }
-});
+};
 
 let autoScrollEnabled = true; // Flag to track auto-scroll state
 // Auto-scroll setup
@@ -1068,31 +1065,63 @@ document.getElementById('chat-container').addEventListener('click', handleFootno
 
 function ensureHljsLoaded() {
     return new Promise((resolve) => {
+        // If HLJS is already loaded, resolve immediately
         if (window.hljs) {
             resolve();
-        } else {
-            // Create a small interval to check if hljs has loaded
-            const checkInterval = setInterval(() => {
-                if (window.hljs) {
-                    clearInterval(checkInterval);
-                    resolve();
-                    console.log('loaded!')
-                }
-            }, 50);
-
-            // Add a timeout in case it never loads
-            setTimeout(() => {
-                clearInterval(checkInterval);
-                resolve(); // Resolve anyway after 5 seconds
-            }, 2500);
+            return;
         }
+        
+        // Listen for the hljs-loaded event that's dispatched in hljs.js
+        window.addEventListener('hljs-loaded', () => {
+            resolve();
+        }, { once: true });  // Use { once: true } to auto-remove the listener after it fires
+
+        // Add a timeout as a fallback in case the event never fires
+        setTimeout(() => {
+            if (!window.hljs) {
+                console.warn('HLJS did not load within the timeout period. Continuing without syntax highlighting.');
+            }
+            resolve(); // Resolve anyway after timeout to prevent blocking
+        }, 2500);
     });
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    ensureHljsLoaded().then(() => {
-        initializeMarkdown();
-        loadAndDisplaySavedMessages();
-    });
-})
+    // Initialize appearance first
+    if (window.initializeAppearance) {
+        window.initializeAppearance();
+    }
+    
+    // Check for URL parameters first to determine initialization flow
+    const urlParams = new URLSearchParams(window.location.search);
+    const initPrompt = urlParams.get('q');
+    
+    // Promise chain for initialization
+    Promise.resolve()
+        .then(() => ensureHljsLoaded())
+        .then(() => {
+            // Initialize markdown
+            try {
+                initializeMarkdown();
+            } catch (e) {
+                console.warn('Failed to initialize markdown rendering:', e);
+                // Continue without markdown rendering
+            }
+            
+            if (initPrompt) {
+                return handleURLParams(initPrompt);
+            } else {
+                return loadAndDisplaySavedMessages();
+            }
+        })
+        .catch(error => {
+            console.error('Error during application initialization:', error);
+            
+            // Attempt to render initial UI even if other features failed
+            clearMessages();
+        })
+        .finally(() => {
+            updateEmptyState();
+        });
+});

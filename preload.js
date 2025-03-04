@@ -5,7 +5,7 @@ function initializeAppearance() {
 
 // Check the current color scheme
 function getCurrentColorScheme() {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')?.matches) {
     return 'dark';
   } else {
     return 'light'; // Default is light
@@ -15,8 +15,8 @@ function getCurrentColorScheme() {
 // Execute immediately for preload
 if (typeof window !== 'undefined') {
   initializeAppearance();
-}
 
-// Export for app.js
-window.initializeAppearance = initializeAppearance;
-window.getCurrentColorScheme = getCurrentColorScheme;
+  // Export for app.js
+  window.initializeAppearance = initializeAppearance;
+  window.getCurrentColorScheme = getCurrentColorScheme;
+}
