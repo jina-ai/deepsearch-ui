@@ -388,7 +388,7 @@ function displayMessage(role, content) {
     if (role === 'assistant') {
         messageDiv.innerHTML = `<div id="loading-indicator">${loadingSvg}</div>`;
     } else {
-        messageDiv.textContent = content;
+        messageDiv.replaceChildren(renderMarkdown(content, true, [], role));
     }
 
     chatContainer.appendChild(messageDiv);
@@ -478,11 +478,12 @@ function markdownItTableWrapper(md) {
     };
 }
 
-function renderMarkdown(content, returnElement = false, visitedURLs = []) {
+function renderMarkdown(content, returnElement = false, visitedURLs = [], role = 'assistant') {
     if (!md) {
         initializeMarkdown();
     }
     const tempDiv = document.createElement('div');
+    tempDiv.classList.add('markdown-inner');
     tempDiv.innerHTML = content;
     if (md) {
         const rendered = md.render(content);
@@ -494,19 +495,26 @@ function renderMarkdown(content, returnElement = false, visitedURLs = []) {
             a.textContent = text;
         });
 
-        const footnotes = tempDiv.querySelector('.footnotes');
-        const footnoteContent = footnotes ? footnotes.innerHTML : '';
+        if (role === 'assistant') {
+            const footnotes = tempDiv.querySelector('.footnotes');
+            const footnoteContent = footnotes ? footnotes.innerHTML : '';
 
-        // Create references section if there are footnotes or visitedURLs
-        const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
-        if (referencesSection) {
-            if (footnotes) {
-                footnotes.replaceWith(referencesSection);
-            } else {
-                tempDiv.appendChild(referencesSection);
+            // Create references section if there are footnotes or visitedURLs
+            const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
+            if (referencesSection) {
+                if (footnotes) {
+                    footnotes.replaceWith(referencesSection);
+                } else {
+                    tempDiv.appendChild(referencesSection);
+                }
+            } else if (footnotes) {
+                footnotes.remove();
             }
-        } else if (footnotes) {
-            footnotes.remove();
+        } else {
+            const blockElements = tempDiv.querySelectorAll('p', 'span');
+            blockElements.forEach(el => {
+                el.innerHTML = el.innerHTML.replace(/\n/g, '<br>');
+            });
         }
     }
     return returnElement ? tempDiv : tempDiv.innerHTML;
@@ -854,7 +862,7 @@ function loadAndDisplaySavedMessages() {
                 }
             } else if (message.role === 'user') {
                 // Ensure user message content is displayed
-                messageDiv.textContent = message.content;
+                messageDiv.replaceChildren(renderMarkdown(message.content, true, [], 'user'));
             }
         });
         makeAllLinksOpenInNewTab();
@@ -958,19 +966,14 @@ messageInput.addEventListener('input', () => {
 });
 
 
-// Load translations and handle URL parameters
-document.addEventListener('DOMContentLoaded', async () => {
-    await loadTranslations();
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    const queryParam = urlParams.get('q');
-
+// URL Parameter handling
+function handleURLParams (queryParam) {
     if (queryParam && messageInput) {
         messageInput.value = decodeURIComponent(queryParam);
         clearMessages();
         sendMessage();
     }
-});
+};
 
 let autoScrollEnabled = true; // Flag to track auto-scroll state
 // Auto-scroll setup
@@ -1167,31 +1170,63 @@ document.getElementById('chat-container').addEventListener('click', handleFootno
 
 function ensureHljsLoaded() {
     return new Promise((resolve) => {
+        // If HLJS is already loaded, resolve immediately
         if (window.hljs) {
             resolve();
-        } else {
-            // Create a small interval to check if hljs has loaded
-            const checkInterval = setInterval(() => {
-                if (window.hljs) {
-                    clearInterval(checkInterval);
-                    resolve();
-                    console.log('loaded!')
-                }
-            }, 50);
-
-            // Add a timeout in case it never loads
-            setTimeout(() => {
-                clearInterval(checkInterval);
-                resolve(); // Resolve anyway after 5 seconds
-            }, 2500);
+            return;
         }
+        
+        // Listen for the hljs-loaded event that's dispatched in hljs.js
+        window.addEventListener('hljs-loaded', () => {
+            resolve();
+        }, { once: true });  // Use { once: true } to auto-remove the listener after it fires
+
+        // Add a timeout as a fallback in case the event never fires
+        setTimeout(() => {
+            if (!window.hljs) {
+                console.warn('HLJS did not load within the timeout period. Continuing without syntax highlighting.');
+            }
+            resolve(); // Resolve anyway after timeout to prevent blocking
+        }, 2500);
     });
 }
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    ensureHljsLoaded().then(() => {
-        initializeMarkdown();
-        loadAndDisplaySavedMessages();
-    });
-})
+    // Initialize appearance first
+    if (window.initializeAppearance) {
+        window.initializeAppearance();
+    }
+    
+    // Check for URL parameters first to determine initialization flow
+    const urlParams = new URLSearchParams(window.location.search);
+    const initPrompt = urlParams.get('q');
+    
+    // Promise chain for initialization
+    Promise.resolve()
+        .then(() => ensureHljsLoaded())
+        .then(() => {
+            // Initialize markdown
+            try {
+                initializeMarkdown();
+            } catch (e) {
+                console.warn('Failed to initialize markdown rendering:', e);
+                // Continue without markdown rendering
+            }
+
+            if (initPrompt) {
+                return handleURLParams(initPrompt);
+            } else {
+                return loadAndDisplaySavedMessages();
+            }
+        })
+        .catch(error => {
+            console.error('Error during application initialization:', error);
+            
+            // Attempt to render initial UI even if other features failed
+            clearMessages();
+        })
+        .finally(() => {
+            updateEmptyState();
+        });
+});

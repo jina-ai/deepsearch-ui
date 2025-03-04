@@ -5,7 +5,7 @@ function initializeAppearance() {
 
 // Check the current color scheme
 function getCurrentColorScheme() {
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')?.matches) {
     return 'dark';
   } else {
     return 'light'; // Default is light
@@ -30,10 +30,10 @@ function getBrowserLanguage() {
 if (typeof window !== 'undefined') {
   initializeAppearance();
   initializeLanguage();
-}
 
-// Export for app.js
-window.initializeAppearance = initializeAppearance;
-window.getCurrentColorScheme = getCurrentColorScheme;
-window.initializeLanguage = initializeLanguage;
-window.getBrowserLanguage = getBrowserLanguage;
+  // Export for app.js
+  window.initializeAppearance = initializeAppearance;
+  window.getCurrentColorScheme = getCurrentColorScheme;
+  window.initializeLanguage = initializeLanguage;
+  window.getBrowserLanguage = getBrowserLanguage;
+}

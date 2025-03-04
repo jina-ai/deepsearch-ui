@@ -299,14 +299,15 @@ textarea::placeholder {
     border-radius: 24px;
     line-height: 1.5;
     width: fit-content;
+    box-size: border-box;
 }
 
 .assistant-message {
-    max-width: 100%;
+    max-width: calc(100% - 32px);
 }
 
 .user-message {
-    max-width: 90%;
+    max-width: calc(90% - 32px);
     margin-left: auto;
     margin-right: 16px;
     border-top-right-radius: 4px;
@@ -592,18 +593,18 @@ table, th, td {
     border-collapse: collapse;
 }
 
-.markdown .footnotes-sep {
+.markdown-inner .footnotes-sep {
     display: none;
 }
 
-.markdown a {
+.markdown-inner a {
     color: var(--primary);
     position: relative;
     text-decoration: none;
     display: inline-block;
 }
 
-.markdown a::after {
+.markdown-inner a::after {
     content: '';
     position: absolute;
     width: 0;
@@ -614,18 +615,18 @@ table, th, td {
     transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.markdown a:hover::after {
+.markdown-inner a:hover::after {
     width: 100%;
 }
 
-.markdown .footnotes {
+.markdown-inner .footnotes {
     font-size: var(--secondary-size);
     position: relative;
     padding: 2rem;
     color: var(--text-secondary);
 }
 
-.markdown .footnotes ol {
+.markdown-inner .footnotes ol {
     padding: 0;
 }
 
@@ -633,8 +634,9 @@ ol.footnotes-list {
     padding-left: 1.5rem;
 }
 
-.markdown code {
+.markdown-inner code {
     white-space: pre-line;
+    word-break: break-word;
     font-size: var(--body-size);
     display: inline-block;
     padding: 2px 4px;
@@ -643,23 +645,38 @@ ol.footnotes-list {
     font-family: monospace;
 }
 
-.markdown pre code {
-    border-radius: 8px;
-    white-space: pre;
+.user-message .markdown-inner code {
+    color: var(--text-color);
+}
+.user-message .markdown-inner a {
+    color: var(--bg-color);
+}
+.user-message .markdown-inner a::after {
+    background-color: var(--bg-color);
+}
+.user-message .markdown-inner p {
+    margin: 0;
 }
 
-.markdown table {
+.markdown-inner pre code {
+    border-radius: 8px;
+    white-space: pre;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.markdown-inner table {
     background-color: var(--bg-color-100);
     border: 1px solid var(--bg-color-200);
     border-collapse: collapse;
 }
 
-.markdown table thead {
+.markdown-inner table thead {
     background-color: var(--bg-color-200);
 }
 
-.markdown table th,
-.markdown table td {
+.markdown-inner table th,
+.markdown-inner table td {
     padding: 4px;
 }
 
