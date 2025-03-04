@@ -636,6 +636,7 @@ ol.footnotes-list {
 
 .markdown code {
     white-space: pre-line;
+    word-break: break-word;
     font-size: var(--body-size);
     display: inline-block;
     padding: 2px 4px;
