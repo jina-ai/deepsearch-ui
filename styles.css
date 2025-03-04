@@ -261,7 +261,7 @@ textarea::placeholder {
     font-size: var(--subtitle-size);
     font-family: 'Roboto', Arial, sans-serif;
     transition: box-shadow 0.2s;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 
 [data-theme="dark"] #message-input {

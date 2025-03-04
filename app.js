@@ -1,11 +1,32 @@
 // Load i18n translations
 let i18n = {};
 let currentLanguage = 'en';
+let UI_STRINGS = {
+    buttons: {
+        send: () => 'Send',
+        addKey: () => 'Upgrade',
+        updateKey: () => 'Update Key',
+        getKey: () => 'Get API Key',
+        purchase: () => 'Purchase More Token'
+    },
+    think: {
+        initial: () => 'Thinking...',
+        toggle: () => 'Thoughts',
+    },
+    references: {
+        title: () => 'References'
+    },
+    errors: {
+        invalidKey: () => 'Invalid API key. Please update your key by click the button below.',
+        insufficientTokens: () => 'Insufficient tokens in your API key. Please purchase more tokens or swap to another key.',
+        rateLimit: () => 'You have reached the rate limit. Please try again later. You can also upgrade to a higher plan by clicking the button below.'
+    }
+};
 
 // Function to load i18n translations
 async function loadTranslations() {
   try {
-    const response = await fetch('i18n.json');
+    const response = await fetch('i18n.json1');
     i18n = await response.json();
     applyTranslations();
   } catch (error) {
@@ -14,96 +35,124 @@ async function loadTranslations() {
 }
 
 // Function to get translation for a key
-function t(key) {
-  const keys = key.split('.');
-  let value = i18n[currentLanguage];
+function t(key, replacements = {}, fallbackLanguage = 'en') {
+    const keys = key.split('.');
+    let value = i18n[currentLanguage];
   
-  for (const k of keys) {
-    if (value && value[k]) {
-      value = value[k];
-    } else {
-      // Fallback to English if translation not found
-      let fallback = i18n['en'];
-      for (const k of keys) {
-        if (fallback && fallback[k]) {
-          fallback = fallback[k];
-        } else {
-          return key; // Return the key if no translation found
+    for (const k of keys) {
+      if (value && typeof value === 'object' && value !== null && k in value) {
+        value = value[k];
+      } else if (value && Array.isArray(value) && !isNaN(parseInt(k)) && parseInt(k) >= 0 && parseInt(k) < value.length) {
+        value = value[parseInt(k)];
+      } else {
+        let fallback = i18n[fallbackLanguage];
+        if (!fallback) {
+          fallback = i18n['en']; //ultimate fallback to English
+        }
+        let fallbackValue = fallback;
+        for (const fk of keys) {
+          if (fallbackValue && typeof fallbackValue === 'object' && fallbackValue !== null && fk in fallbackValue) {
+            fallbackValue = fallbackValue[fk];
+          } else if (fallbackValue && Array.isArray(fallbackValue) && !isNaN(parseInt(fk)) && parseInt(fk) >= 0 && parseInt(fk) < fallbackValue.length) {
+            fallbackValue = fallbackValue[parseInt(fk)];
+          } else {
+            return key; // Return the key if no translation found in either language
+          }
+        }
+        value = fallbackValue;
+        break;
+      }
+    }
+  
+    // Apply replacements if provided
+    if (typeof value === 'string' && replacements) {
+      for (const replacementKey in replacements) {
+        if (replacements.hasOwnProperty(replacementKey)) {
+          const replacementValue = replacements[replacementKey];
+          const regex = new RegExp(`{{${replacementKey}}}`, 'g');
+          value = value.replace(regex, replacementValue);
         }
       }
-      return fallback;
     }
-  }
   
-  return value;
+    return value;
 }
+  
 
 // Function to apply translations to the UI
 function applyTranslations() {
-  // Update document title and meta tags
-  document.title = t('title');
-  document.querySelector('meta[name="title"]').content = t('title');
-  document.querySelector('meta[name="description"]').content = t('description');
-  document.querySelector('meta[property="og:title"]').content = t('title');
-  document.querySelector('meta[property="og:description"]').content = t('description');
-  document.querySelector('meta[property="twitter:title"]').content = t('title');
-  document.querySelector('meta[property="twitter:description"]').content = t('description');
-  
-  // Update UI elements
-  document.querySelector('#settings-button .sr-only').textContent = t('buttons.settings');
-  document.querySelector('#new-chat-button span').textContent = t('buttons.new');
-  document.querySelector('#toggle-api-key span').textContent = t('buttons.upgrade');
-  document.querySelector('#help-button .sr-only').textContent = t('buttons.help');
-  document.querySelector('#message-input').placeholder = t('placeholders.messageInput');
-  document.querySelector('#send-button').textContent = t('buttons.send');
-  
-  // Update dialog elements
-  document.querySelector('#api-key-dialog-title').textContent = t('dialogs.apiKey.title');
-  document.querySelector('#free-user-rpm').innerHTML = t('dialogs.apiKey.freeUserRpm');
-  document.querySelector('.dialog-description').textContent = t('dialogs.apiKey.description');
-  document.querySelector('#api-key-input').placeholder = t('placeholders.apiKeyInput');
-  document.querySelector('#get-api-key button').textContent = t('buttons.getKey');
-  document.querySelector('#save-api-key').textContent = t('buttons.saveKey');
-  
-  document.querySelector('#help-dialog-title').textContent = t('dialogs.help.title');
-  const helpList = document.querySelector('.help-list');
-  helpList.innerHTML = '';
-  t('dialogs.help.list').forEach(item => {
-    const li = document.createElement('li');
-    li.innerHTML = item;
-    helpList.appendChild(li);
-  });
-  document.querySelector('#contact-us').textContent = t('buttons.contactUs');
-  
-  document.querySelector('#settings-dialog-title').textContent = t('dialogs.settings.title');
-  document.querySelector('.toggle-label').textContent = t('dialogs.settings.darkTheme');
-  document.querySelector('.settings-label').textContent = t('dialogs.settings.language');
-}
 
-// Initialize UI_STRINGS with translations
-const UI_STRINGS = {
-  buttons: {
-    send: () => t('buttons.send'),
-    clear: () => t('buttons.clear'),
-    addKey: () => t('buttons.addKey'),
-    updateKey: () => t('buttons.updateKey'),
-    getKey: () => t('buttons.getKey'),
-    saveKey: () => t('buttons.saveKey'),
-    purchase: () => t('buttons.purchase'),
-    copy: () => t('buttons.copy'),
-    copied: () => t('buttons.copied')
-  },
-  think: {
-    initial: () => t('think.initial'),
-    toggle: () => t('think.toggle'),
-    loading: () => t('think.loading')
-  },
-  errors: {
-    invalidKey: () => t('errors.invalidKey'),
-    insufficientTokens: () => t('errors.insufficientTokens'),
-    rateLimit: () => t('errors.rateLimit')
-  }
-};
+    if (!i18n || !i18n[currentLanguage]) {
+        console.error('No translations found for current language:', currentLanguage);
+        return;
+    }
+
+    // Update document title and meta tags
+    document.title = t('title');
+    
+    // Update meta tags
+    const metaTags = [
+        'meta[name="title"]',
+        'meta[name="description"]',
+        'meta[property="og:title"]',
+        'meta[property="og:description"]',
+        'meta[property="twitter:title"]',
+        'meta[property="twitter:description"]'
+    ];
+    
+    metaTags.forEach(selector => {
+        const tag = document.querySelector(selector);
+        if (tag) {
+            const key = selector.includes('description') ? 'description' : 'title';
+            
+            tag.content = t(key);
+        }
+    });
+    
+    // Update all elements with data-label attributes
+    document.querySelectorAll('[data-label]').forEach(element => {
+        const labelKey = element.getAttribute('data-label');
+        const newVal = t(labelKey);
+        if (newVal !== labelKey) {
+            element.textContent = newVal;
+        }
+    });
+    
+    // Update input placeholders
+    document.querySelectorAll('[data-placeholder]').forEach(input => {
+        const placeholderKey = input.getAttribute('data-placeholder');
+        input.placeholder = t(placeholderKey);
+    });
+
+    // Update all elements with data-html attributes
+    document.querySelectorAll('[data-html]').forEach(element => {
+        const htmlKey = element.getAttribute('data-html');
+        element.innerHTML = t(htmlKey);
+    });
+
+    // Update UI_STRINGS with translations
+    UI_STRINGS = {
+        buttons: {
+          send: () => t('buttons.send'),
+          addKey: () => t('buttons.addKey'),
+          updateKey: () => t('buttons.updateKey'),
+          getKey: () => t('buttons.getKey'),
+          purchase: () => t('buttons.purchase'),
+        },
+        think: {
+          initial: () => t('think.initial'),
+          toggle: () => t('think.toggle'),
+        },
+        references: {
+          title: () => t('references.title'),
+        },
+        errors: {
+          invalidKey: () => t('errors.invalidKey'),
+          insufficientTokens: () => t('errors.insufficientTokens'),
+          rateLimit: () => t('errors.rateLimit')
+        }
+    };
+}
 
 // DOM Elements - grouped at the top for better organization
 
@@ -142,7 +191,7 @@ function initializeApiKey() {
     apiKeyInput.value = savedKey;
     getApiKeyBtn.style.display = savedKey ? 'none' : 'block';
     freeUserRPMInfo.style.display = savedKey ? 'none' : 'block';
-    toggleApiKeyBtnText.textContent = savedKey ? UI_STRINGS.buttons.updateKey : UI_STRINGS.buttons.addKey;
+    toggleApiKeyBtnText.textContent = savedKey ? UI_STRINGS.buttons.updateKey() : UI_STRINGS.buttons.addKey();
 }
 
 // Chat Message Persistence
@@ -180,7 +229,7 @@ function createReferencesSection(content, visitedURLs = []) {
     const header = document.createElement('div');
     header.classList.add('references-header');
     header.classList.add('collapsed');
-    header.textContent = 'References';
+    header.textContent = UI_STRINGS.references.title();
 
     const contentDiv = document.createElement('div');
     contentDiv.classList.add('references-content');
@@ -323,7 +372,7 @@ function createThinkSection(messageDiv) {
     thinkHeader.classList.add('think-header');
     thinkHeader.classList.add('expanded');
 
-    thinkHeader.appendChild(document.createTextNode(UI_STRINGS.think.initial));
+    thinkHeader.appendChild(document.createTextNode(UI_STRINGS.think.initial()));
     thinkSection.appendChild(thinkHeader);
 
     const thinkContent = document.createElement('div');
@@ -361,7 +410,6 @@ function createActionButton(content) {
     buttonContainer.classList.add('action-buttons-container');
     const copyButton = document.createElement('button');
     copyButton.classList.add('copy-button');
-    copyButton.innerHTML = UI_STRINGS.buttons.copy;
     const copyIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const checkIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     copyButton.innerHTML = copyIcon;
@@ -610,22 +658,22 @@ async function sendMessage() {
             switch (res.status) {
                 case 401:
                     showErrorWithAction(
-                        UI_STRINGS.errors.invalidKey,
-                        UI_STRINGS.buttons.updateKey,
+                        UI_STRINGS.errors.invalidKey(),
+                        UI_STRINGS.buttons.updateKey(),
                         () => apiKeyDialog.classList.add('visible')
                     );
                     break;
                 case 402:
                     showErrorWithAction(
-                        UI_STRINGS.errors.insufficientTokens,
-                        UI_STRINGS.buttons.purchase,
+                        UI_STRINGS.errors.insufficientTokens(),
+                        UI_STRINGS.buttons.purchase(),
                         () => window.open('https://jina.ai/api-dashboard/key-manager?login=true', '_blank')
                     );
                     break;
                 case 429:
                     showErrorWithAction(
-                        UI_STRINGS.errors.rateLimit,
-                        UI_STRINGS.buttons.addKey,
+                        UI_STRINGS.errors.rateLimit(),
+                        UI_STRINGS.buttons.addKey(),
                         () => apiKeyDialog.classList.add('visible')
                     );
                     break;
@@ -698,7 +746,7 @@ async function sendMessage() {
                                                 thinkContentElement.classList.remove('expanded');
 
                                                 if (thinkHeaderElement) {
-                                                    thinkHeaderElement.textContent = UI_STRINGS.think.toggle;
+                                                    thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
                                                     thinkHeaderElement.classList.remove('expanded');
                                                 }
                                             }
@@ -735,7 +783,7 @@ async function sendMessage() {
                                             thinkContentElement.classList.add('expanded');
 
                                             if (thinkHeaderElement) {
-                                                thinkHeaderElement.textContent = UI_STRINGS.think.initial;
+                                                thinkHeaderElement.textContent = UI_STRINGS.think.initial();
                                             }
                                             const animationElement = thinkSectionElement.querySelector('#thinking-animation');
                                             if (!animationElement) {
@@ -857,7 +905,7 @@ function loadAndDisplaySavedMessages() {
 
                     const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
                     if (thinkHeaderElement) {
-                        thinkHeaderElement.textContent = UI_STRINGS.think.toggle;
+                        thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
                     }
                 }
             } else if (message.role === 'user') {
@@ -892,7 +940,9 @@ function initializeSettings() {
     // Initialize chirp on done setting (default to true)
     const chirpOnDone = localStorage.getItem('chirp_on_done') !== 'false';
     const chirpOnDoneToggleInput = document.getElementById('chirp-on-done-toggle-input');
-    chirpOnDoneToggleInput.checked = chirpOnDone;
+    if (chirpOnDoneToggleInput) {
+        chirpOnDoneToggleInput.checked = chirpOnDone;
+    }
 }
 
 settingsButton.addEventListener('click', () => {
@@ -929,7 +979,7 @@ languageSelect.addEventListener('change', (e) => {
 });
 
 const chirpOnDoneToggleInput = document.getElementById('chirp-on-done-toggle-input');
-chirpOnDoneToggleInput.addEventListener('change', (e) => {
+chirpOnDoneToggleInput?.addEventListener('change', (e) => {
     const chirpOnDone = e.target.checked;
     localStorage.setItem('chirp_on_done', chirpOnDone);
 });
@@ -954,6 +1004,13 @@ messageForm.addEventListener('submit', (event) => {
 messageInput.addEventListener('input', () => {
     messageInput.style.height = 'auto';
     messageInput.style.height = `${messageInput.scrollHeight - 28}px`;
+    const computedStyle = window.getComputedStyle(messageInput);
+    const maxHeight = parseInt(computedStyle.maxHeight, 10);
+    if (messageInput.scrollHeight >= maxHeight) {
+        messageInput.style.overflowY = 'auto';
+    } else {
+        messageInput.style.overflowY = 'hidden';
+    }
 });
 
 // Close dialogs when clicking outside
@@ -1030,12 +1087,12 @@ function handleApiKeySave() {
         localStorage.setItem('api_key', key);
         getApiKeyBtn.style.display = 'none';
         freeUserRPMInfo.style.display = 'none';
-        toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.updateKey;
+        toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.updateKey();
     } else {
         localStorage.removeItem('api_key');
         getApiKeyBtn.style.display = 'block';
         freeUserRPMInfo.style.display = 'block';
-        toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.addKey;
+        toggleApiKeyBtnText.textContent = UI_STRINGS.buttons.addKey();
     }
     apiKeyDialog.classList.remove('visible');
 }
@@ -1204,6 +1261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Promise chain for initialization
     Promise.resolve()
+        .then(() => loadTranslations())
         .then(() => ensureHljsLoaded())
         .then(() => {
             // Initialize markdown

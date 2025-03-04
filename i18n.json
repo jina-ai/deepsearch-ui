@@ -8,20 +8,19 @@
       "upgrade": "Upgrade",
       "help": "Help",
       "send": "Deep Search",
-      "clear": "Clear",
       "addKey": "Upgrade",
       "updateKey": "Update Key",
       "getKey": "Get API Key",
       "saveKey": "Save",
       "purchase": "Purchase More Tokens",
-      "copy": "Copy",
-      "copied": "✓ Copied!",
       "contactUs": "Contact Us"
     },
     "think": {
       "initial": "Thinking...",
-      "toggle": "Thoughts",
-      "loading": "Loading..."
+      "toggle": "Thoughts"
+    },
+    "references": {
+      "title": "References"
     },
     "errors": {
       "invalidKey": "Invalid API key. Please update your key by click the button below\".",
@@ -50,7 +49,8 @@
       "settings": {
         "title": "Settings",
         "darkTheme": "Use dark theme",
-        "language": "Language"
+        "language": "Language",
+        "chirpOnDone": "Chirp on done"
       }
     }
   },
@@ -63,20 +63,19 @@
       "upgrade": "升级",
       "help": "帮助",
       "send": "深度搜索",
-      "clear": "清除",
       "addKey": "升级",
       "updateKey": "更新密钥",
       "getKey": "获取API密钥",
       "saveKey": "保存",
       "purchase": "购买更多令牌",
-      "copy": "复制",
-      "copied": "✓ 已复制！",
       "contactUs": "联系我们"
     },
     "think": {
       "initial": "思考中...",
-      "toggle": "思考过程",
-      "loading": "加载中..."
+      "toggle": "思考过程"
+    },
+    "references": {
+      "title": "参考"
     },
     "errors": {
       "invalidKey": "无效的API密钥。请点击下方按钮更新您的密钥。",
@@ -105,7 +104,8 @@
       "settings": {
         "title": "设置",
         "darkTheme": "使用深色主题",
-        "language": "语言"
+        "language": "语言",
+        "chirpOnDone": "完成后蜂鸣提醒"
       }
     }
   },
@@ -118,20 +118,19 @@
       "upgrade": "アップグレード",
       "help": "ヘルプ",
       "send": "ディープサーチ",
-      "clear": "クリア",
       "addKey": "アップグレード",
       "updateKey": "キーを更新",
       "getKey": "APIキーを取得",
       "saveKey": "保存",
       "purchase": "トークンを購入",
-      "copy": "コピー",
-      "copied": "✓ コピー済み！",
       "contactUs": "お問い合わせ"
     },
     "think": {
       "initial": "考え中...",
-      "toggle": "思考プロセス",
-      "loading": "読み込み中..."
+      "toggle": "思考プロセス"
+    },
+    "references": {
+      "title": "参考"
     },
     "errors": {
       "invalidKey": "無効なAPIキーです。下のボタンをクリックしてキーを更新してください。",
@@ -160,7 +159,8 @@
       "settings": {
         "title": "設定",
         "darkTheme": "ダークテーマを使用",
-        "language": "言語"
+        "language": "言語",
+        "chirpOnDone": "完了時にチャープ"
       }
     }
   }

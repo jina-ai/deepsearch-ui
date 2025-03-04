@@ -48,7 +48,7 @@
                     <circle cx="12" cy="12" r="3"></circle>
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                 </svg>
-                <span class="sr-only">Settings</span>
+                <span class="sr-only" data-label="buttons.settings">Settings</span>
             </button>
             <button id="new-chat-button" aria-label="New Chat" class="icon-button">
                 <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -56,7 +56,7 @@
                     <line x1="12" y1="5" x2="12" y2="19"></line>
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
-                <span>New</span>
+                <span data-label="buttons.new">New</span>
             </button>
         </div>
         <div class="buttons-group">
@@ -66,7 +66,7 @@
                      aria-hidden="true">
                     <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
                 </svg>
-                <span>Upgrade</span>
+                <span data-label="buttons.upgrade">Upgrade</span>
             </button>
             <button id="help-button" aria-label="Help information">
                 <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
@@ -76,7 +76,7 @@
                     <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
                     <line x1="12" y1="17" x2="12.01" y2="17"></line>
                 </svg>
-                <span class="sr-only">Help</span>
+                <span class="sr-only" data-label="buttons.help">Help</span>
             </button>
         </div>
     </div>
@@ -95,12 +95,13 @@
         <textarea type="search" id="message-input" maxlength="2000"
                autocomplete="off" autocapitalize="off" spellcheck="false" data-form-type="other"
                placeholder="Type your question here"
+               data-placeholder="placeholders.messageInput"
                aria-label="Search query input"
                enterkeyhint="search"
                rows="1"
                autofocus
         ></textarea>
-        <button type="submit" id="send-button" aria-label="Deep Search">Deep Search</button>
+        <button type="submit" id="send-button" aria-label="Deep Search" data-label="buttons.send">Deep Search</button>
     </form>
 </div>
 
@@ -108,20 +109,20 @@
 <div class="dialog-overlay" id="api-key-dialog" role="dialog" aria-labelledby="api-key-dialog-title" aria-modal="true">
     <div class="dialog">
         <div class="dialog-header">
-            <span class="dialog-title" id="api-key-dialog-title">Upgrade to Higher Rate Limit</span>
+            <span class="dialog-title" id="api-key-dialog-title" data-label="dialogs.apiKey.title">Upgrade to Higher Rate Limit</span>
             <button class="dialog-close" aria-label="Close dialog">&times;</button>
         </div>
         <div class="dialog-content">
-            <p id="free-user-rpm">You can send <b>3 requests per minute</b>.</p>
-            <p class="dialog-description">Use your Jina API key to access a higher rate limit. You can get a free API key and learn more about rate limits on our website.</p>
-            <input type="password" id="api-key-input" placeholder="Enter your API key" autocomplete="new-password"
+            <p id="free-user-rpm" data-html="dialogs.apiKey.freeUserRpm">You can send <b>3 requests per minute</b>.</p>
+            <p class="dialog-description" data-label="dialogs.apiKey.description">Use your Jina API key to access a higher rate limit. You can get a free API key and learn more about rate limits on our website.</p>
+            <input type="password" id="api-key-input" data-placeholder="placeholders.apiKeyInput" placeholder="Enter your API key" autocomplete="new-password"
                    aria-label="API key input">
         </div>
         <div class="dialog-footer">
             <a id="get-api-key" href="https://jina.ai/deepsearch" target="_blank">
-                <button class="link-button" aria-label="Get API Key">Get API Key</button>
+                <button class="link-button" aria-label="Get API Key" data-label="buttons.getKey">Get API Key</button>
             </a>
-            <button id="save-api-key" aria-label="Save API key">Save</button>
+            <button id="save-api-key" aria-label="Save API key" data-label="buttons.saveKey">Save</button>
         </div>
     </div>
 </div>
@@ -129,22 +130,22 @@
 <div class="dialog-overlay" id="help-dialog" role="dialog" aria-labelledby="help-dialog-title" aria-modal="true">
     <div class="dialog">
         <div class="dialog-header">
-            <span class="dialog-title" id="help-dialog-title">Enjoy Pure &amp; Deep</span>
+            <span class="dialog-title" id="help-dialog-title" data-label="dialogs.help.title">Enjoy Pure &amp; Deep</span>
             <button class="dialog-close" aria-label="Close help dialog">&times;</button>
         </div>
         <div class="dialog-content">
             <ul class="help-list">
-                <li>No ads, no login, no bullet points, no lengthy report, no nonsense design.</li>
-                <li>Free users get 3 search requests per minute. Provide an API key to get a higher rate limit.</li>
-                <li>Add to your browser's search engines via <code>https://search.jina.ai/?q={YOUR_QUERY}</code></li>
-                <li>This <i>is</i> our product, not a POC or hype-chasing gimmick. Interested in on-prem deploy? Contact
+                <li data-label="dialogs.help.list.0">No ads, no login, no bullet points, no lengthy report, no nonsense design.</li>
+                <li data-label="dialogs.help.list.1">Free users get 3 search requests per minute. Provide an API key to get a higher rate limit.</li>
+                <li data-html="dialogs.help.list.2">Add to your browser's search engines via <code>https://search.jina.ai/?q={YOUR_QUERY}</code></li>
+                <li data-html="dialogs.help.list.3">This <i>is</i> our product, not a POC or hype-chasing gimmick. Interested in on-prem deploy? Contact
                     us.
                 </li>
             </ul>
         </div>
         <div class="dialog-footer">
             <a href="https://jina.ai/contact-sales" target="_blank">
-                <button id="contact-us" class="icon-button link-button" aria-label="Contact Jina AI sales">
+                <button id="contact-us" class="icon-button link-button" aria-label="Contact Jina AI sales" data.label="buttons.contact">
                     <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                          stroke-linejoin="round" aria-hidden="true">
@@ -158,11 +159,10 @@
     </div>
 </div>
 <!-- Settings dialog -->
-<div class="dialog-overlay" id="settings-dialog" role="dialog" aria-labelledby="settings-dialog-title"
-     aria-modal="true">
+<div class="dialog-overlay" id="settings-dialog" role="dialog" aria-labelledby="settings-dialog-title" aria-modal="true">
     <div class="dialog">
         <div class="dialog-header">
-            <span class="dialog-title" id="settings-dialog-title">Settings</span>
+            <span class="dialog-title" id="settings-dialog-title" data-label="dialogs.settings.title">Settings</span>
             <button class="dialog-close" aria-label="Close settings dialog">&times;</button>
         </div>
         <div class="dialog-content">
@@ -170,18 +170,18 @@
                 <label class="toggle-switch">
                     <input type="checkbox" id="theme-toggle-input">
                     <span class="toggle-slider"></span>
-                    <span class="toggle-label">Use dark theme</span>
+                    <span class="toggle-label" data-label="dialogs.settings.darkTheme">Use dark theme</span>
                 </label>
             </div>
             <div class="settings-option">
                 <label class="toggle-switch">
                     <input type="checkbox" id="chirp-on-done-toggle-input" checked>
                     <span class="toggle-slider"></span>
-                    <span class="toggle-label">Chirp on done</span>
+                    <span class="toggle-label" data-label="dialogs.settings.chirpOnDone">Chirp on done</span>
                 </label>
             </div>
             <div class="settings-option">
-                <label for="language-select" class="settings-label">Language</label>
+                <label for="language-select" class="settings-label" data-label="dialogs.settings.language">Language</label>
                 <select id="language-select" class="settings-select">
                     <option value="en">English</option>
                     <option value="zh-CN">中文 (Chinese)</option>
