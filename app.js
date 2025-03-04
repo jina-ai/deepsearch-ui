@@ -356,9 +356,9 @@ function scrollToBottom() {
     mainContainer.scrollTop = mainContainer.scrollHeight;
 }
 
-function createCopyButton(content) {
+function createActionButton(content) {
     const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('buttons-container');
+    buttonContainer.classList.add('action-buttons-container');
     const copyButton = document.createElement('button');
     copyButton.classList.add('copy-button');
     copyButton.innerHTML = UI_STRINGS.buttons.copy;
@@ -369,7 +369,7 @@ function createCopyButton(content) {
     buttonContainer.appendChild(copyButton);
 
     copyButton.addEventListener('click', () => {
-        navigator.clipboard.writeText(content)
+        navigator.clipboard.writeText(content.trim())
             .then(() => {
                 copyButton.innerHTML = checkIcon;
                 setTimeout(() => {
@@ -418,7 +418,7 @@ function showErrorWithAction(message, buttonText, onClick) {
 
     const actionButton = document.createElement('button');
     actionButton.textContent = buttonText;
-    actionButton.className = 'action-button';
+    actionButton.className = 'error-action-button';
     actionButton.addEventListener('click', onClick);
 
     errorContainer.appendChild(errorText);
@@ -432,11 +432,15 @@ function showErrorWithAction(message, buttonText, onClick) {
 
 function initializeMarkdown() {
     if (window.markdownit) {
-        md = window.markdownit({
+        const options = {
             html: true,
             linkify: true,
-            typographer: true,
-            highlight: function (str, lang) {
+            typographer: true
+        };
+
+        // Only add highlighting if hljs is available
+        if (window.hljs) {
+            options.highlight = function (str, lang) {
                 if (lang && hljs.getLanguage(lang)) {
                     try {
                         return '<pre><code class="hljs">' +
@@ -445,15 +449,16 @@ function initializeMarkdown() {
                     } catch (__) {
                     }
                 }
-
                 return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
-            }
-        })
-            .use(window.markdownitFootnote).use(markdownItTableWrapper);
+            };
+        }
+
+        md = window.markdownit(options)
+            .use(window.markdownitFootnote)
+            .use(markdownItTableWrapper);
     }
 }
 
-initializeMarkdown();
 
 function markdownItTableWrapper(md) {
     const defaultTableRenderer = md.renderer.rules.table_open || function (tokens, idx, options, env, self) {
@@ -746,8 +751,14 @@ async function sendMessage() {
             if (markdownContent) {
                 const markdown = renderMarkdown(markdownContent, true, visitedURLs);
                 markdownDiv.replaceChildren(markdown);
-                const copyButton = createCopyButton(markdownContent);
-                assistantMessageDiv.appendChild(copyButton);
+
+                const copyButton = createActionButton(markdownContent);
+                const referencesSection = markdownDiv.querySelector('.references-section');
+                if (referencesSection) {
+                    referencesSection.insertAdjacentElement('beforebegin', copyButton);
+                } else {
+                    markdownDiv.appendChild(copyButton);
+                }
 
                 existingMessages.push({
                     role: 'assistant',
@@ -822,8 +833,13 @@ function loadAndDisplaySavedMessages() {
                 markdownDiv.replaceChildren(markdown);
 
                 // Add copy button
-                const copyButton = createCopyButton(message.content);
-                messageDiv.appendChild(copyButton);
+                const copyButton = createActionButton(message.content);
+                const referencesSection = markdownDiv.querySelector('.references-section');
+                if (referencesSection) {
+                    referencesSection.insertAdjacentElement('beforebegin', copyButton);
+                } else {
+                    markdownDiv.appendChild(copyButton);
+                }
 
                 // Check for think content
                 if (message.think) {
@@ -848,8 +864,6 @@ function loadAndDisplaySavedMessages() {
     }
 }
 
-// Call the function to load and display saved messages
-loadAndDisplaySavedMessages();
 
 // Initialize empty state
 updateEmptyState();
@@ -866,6 +880,11 @@ function initializeSettings() {
     currentLanguage = localStorage.getItem('language') || (window.getBrowserLanguage && getBrowserLanguage()) || 'en';
     const languageSelect = document.getElementById('language-select');
     languageSelect.value = currentLanguage;
+
+    // Initialize chirp on done setting (default to true)
+    const chirpOnDone = localStorage.getItem('chirp_on_done') !== 'false';
+    const chirpOnDoneToggleInput = document.getElementById('chirp-on-done-toggle-input');
+    chirpOnDoneToggleInput.checked = chirpOnDone;
 }
 
 settingsButton.addEventListener('click', () => {
@@ -899,6 +918,12 @@ languageSelect.addEventListener('change', (e) => {
     document.documentElement.setAttribute('data-language', language);
     currentLanguage = language;
     applyTranslations();
+});
+
+const chirpOnDoneToggleInput = document.getElementById('chirp-on-done-toggle-input');
+chirpOnDoneToggleInput.addEventListener('change', (e) => {
+    const chirpOnDone = e.target.checked;
+    localStorage.setItem('chirp_on_done', chirpOnDone);
 });
 
 // Initialize settings on load
@@ -1051,8 +1076,9 @@ function clearFaviconBadge() {
 
 
 function playNotificationSound() {
-    if (document.visibilityState === 'visible') {
-        // dont play sound if the tab is already visible
+    const chirpOnDone = localStorage.getItem('chirp_on_done') !== 'false';
+    if (document.visibilityState === 'visible' || chirpOnDone === false) {
+        // dont play sound if the tab is already visible or chirp on done is disabled
         return;
     }
     // Create audio context
@@ -1138,3 +1164,34 @@ function handleFootnoteClick(event) {
 // Add the event listener to the chat container to handle all footnote clicks
 document.getElementById('chat-container').addEventListener('click', handleFootnoteClick);
 
+
+function ensureHljsLoaded() {
+    return new Promise((resolve) => {
+        if (window.hljs) {
+            resolve();
+        } else {
+            // Create a small interval to check if hljs has loaded
+            const checkInterval = setInterval(() => {
+                if (window.hljs) {
+                    clearInterval(checkInterval);
+                    resolve();
+                    console.log('loaded!')
+                }
+            }, 50);
+
+            // Add a timeout in case it never loads
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                resolve(); // Resolve anyway after 5 seconds
+            }, 2500);
+        }
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    ensureHljsLoaded().then(() => {
+        initializeMarkdown();
+        loadAndDisplaySavedMessages();
+    });
+})

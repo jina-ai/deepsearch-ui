@@ -88,9 +88,8 @@ textarea::placeholder {
     text-decoration: none;
 }
 
-.buttons-container {
+.action-buttons-container {
     display: flex;
-    justify-content: flex-end;
     gap: 10px;
 }
 
@@ -150,26 +149,23 @@ textarea::placeholder {
 
 
 #settings-container button,
-.buttons-container button {
+.action-buttons-container button {
     background-color: unset;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     -moz-backdrop-filter: blur(20px);
     -o-backdrop-filter: blur(20px);
+    padding: 0 8px;
+    height: 32px;
 }
 
-.buttons-container button:hover,
+.action-buttons-container button:hover,
 #settings-container button:hover {
     background-color: var(--bg-color-100);
 }
 
 #settings-container .buttons-group {
     display: flex;
-}
-
-.buttons-group button {
-    padding: 0 8px;
-    height: 32px;
 }
 
 #chat-container {
@@ -301,13 +297,19 @@ textarea::placeholder {
     margin: 20px 0;
     padding: 16px;
     border-radius: 24px;
-    max-width: 90%;
     line-height: 1.5;
     width: fit-content;
 }
 
+.assistant-message {
+    max-width: 100%;
+}
+
 .user-message {
+    max-width: 90%;
     margin-left: auto;
+    margin-right: 16px;
+    border-top-right-radius: 4px;
     background-color: var(--primary);
     color: white;
 }
@@ -448,6 +450,10 @@ textarea::placeholder {
     font-size: var(--body-size);
 }
 
+.error-action-button {
+    margin-top: 8px;
+}
+
 
 /* References section styles */
 .references-header::before {
@@ -472,7 +478,7 @@ textarea::placeholder {
 }
 
 .references-section {
-    margin-top: 48px;
+    margin-top: 32px;
     margin-bottom: 0;
 }
 
@@ -632,7 +638,7 @@ ol.footnotes-list {
     font-size: var(--body-size);
     display: inline-block;
     padding: 2px 4px;
-    background-color: var(--bg-color-200);
+    background-color: var(--bg-color-100);
     border-radius: 4px;
     font-family: monospace;
 }
@@ -643,13 +649,13 @@ ol.footnotes-list {
 }
 
 .markdown table {
-    background-color: var(--bg-color-200);
-    border: 1px solid var(--bg-color-300);
+    background-color: var(--bg-color-100);
+    border: 1px solid var(--bg-color-200);
     border-collapse: collapse;
 }
 
 .markdown table thead {
-    background-color: var(--bg-color-300);
+    background-color: var(--bg-color-200);
 }
 
 .markdown table th,
@@ -682,7 +688,7 @@ ol.footnotes-list {
     width: 0.8em;
     height: 0.8em;
     border-radius: 4px;
-    background-color: var(--bg-color-200);
+    background-color: var(--bg-color-100);
     position: relative;
 }
 
