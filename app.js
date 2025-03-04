@@ -305,7 +305,7 @@ function displayMessage(role, content) {
     if (role === 'assistant') {
         messageDiv.innerHTML = `<div id="loading-indicator">${loadingSvg}</div>`;
     } else {
-        messageDiv.textContent = content;
+        messageDiv.replaceChildren(renderMarkdown(content, true, [], role));
     }
 
     chatContainer.appendChild(messageDiv);
@@ -395,11 +395,12 @@ function markdownItTableWrapper(md) {
     };
 }
 
-function renderMarkdown(content, returnElement = false, visitedURLs = []) {
+function renderMarkdown(content, returnElement = false, visitedURLs = [], role = 'assistant') {
     if (!md) {
         initializeMarkdown();
     }
     const tempDiv = document.createElement('div');
+    tempDiv.classList.add('markdown-inner');
     tempDiv.innerHTML = content;
     if (md) {
         const rendered = md.render(content);
@@ -411,19 +412,26 @@ function renderMarkdown(content, returnElement = false, visitedURLs = []) {
             a.textContent = text;
         });
 
-        const footnotes = tempDiv.querySelector('.footnotes');
-        const footnoteContent = footnotes ? footnotes.innerHTML : '';
+        if (role === 'assistant') {
+            const footnotes = tempDiv.querySelector('.footnotes');
+            const footnoteContent = footnotes ? footnotes.innerHTML : '';
 
-        // Create references section if there are footnotes or visitedURLs
-        const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
-        if (referencesSection) {
-            if (footnotes) {
-                footnotes.replaceWith(referencesSection);
-            } else {
-                tempDiv.appendChild(referencesSection);
+            // Create references section if there are footnotes or visitedURLs
+            const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
+            if (referencesSection) {
+                if (footnotes) {
+                    footnotes.replaceWith(referencesSection);
+                } else {
+                    tempDiv.appendChild(referencesSection);
+                }
+            } else if (footnotes) {
+                footnotes.remove();
             }
-        } else if (footnotes) {
-            footnotes.remove();
+        } else {
+            const blockElements = tempDiv.querySelectorAll('p', 'span');
+            blockElements.forEach(el => {
+                el.innerHTML = el.innerHTML.replace(/\n/g, '<br>');
+            });
         }
     }
     return returnElement ? tempDiv : tempDiv.innerHTML;
@@ -771,7 +779,7 @@ function loadAndDisplaySavedMessages() {
                 }
             } else if (message.role === 'user') {
                 // Ensure user message content is displayed
-                messageDiv.textContent = message.content;
+                messageDiv.replaceChildren(renderMarkdown(message.content, true, [], 'user'));
             }
         });
         makeAllLinksOpenInNewTab();
@@ -1108,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn('Failed to initialize markdown rendering:', e);
                 // Continue without markdown rendering
             }
-            
+
             if (initPrompt) {
                 return handleURLParams(initPrompt);
             } else {
