@@ -1026,11 +1026,11 @@ messageInput.addEventListener('input', () => {
 
 
 // URL Parameter handling
-function handleURLParams (queryParam) {
+async function handleURLParams (queryParam) {
     if (queryParam && messageInput) {
         messageInput.value = decodeURIComponent(queryParam);
         clearMessages();
-        sendMessage();
+        await sendMessage();
     }
 };
 
