@@ -416,13 +416,64 @@ function scrollToBottom() {
 function createActionButton(content) {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('action-buttons-container');
+
+    // redo button
+    const redoButton = document.createElement('button');
+    redoButton.classList.add('redo-button');
+    const redoIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`;
+    redoButton.innerHTML = redoIcon;
+
+    // copy button
     const copyButton = document.createElement('button');
     copyButton.classList.add('copy-button');
     const copyIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const checkIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     copyButton.innerHTML = copyIcon;
 
+    buttonContainer.appendChild(redoButton);
     buttonContainer.appendChild(copyButton);
+
+    redoButton.addEventListener('click', () => {
+        if (isLoading) return;
+
+        // Find the current message element
+        const messageElement = redoButton.closest('.message');
+        if (!messageElement) return;
+
+        // Find the previous user message
+        let userMessageElement = messageElement.previousElementSibling;
+        while (userMessageElement && !userMessageElement.classList.contains('user-message')) {
+            userMessageElement = userMessageElement.previousElementSibling;
+        }
+
+        const allMessages = chatContainer.querySelectorAll('.message');
+        const errorMessages = chatContainer.querySelectorAll('.message .error-message');
+        const currentMessageIndex = Array.from(allMessages).indexOf(messageElement);
+
+        if (currentMessageIndex >= 0) {
+            // Count how many messages to remove in total
+            const messagesToSplice = allMessages.length - currentMessageIndex - errorMessages.length;
+           
+             // Remove DOM elements
+            for (let i = allMessages.length - 1; i >= currentMessageIndex; i--) {
+                allMessages[i].remove();
+            }
+
+            // Remove messages from existingMessages (from the end)
+            if (messagesToSplice > 0) {
+                existingMessages.splice(-messagesToSplice);
+                saveChatMessages();
+            }
+
+            // resend the user message
+            if (existingMessages.length && existingMessages[existingMessages.length - 1].role === 'user') {
+                sendMessage(existingMessages[existingMessages.length - 1].content, true);
+            } else {
+                sendMessage(userMessageElement?.textContent, true);
+            }
+        }
+        
+    });
 
     copyButton.addEventListener('click', () => {
         navigator.clipboard.writeText(content.trim())
@@ -614,16 +665,18 @@ const makeAllLinksOpenInNewTab = () => {
     });
 };
 
-async function sendMessage() {
-    const query = messageInput.value.trim();
+async function sendMessage(q = '', redo = false) {
+    const query = messageInput.value.trim() || q;
 
     if (!query || isLoading) return;
 
     abortController = new AbortController();
     isLoading = true;
 
-    displayMessage('user', query);
-    existingMessages.push({role: 'user', content: query});
+    if (!redo) {
+        displayMessage('user', query);
+        existingMessages.push({role: 'user', content: query});
+    }
     messageInput.value = '';
     messageInput.style.height = 'auto';
     // To clear the badge
@@ -830,7 +883,7 @@ async function sendMessage() {
                 existingMessages.push({
                     role: 'assistant',
                     content: markdownContent,
-                    think: thinkContent
+                    think: thinkContent,
                 });
 
                 // Save messages to localStorage
@@ -845,7 +898,7 @@ async function sendMessage() {
                 assistantMessageDiv.textContent = jsonResult.choices[0].message.content;
                 existingMessages.push({
                     role: 'assistant',
-                    content: jsonResult.choices[0].message.content
+                    content: jsonResult.choices[0].message.content,
                 });
                 // Save messages to localStorage
                 saveChatMessages();
