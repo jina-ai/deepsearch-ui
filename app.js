@@ -430,19 +430,28 @@ function createActionButton(content) {
     redoButton.addEventListener('click', () => {
         if (isLoading) return;
 
-        const index = existingMessages.findIndex((msg) => msg.content === content);
-        if (index >= 0) {
-            existingMessages.splice(index);
-            saveChatMessages();
-            const messages = chatContainer.querySelectorAll('.message');
-            for (let i = messages.length - 1; i >= index; i--) {
-                const message = messages[i];
-                message.remove();
+        // Find the current message element
+        const messageElement = redoButton.closest('.message');
+        if (!messageElement) return;
+        const allMessages = chatContainer.querySelectorAll('.message');
+        const eleIndex = Array.from(allMessages).indexOf(messageElement);
+
+        if (eleIndex >= 0) {
+            for (let i = allMessages.length - 1; i >= eleIndex; i--) {
+                allMessages[i].remove();
+            }
+
+            const index = existingMessages.findIndex((msg) => msg.content === content);
+            if (index >= 0) {
+                existingMessages.splice(index);
+                saveChatMessages();
+            }
+
+            // resend the user message
+            if (index > 0 && existingMessages[index - 1].role === 'user') {
+                sendMessage(existingMessages[index - 1].content, true);
             }
         }
-        // resend the user message
-        const redoMessage = existingMessages[index - 1];
-        sendMessage(redoMessage.content, true);
         
     });
 
@@ -854,7 +863,7 @@ async function sendMessage(q = '', redo = false) {
                 existingMessages.push({
                     role: 'assistant',
                     content: markdownContent,
-                    think: thinkContent
+                    think: thinkContent,
                 });
 
                 // Save messages to localStorage
@@ -869,7 +878,7 @@ async function sendMessage(q = '', redo = false) {
                 assistantMessageDiv.textContent = jsonResult.choices[0].message.content;
                 existingMessages.push({
                     role: 'assistant',
-                    content: jsonResult.choices[0].message.content
+                    content: jsonResult.choices[0].message.content,
                 });
                 // Save messages to localStorage
                 saveChatMessages();
