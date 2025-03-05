@@ -410,13 +410,41 @@ function scrollToBottom() {
 function createActionButton(content) {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('action-buttons-container');
+
+    // redo button
+    const redoButton = document.createElement('button');
+    redoButton.classList.add('redo-button');
+    const redoIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>`;
+    redoButton.innerHTML = redoIcon;
+
+    // copy button
     const copyButton = document.createElement('button');
     copyButton.classList.add('copy-button');
     const copyIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     const checkIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     copyButton.innerHTML = copyIcon;
 
+    buttonContainer.appendChild(redoButton);
     buttonContainer.appendChild(copyButton);
+
+    redoButton.addEventListener('click', () => {
+        if (isLoading) return;
+        // remove the message which is later than the current message
+        const index = existingMessages.findIndex((msg) => msg.content === content);
+        if (index >= 0) {
+            existingMessages.splice(index);
+            saveChatMessages();
+            const messages = chatContainer.querySelectorAll('.message');
+            for (let i = messages.length - 1; i >= index; i--) {
+                const message = messages[i];
+                message.remove();
+            }
+        }
+        // resend the user message
+        const redoMessage = existingMessages[index - 1];
+        sendMessage(redoMessage.content, true);
+        
+    });
 
     copyButton.addEventListener('click', () => {
         navigator.clipboard.writeText(content.trim())
@@ -608,16 +636,18 @@ const makeAllLinksOpenInNewTab = () => {
     });
 };
 
-async function sendMessage() {
-    const query = messageInput.value.trim();
+async function sendMessage(q = '', redo = false) {
+    const query = messageInput.value.trim() || q;
 
     if (!query || isLoading) return;
 
     abortController = new AbortController();
     isLoading = true;
 
-    displayMessage('user', query);
-    existingMessages.push({role: 'user', content: query});
+    if (!redo) {
+        displayMessage('user', query);
+        existingMessages.push({role: 'user', content: query});
+    }
     messageInput.value = '';
     messageInput.style.height = 'auto';
     // To clear the badge
