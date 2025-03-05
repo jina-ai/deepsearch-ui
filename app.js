@@ -229,6 +229,7 @@ function createReferencesSection(content, visitedURLs = []) {
     const header = document.createElement('div');
     header.classList.add('references-header');
     header.classList.add('collapsed');
+    header.setAttribute('data-label', 'references.title');
     header.textContent = UI_STRINGS.references.title();
 
     const contentDiv = document.createElement('div');
@@ -371,6 +372,7 @@ function createThinkSection(messageDiv) {
     const thinkHeader = document.createElement('div');
     thinkHeader.classList.add('think-header');
     thinkHeader.classList.add('expanded');
+    thinkHeader.setAttribute('data-label', 'think.toggle');
 
     thinkHeader.appendChild(document.createTextNode(UI_STRINGS.think.initial()));
     thinkSection.appendChild(thinkHeader);
