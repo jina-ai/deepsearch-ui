@@ -433,26 +433,23 @@ function createActionButton(content) {
         // Find the current message element
         const messageElement = redoButton.closest('.message');
         if (!messageElement) return;
+
+        // Find the previous user message
+        let userMessageElement = messageElement.previousElementSibling;
+        while (userMessageElement && !userMessageElement.classList.contains('user-message')) {
+            userMessageElement = userMessageElement.previousElementSibling;
+        }
+
         const allMessages = chatContainer.querySelectorAll('.message');
-        const eleIndex = Array.from(allMessages).indexOf(messageElement);
+        const errorMessages = chatContainer.querySelectorAll('.message .error-message');
+        const currentMessageIndex = Array.from(allMessages).indexOf(messageElement);
 
-        if (eleIndex >= 0) {
+        if (currentMessageIndex >= 0) {
             // Count how many messages to remove in total
-            const totalMessagesToRemove = allMessages.length - eleIndex;
-            
-            // Count error messages (they don't have a corresponding entry in existingMessages)
-            let errorMessageCount = 0;
-            for (let i = allMessages.length - 1; i >= eleIndex; i--) {
-                const msg = allMessages[i];
-                if (msg.querySelector('.error-message')) {
-                    errorMessageCount++;
-                }
-            }
-
-            const messagesToSplice = totalMessagesToRemove - errorMessageCount;
+            const messagesToSplice = allMessages.length - currentMessageIndex - errorMessages.length;
            
              // Remove DOM elements
-            for (let i = allMessages.length - 1; i >= eleIndex; i--) {
+            for (let i = allMessages.length - 1; i >= currentMessageIndex; i--) {
                 allMessages[i].remove();
             }
 
@@ -462,16 +459,11 @@ function createActionButton(content) {
                 saveChatMessages();
             }
 
-            // Remove the last assistant message if it was an error
-            const lastMessage = existingMessages[existingMessages.length - 1];
-            if (lastMessage && lastMessage.role === 'assistant') {
-                existingMessages.pop();
-                saveChatMessages();
-            }
-
             // resend the user message
             if (existingMessages.length && existingMessages[existingMessages.length - 1].role === 'user') {
                 sendMessage(existingMessages[existingMessages.length - 1].content, true);
+            } else {
+                sendMessage(userMessageElement?.textContent, true);
             }
         }
         
