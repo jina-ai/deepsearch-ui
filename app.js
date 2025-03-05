@@ -429,7 +429,7 @@ function createActionButton(content) {
 
     redoButton.addEventListener('click', () => {
         if (isLoading) return;
-        // remove the message which is later than the current message
+
         const index = existingMessages.findIndex((msg) => msg.content === content);
         if (index >= 0) {
             existingMessages.splice(index);
