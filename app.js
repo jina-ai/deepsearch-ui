@@ -437,19 +437,41 @@ function createActionButton(content) {
         const eleIndex = Array.from(allMessages).indexOf(messageElement);
 
         if (eleIndex >= 0) {
+            // Count how many messages to remove in total
+            const totalMessagesToRemove = allMessages.length - eleIndex;
+            
+            // Count error messages (they don't have a corresponding entry in existingMessages)
+            let errorMessageCount = 0;
+            for (let i = allMessages.length - 1; i >= eleIndex; i--) {
+                const msg = allMessages[i];
+                if (msg.querySelector('.error-message')) {
+                    errorMessageCount++;
+                }
+            }
+
+            const messagesToSplice = totalMessagesToRemove - errorMessageCount;
+           
+             // Remove DOM elements
             for (let i = allMessages.length - 1; i >= eleIndex; i--) {
                 allMessages[i].remove();
             }
 
-            const index = existingMessages.findIndex((msg) => msg.content === content);
-            if (index >= 0) {
-                existingMessages.splice(index);
+            // Remove messages from existingMessages (from the end)
+            if (messagesToSplice > 0) {
+                existingMessages.splice(-messagesToSplice);
+                saveChatMessages();
+            }
+
+            // Remove the last assistant message if it was an error
+            const lastMessage = existingMessages[existingMessages.length - 1];
+            if (lastMessage && lastMessage.role === 'assistant') {
+                existingMessages.pop();
                 saveChatMessages();
             }
 
             // resend the user message
-            if (index > 0 && existingMessages[index - 1].role === 'user') {
-                sendMessage(existingMessages[index - 1].content, true);
+            if (existingMessages.length && existingMessages[existingMessages.length - 1].role === 'user') {
+                sendMessage(existingMessages[existingMessages.length - 1].content, true);
             }
         }
         
