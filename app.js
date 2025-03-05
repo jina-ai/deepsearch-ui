@@ -993,12 +993,40 @@ initializeSettings();
 
 // Event Listeners
 newChatButton.addEventListener('click', clearMessages);
+
+let isComposing = false;
+let compositionEnded = false;
+messageInput.addEventListener('compositionstart', () => {
+  console.log('composition start');
+    isComposing = true;
+    compositionEnded = false;
+});
+
+messageInput.addEventListener('compositionend', () => {
+  console.log('composition end');
+    isComposing = false;
+    compositionEnded = true;
+    setTimeout(() => {
+      compositionEnded = false;
+    }, 50);
+});
+
 messageInput.addEventListener('keydown', (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
+    if (event.key === "Enter") {
+        if (isComposing || compositionEnded) {
+            event.preventDefault();
+            event.stopPropagation();
+            compositionEnded = false;
+            return;
+        }
+
+        if (!event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
     }
 });
+
 messageForm.addEventListener('submit', (event) => {
     event.preventDefault();
     sendMessage();
