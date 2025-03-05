@@ -576,16 +576,15 @@ function updateEmptyState() {
     const chatApp = document.getElementById('chat-app');
     if (chatContainer.innerHTML.trim() === '') {
         chatApp.classList.add('empty-chat');
+        messageInput.focus();
     } else {
         chatApp.classList.remove('empty-chat');
     }
-    messageInput.focus();
     // blur the input if the chat is loading, incase the keyboard is open on mobile
     if (isLoading && new URLSearchParams(window.location.search).get('q')) {
         messageInput.blur();
     }
 }
-
 
 function clearMessages() {
     chatContainer.innerHTML = '';
@@ -922,6 +921,7 @@ function loadAndDisplaySavedMessages() {
         makeAllLinksOpenInNewTab();
 
         // Scroll to bottom
+        messageInput.focus();
         scrollToBottom();
     }
 }
