@@ -26,7 +26,7 @@ let UI_STRINGS = {
 // Function to load i18n translations
 async function loadTranslations() {
   try {
-    const response = await fetch('i18n.json1');
+    const response = await fetch('i18n.json');
     i18n = await response.json();
     applyTranslations();
   } catch (error) {
