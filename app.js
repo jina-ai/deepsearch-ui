@@ -184,6 +184,9 @@ let abortController = null;
 let existingMessages = [];
 let md;
 
+// Composing state variables for handling IME input
+let isComposing = false;
+let compositionEnded = false;
 
 // API Key Management
 function initializeApiKey() {
@@ -994,8 +997,6 @@ initializeSettings();
 // Event Listeners
 newChatButton.addEventListener('click', clearMessages);
 
-let isComposing = false;
-let compositionEnded = false;
 messageInput.addEventListener('compositionstart', () => {
   console.log('composition start');
     isComposing = true;
