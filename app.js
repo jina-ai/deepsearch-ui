@@ -14,7 +14,8 @@ let UI_STRINGS = {
         toggle: () => 'Thoughts',
     },
     references: {
-        title: () => 'References'
+        title: () => 'References',
+        sources: () => 'Sources'
     },
     errors: {
         invalidKey: () => 'Invalid API key. Please update your key by click the button below.',
@@ -145,6 +146,7 @@ function applyTranslations() {
         },
         references: {
           title: () => t('references.title'),
+          sources: () => t('references.sources')
         },
         errors: {
           invalidKey: () => t('errors.invalidKey'),
@@ -184,6 +186,9 @@ let abortController = null;
 let existingMessages = [];
 let md;
 
+// Composing state variables for handling IME input
+let isComposing = false;
+let compositionEnded = false;
 
 // API Key Management
 function initializeApiKey() {
@@ -311,12 +316,16 @@ const renderFaviconList = async (visitedURLs) => {
     }, new Map());
 
     // Add sources count
-    faviconList.appendChild(
-        Object.assign(document.createElement('div'), {
-            className: 'sources-count',
-            textContent: `${visitedURLs.length} sources`
-        })
-    );
+    const sourceCount = document.createElement('div');
+    sourceCount.classList.add('sources-count');
+    sourceCount.textContent = `${visitedURLs.length} `;
+
+    const label = document.createElement('span');
+    label.setAttribute('data-label', 'references.sources');
+    label.textContent = UI_STRINGS.references.sources();
+
+    sourceCount.appendChild(label);
+    faviconList.appendChild(sourceCount);
 
     // Favicon fetching function with retry support
     const fetchFavicons = async (domains) => {
@@ -1056,12 +1065,38 @@ initializeSettings();
 
 // Event Listeners
 newChatButton.addEventListener('click', clearMessages);
+
+messageInput.addEventListener('compositionstart', () => {
+  console.log('composition start');
+    isComposing = true;
+    compositionEnded = false;
+});
+
+messageInput.addEventListener('compositionend', () => {
+  console.log('composition end');
+    isComposing = false;
+    compositionEnded = true;
+    setTimeout(() => {
+      compositionEnded = false;
+    }, 50);
+});
+
 messageInput.addEventListener('keydown', (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        sendMessage();
+    if (event.key === "Enter") {
+        if (isComposing || compositionEnded) {
+            event.preventDefault();
+            event.stopPropagation();
+            compositionEnded = false;
+            return;
+        }
+
+        if (!event.shiftKey) {
+            event.preventDefault();
+            sendMessage();
+        }
     }
 });
+
 messageForm.addEventListener('submit', (event) => {
     event.preventDefault();
     sendMessage();
@@ -1070,6 +1105,10 @@ messageForm.addEventListener('submit', (event) => {
 messageInput.addEventListener('input', () => {
     messageInput.style.height = 'auto';
     messageInput.style.height = `${messageInput.scrollHeight - 28}px`;
+    if (messageInput.value === '') {
+        messageInput.style.height = 'unset';
+    }
+
     const computedStyle = window.getComputedStyle(messageInput);
     const maxHeight = parseInt(computedStyle.maxHeight, 10);
     if (messageInput.scrollHeight >= maxHeight) {

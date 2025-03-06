@@ -21,8 +21,9 @@ function initializeLanguage() {
 // Get browser language
 function getBrowserLanguage() {
   const browserLang = navigator.language || navigator.userLanguage;
-  if (browserLang.startsWith('zh')) return 'zh-CN';
-  if (browserLang.startsWith('ja')) return 'jp';
+  if (['en', 'zh-CN', 'zh-TW', 'ja', 'fr', 'ko', 'de'].includes(browserLang.trim())){
+    return browserLang.trim();
+  }
   return 'en'; // Default is English
 }
 

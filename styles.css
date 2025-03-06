@@ -920,7 +920,6 @@ input:checked + .toggle-slider:before {
 
 .settings-select:focus {
     border-color: var(--primary);
-    box-shadow: 0 1px 6px var(--input-focus-shadow);
 }
 
 @keyframes highlightFootnote {
@@ -974,14 +973,19 @@ input:checked + .toggle-slider:before {
     width: 1rem;
     height: 1rem;
     background-color: var(--bg-color-100);
-    color: var(--primary);
+    color: var(--text-secondary);
     text-decoration: none;
     border-radius: 50%;
-    font-size: 0.8em;
+    font-size: 0.7em;
     line-height: 1;               /* Ensures consistent height */
     padding: 0;                   /* Removes any padding that might affect centering */
     text-align: center;           /* Additional horizontal centering */
     vertical-align: middle;       /* Additional vertical alignment */
+}
+
+#message-input::placeholder {
+    color: var(--bg-color-400);
+    line-height: 1rem;
 }
 
 .footnote-ref a:hover {

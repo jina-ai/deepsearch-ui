@@ -1,4 +1,5 @@
-const theme = localStorage.getItem('theme') || 'light';
+const theme = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light');
+
 const hlTheme = theme === 'light' ? 'vs' : 'vs2015';
 const scripts = [
   { type: 'style', url: `third-party/${hlTheme}.min.css` },

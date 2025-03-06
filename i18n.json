@@ -20,7 +20,8 @@
       "toggle": "Thoughts"
     },
     "references": {
-      "title": "References"
+      "title": "References",
+      "sources": "Sources"
     },
     "errors": {
       "invalidKey": "Invalid API key. Please update your key by click the button below\".",
@@ -59,7 +60,7 @@
     "description": "AI深度搜索：阅读、推理、搜索，直到找到最佳答案。",
     "buttons": {
       "settings": "设置",
-      "new": "新建",
+      "new": "新对话",
       "upgrade": "升级",
       "help": "帮助",
       "send": "深度搜索",
@@ -67,7 +68,7 @@
       "updateKey": "更新密钥",
       "getKey": "获取API密钥",
       "saveKey": "保存",
-      "purchase": "购买更多令牌",
+      "purchase": "购买更多词元",
       "contactUs": "联系我们"
     },
     "think": {
@@ -75,11 +76,12 @@
       "toggle": "思考过程"
     },
     "references": {
-      "title": "参考"
+      "title": "参考资料",
+      "sources": "来源"
     },
     "errors": {
       "invalidKey": "无效的API密钥。请点击下方按钮更新您的密钥。",
-      "insufficientTokens": "您的API密钥中的令牌不足。请购买更多令牌或更换另一个密钥。",
+      "insufficientTokens": "您的API密钥中的词元不足。请购买更多词元或更换另一个密钥。",
       "rateLimit": "您已达到速率限制。请稍后再试。您也可以通过点击下方按钮升级到更高级别的计划。"
     },
     "placeholders": {
@@ -88,17 +90,17 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "升级到更高速率限制",
+        "title": "获得更高的速率限制",
         "description": "使用您的Jina API密钥访问更高的速率限制。您可以在我们的网站上获取免费API密钥并了解有关速率限制的更多信息。",
         "freeUserRpm": "您可以发送<b>每分钟3个请求</b>。"
       },
       "help": {
-        "title": "享受纯净与深度",
+        "title": "回归深且纯",
         "list": [
-          "无广告，无登录，无要点，无冗长报告，无废话设计。",
+          "无登录，无广告，去冗长报告，去废话设计。",
           "免费用户每分钟可发送3个搜索请求。提供API密钥以获得更高的速率限制。",
           "通过<code>https://search.jina.ai/?q={YOUR_QUERY}</code>添加到您的浏览器搜索引擎",
-          "这<i>就是</i>我们的产品，不是概念验证或追逐炒作的噱头。对内部部署感兴趣？联系我们。"
+          "这<i>就是</i>我们的产品，不是蹭热点。对私有化部署感兴趣？联系我们。"
         ]
       },
       "settings": {
@@ -109,15 +111,71 @@
       }
     }
   },
-  "jp": {
-    "title": "Jina AI ディープサーチ",
-    "description": "AIディープサーチ：読み、推論し、最適な回答が見つかるまで検索します。",
+  "zh-TW": {
+    "title": "Jina AI 深度搜尋",
+    "description": "AI 深度搜尋：讀、理解、找答案，直到找到最好的結果。",
     "buttons": {
       "settings": "設定",
-      "new": "新規",
+      "new": "開新對話",
+      "upgrade": "升級",
+      "help": "說明一下",
+      "send": "深度搜尋",
+      "addKey": "升級",
+      "updateKey": "更新金鑰",
+      "getKey": "取得 API 金鑰",
+      "saveKey": "存起來",
+      "purchase": "買更多詞元",
+      "contactUs": "聯絡我們"
+    },
+    "think": {
+      "initial": "思考中...",
+      "toggle": "思考過程"
+    },
+    "references": {
+      "title": "參考資料",
+      "sources": "來源"
+    },
+    "errors": {
+      "invalidKey": "API 金鑰有問題喔。請按下面的按鈕更新金鑰。",
+      "insufficientTokens": "你的 API 金鑰詞元不夠用啦。請買多一點詞元，或是換一個金鑰。",
+      "rateLimit": "你已經達到速度上限囉。請等一下再試。也可以按下面的按鈕升級到更高等級的方案。"
+    },
+    "placeholders": {
+      "messageInput": "在這裡輸入你的問題",
+      "apiKeyInput": "輸入你的 API 金鑰"
+    },
+    "dialogs": {
+      "apiKey": {
+        "title": "提高速度限制",
+        "description": "用你的 Jina API 金鑰來提高速度限制。在我們的網站上可以免費取得 API 金鑰，也可以了解更多關於速度限制的資訊。",
+        "freeUserRpm": "你一分鐘可以送<b>三次請求</b>喔。"
+      },
+      "help": {
+        "title": "回歸純粹的深度體驗",
+        "list": [
+          "免登入、沒廣告、沒有長篇大論、沒有廢話設計。",
+          "免費用戶一分鐘可以送三次搜尋請求。提供 API 金鑰可以提高速度限制。",
+          "用<code>https://search.jina.ai/?q={YOUR_QUERY}</code>加到你的瀏覽器搜尋引擎裡",
+          "這<i>就是</i>我們的產品，不是來蹭熱度的。對私有化部署有興趣嗎？聯絡我們。"
+        ]
+      },
+      "settings": {
+        "title": "設定",
+        "darkTheme": "用深色主題",
+        "language": "語言",
+        "chirpOnDone": "完成時發出提示音"
+      }
+    }
+  },
+  "jp": {
+    "title": "Jina AI 深度検索",
+    "description": "AI深度検索：読み込み、推論、検索を繰り返し、最適な回答を見つけます。",
+    "buttons": {
+      "settings": "設定",
+      "new": "新会話",
       "upgrade": "アップグレード",
       "help": "ヘルプ",
-      "send": "ディープサーチ",
+      "send": "深度検索",
       "addKey": "アップグレード",
       "updateKey": "キーを更新",
       "getKey": "APIキーを取得",
@@ -126,16 +184,17 @@
       "contactUs": "お問い合わせ"
     },
     "think": {
-      "initial": "考え中...",
+      "initial": "思考中...",
       "toggle": "思考プロセス"
     },
     "references": {
-      "title": "参考"
+      "title": "参考資料",
+      "sources": "ソース"
     },
     "errors": {
-      "invalidKey": "無効なAPIキーです。下のボタンをクリックしてキーを更新してください。",
-      "insufficientTokens": "APIキーのトークンが不足しています。より多くのトークンを購入するか、別のキーに交換してください。",
-      "rateLimit": "レート制限に達しました。後でもう一度お試しください。下のボタンをクリックして、より高いプランにアップグレードすることもできます。"
+      "invalidKey": "無効なAPIキーです。以下のボタンをクリックしてキーを更新してください。",
+      "insufficientTokens": "APIキーのトークン残高が不足しています。トークンを追加購入するか、別のキーに切り替えてください。",
+      "rateLimit": "レート制限に達しました。しばらくしてからもう一度お試しください。以下のボタンをクリックして、上位プランにアップグレードすることもできます。"
     },
     "placeholders": {
       "messageInput": "ここに質問を入力してください",
@@ -143,24 +202,192 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "より高いレート制限にアップグレード",
-        "description": "Jina APIキーを使用して、より高いレート制限にアクセスします。当社のウェブサイトで無料のAPIキーを取得し、レート制限について詳しく知ることができます。",
+        "title": "レート制限を引き上げる",
+        "description": "Jina APIキーを使用して、レート制限を引き上げます。無料のAPIキーを取得し、レート制限の詳細については、当社のウェブサイトをご覧ください。",
         "freeUserRpm": "<b>1分あたり3リクエスト</b>を送信できます。"
       },
       "help": {
-        "title": "純粋で深い体験をお楽しみください",
+        "title": "ピュアでディープな体験をお楽しみください",
         "list": [
-          "広告なし、ログインなし、箇条書きなし、長いレポートなし、無意味なデザインなし。",
-          "無料ユーザーは1分あたり3つの検索リクエストを送信できます。APIキーを提供して、より高いレート制限を取得してください。",
-          "<code>https://search.jina.ai/?q={YOUR_QUERY}</code>を使用してブラウザの検索エンジンに追加",
-          "これは<i>まさに</i>私たちの製品であり、POCやハイプを追いかけるギミックではありません。オンプレミス展開に興味がありますか？お問い合わせください。"
+          "ログイン不要、広告なし、箇条書きなし、冗長なレポートなし、無駄のないデザイン。",
+          "無料ユーザーは1分あたり3件の検索リクエストを送信できます。APIキーを提供すると、レート制限を引き上げることができます。",
+          "<code>[https://search.jina.ai/?q=](https://www.google.com/url?sa=E&source=gmail&q=https://search.jina.ai/?q=){YOUR_QUERY}</code>を使用して、ブラウザの検索エンジンに追加します。",
+          "これは、まさに当社の製品であり、POCや誇大広告を追いかけるギミックではありません。オンプレミス展開にご興味がありますか？お問い合わせください。"
         ]
       },
       "settings": {
         "title": "設定",
         "darkTheme": "ダークテーマを使用",
         "language": "言語",
-        "chirpOnDone": "完了時にチャープ"
+        "chirpOnDone": "完了時に通知音を鳴らす"
+      }
+    }
+  },
+  "fr": {
+    "title": "Jina AI Recherche Approfondie",
+    "description": "Recherche approfondie par IA : lire, raisonner, chercher jusqu'à trouver la meilleure réponse.",
+    "buttons": {
+      "settings": "Paramètres",
+      "new": "Nouveau",
+      "upgrade": "Mettre à niveau",
+      "help": "Aide",
+      "send": "Recherche Approfondie",
+      "addKey": "Mettre à niveau",
+      "updateKey": "Mettre à jour la clé",
+      "getKey": "Obtenir la clé API",
+      "saveKey": "Enregistrer",
+      "purchase": "Acheter plus de jetons",
+      "contactUs": "Nous contacter"
+    },
+    "think": {
+      "initial": "Réflexion en cours...",
+      "toggle": "Processus de réflexion"
+    },
+    "references": {
+      "title": "Références",
+      "sources": "Sources"
+    },
+    "errors": {
+      "invalidKey": "Clé API invalide. Veuillez mettre à jour votre clé en cliquant sur le bouton ci-dessous.",
+      "insufficientTokens": "Jetons insuffisants dans votre clé API. Veuillez acheter plus de jetons ou changer de clé.",
+      "rateLimit": "Vous avez atteint la limite de taux. Veuillez réessayer plus tard. Vous pouvez également passer à un plan supérieur en cliquant sur le bouton ci-dessous."
+    },
+    "placeholders": {
+      "messageInput": "Tapez votre question ici",
+      "apiKeyInput": "Entrez votre clé API"
+    },
+    "dialogs": {
+      "apiKey": {
+        "title": "Mettre à niveau pour une limite de taux plus élevée",
+        "description": "Utilisez votre clé API Jina pour accéder à une limite de taux plus élevée. Vous pouvez obtenir une clé API gratuite et en savoir plus sur les limites de taux sur notre site web.",
+        "freeUserRpm": "Vous pouvez envoyer <b>3 requêtes par minute</b>."
+      },
+      "help": {
+        "title": "Profitez d'une expérience pure et approfondie",
+        "list": [
+          "Pas de publicité, pas de connexion, pas de puces, pas de rapports longs, pas de design superflu.",
+          "Les utilisateurs gratuits peuvent envoyer 3 requêtes de recherche par minute. Fournissez une clé API pour obtenir une limite de taux plus élevée.",
+          "Ajoutez à vos moteurs de recherche de navigateur via <code>https://search.jina.ai/?q={YOUR_QUERY}</code>",
+          "C'est <i>vraiment</i> notre produit, pas un POC ou un gadget à la mode. Intéressé par un déploiement sur site ? Contactez-nous."
+        ]
+      },
+      "settings": {
+        "title": "Paramètres",
+        "darkTheme": "Utiliser le thème sombre",
+        "language": "Langue",
+        "chirpOnDone": "Bip à la fin"
+      }
+    }
+  },
+  "de": {
+    "title": "Jina AI Tiefensuche",
+    "description": "KI-Tiefensuche: lesen, schlussfolgern, suchen, bis die beste Antwort gefunden ist.",
+    "buttons": {
+      "settings": "Einstellungen",
+      "new": "Neu",
+      "upgrade": "Aktualisieren",
+      "help": "Hilfe",
+      "send": "Tiefensuche",
+      "addKey": "Aktualisieren",
+      "updateKey": "Schlüssel aktualisieren",
+      "getKey": "API-Schlüssel abrufen",
+      "saveKey": "Speichern",
+      "purchase": "Weitere Token kaufen",
+      "contactUs": "Kontaktieren Sie uns"
+    },
+    "think": {
+      "initial": "Denke nach...",
+      "toggle": "Denkprozess"
+    },
+    "references": {
+      "title": "Referenzen",
+      "sources": "Quellen"
+    },
+    "errors": {
+      "invalidKey": "Ungültiger API-Schlüssel. Bitte aktualisieren Sie Ihren Schlüssel, indem Sie auf die Schaltfläche unten klicken.",
+      "insufficientTokens": "Unzureichende Token in Ihrem API-Schlüssel. Bitte kaufen Sie weitere Token oder wechseln Sie zu einem anderen Schlüssel.",
+      "rateLimit": "Sie haben die Ratenbegrenzung erreicht. Bitte versuchen Sie es später noch einmal. Sie können auch auf einen höheren Plan upgraden, indem Sie auf die Schaltfläche unten klicken."
+    },
+    "placeholders": {
+      "messageInput": "Geben Sie hier Ihre Frage ein",
+      "apiKeyInput": "Geben Sie Ihren API-Schlüssel ein"
+    },
+    "dialogs": {
+      "apiKey": {
+        "title": "Upgrade für eine höhere Ratenbegrenzung",
+        "description": "Verwenden Sie Ihren Jina API-Schlüssel, um auf eine höhere Ratenbegrenzung zuzugreifen. Sie können einen kostenlosen API-Schlüssel erhalten und mehr über Ratenbegrenzungen auf unserer Website erfahren.",
+        "freeUserRpm": "Sie können <b>3 Anfragen pro Minute</b> senden."
+      },
+      "help": {
+        "title": "Genießen Sie eine reine und tiefe Erfahrung",
+        "list": [
+          "Keine Werbung, keine Anmeldung, keine Aufzählungspunkte, keine langen Berichte, kein unnötiges Design.",
+          "Kostenlose Benutzer können 3 Suchanfragen pro Minute senden. Geben Sie einen API-Schlüssel an, um eine höhere Ratenbegrenzung zu erhalten.",
+          "Fügen Sie Ihre Browser-Suchmaschinen über <code>https://search.jina.ai/?q={YOUR_QUERY}</code> hinzu",
+          "Dies <i>ist</i> unser Produkt, kein POC oder ein Hype-Gimmick. Interessiert an einer On-Premise-Bereitstellung? Kontaktieren Sie uns."
+        ]
+      },
+      "settings": {
+        "title": "Einstellungen",
+        "darkTheme": "Dunkles Design verwenden",
+        "language": "Sprache",
+        "chirpOnDone": "Piepton bei Fertigstellung"
+      }
+    }
+  },
+  "ko": {
+    "title": "Jina AI 심층 검색",
+    "description": "AI 심층 검색: 읽고, 추론하고, 최적의 답변을 찾을 때까지 검색합니다.",
+    "buttons": {
+      "settings": "설정",
+      "new": "새 대화",
+      "upgrade": "업그레이드",
+      "help": "도움말",
+      "send": "심층 검색",
+      "addKey": "업그레이드",
+      "updateKey": "키 업데이트",
+      "getKey": "API 키 가져오기",
+      "saveKey": "저장",
+      "purchase": "토큰 더 구매",
+      "contactUs": "문의하기"
+    },
+    "think": {
+      "initial": "생각 중...",
+      "toggle": "사고 과정"
+    },
+    "references": {
+      "title": "참조",
+      "sources": "출처"
+    },
+    "errors": {
+      "invalidKey": "유효하지 않은 API 키입니다. 아래 버튼을 클릭하여 키를 업데이트하세요.",
+      "insufficientTokens": "API 키의 토큰이 부족합니다. 토큰을 더 구매하거나 다른 키로 교체하세요.",
+      "rateLimit": "요청 제한에 도달했습니다. 나중에 다시 시도하세요. 아래 버튼을 클릭하여 더 높은 요금제로 업그레이드할 수도 있습니다."
+    },
+    "placeholders": {
+      "messageInput": "여기에 질문을 입력하세요",
+      "apiKeyInput": "API 키를 입력하세요"
+    },
+    "dialogs": {
+      "apiKey": {
+        "title": "더 높은 요청 제한으로 업그레이드",
+        "description": "Jina API 키를 사용하여 더 높은 요청 제한에 액세스하세요. 저희 웹사이트에서 무료 API 키를 얻고 요청 제한에 대해 자세히 알아볼 수 있습니다.",
+        "freeUserRpm": "<b>분당 3개의 요청</b>을 보낼 수 있습니다."
+      },
+      "help": {
+        "title": "순수하고 심층적인 경험을 즐기세요",
+        "list": [
+          "광고 없음, 로그인 없음, 요점 없음, 긴 보고서 없음, 불필요한 디자인 없음.",
+          "무료 사용자는 분당 3개의 검색 요청을 보낼 수 있습니다. 더 높은 요청 제한을 받으려면 API 키를 제공하세요.",
+          "<code>https://search.jina.ai/?q={YOUR_QUERY}</code>를 통해 브라우저 검색 엔진에 추가하세요.",
+          "이것은 <i>정말로</i> 저희 제품이며, POC나 유행을 쫓는 속임수가 아닙니다. 온프레미스 배포에 관심이 있으신가요? 문의하세요."
+        ]
+      },
+      "settings": {
+        "title": "설정",
+        "darkTheme": "어두운 테마 사용",
+        "language": "언어",
+        "chirpOnDone": "완료 시 알림음"
       }
     }
   }
