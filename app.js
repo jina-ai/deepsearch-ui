@@ -432,41 +432,42 @@ function createActionButton(content) {
 
         // Find the current message element
         const messageElement = redoButton.closest('.message');
-        if (!messageElement) return;
+        if (!messageElement) {
+            console.error('Current message not found');
+            return;
+        };
 
-        // Find the previous user message
-        let userMessageElement = messageElement.previousElementSibling;
-        while (userMessageElement && !userMessageElement.classList.contains('user-message')) {
-            userMessageElement = userMessageElement.previousElementSibling;
+        const currentMessageId = messageElement.getAttribute('id');
+        const currentMessageIndex = existingMessages.findIndex(m => m.id === currentMessageId);
+
+        if (currentMessageIndex < 0) {
+            console.error('Current message not found in existing messages');
+            return;
+        };
+
+        // Get the previous user message
+        let userMessageIndex = currentMessageIndex - 1;
+        while (userMessageIndex >= 0 && existingMessages[userMessageIndex].role !== 'user') {
+            userMessageIndex--;
         }
+        const userMessage = existingMessages[userMessageIndex]?.content;
+        if (!userMessage) {
+            console.error('No user message found to redo');
+            return;
+        };
 
-        const allMessages = chatContainer.querySelectorAll('.message');
-        const errorMessages = chatContainer.querySelectorAll('.message .error-message');
-        const currentMessageIndex = Array.from(allMessages).indexOf(messageElement);
+        const allMessages = Array.from(chatContainer.querySelectorAll('.message'));
+        const startIndex = allMessages.findIndex(m => m.id === currentMessageId);
+        if (startIndex < 0) return;
 
-        if (currentMessageIndex >= 0) {
-            // Count how many messages to remove in total
-            const messagesToSplice = allMessages.length - currentMessageIndex - errorMessages.length;
-           
-             // Remove DOM elements
-            for (let i = allMessages.length - 1; i >= currentMessageIndex; i--) {
-                allMessages[i].remove();
-            }
+        // Remove all messages after the current message
+        allMessages.slice(startIndex).forEach(m => m.remove());
 
-            // Remove messages from existingMessages (from the end)
-            if (messagesToSplice > 0) {
-                existingMessages.splice(-messagesToSplice);
-                saveChatMessages();
-            }
+        // Remove messages from existingMessages and localStorage
+        existingMessages.splice(currentMessageIndex);
+        saveChatMessages();
 
-            // resend the user message
-            if (existingMessages.length && existingMessages[existingMessages.length - 1].role === 'user') {
-                sendMessage(existingMessages[existingMessages.length - 1].content, true);
-            } else {
-                sendMessage(userMessageElement?.textContent, true);
-            }
-        }
-        
+        sendMessage(userMessage, true);
     });
 
     copyButton.addEventListener('click', () => {
@@ -482,9 +483,11 @@ function createActionButton(content) {
     return buttonContainer;
 }
 
-function displayMessage(role, content) {
+function displayMessage(role, content, messageId = null) {
     const messageDiv = document.createElement('div');
-    messageDiv.classList.add('message', `${role}-message`);
+    messageDiv.classList.add('message', `${role}-message`)
+    const id = messageId || `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    messageDiv.id = id;
 
     if (role === 'assistant') {
         messageDiv.innerHTML = `<div id="loading-indicator">${loadingSvg}</div>`;
@@ -668,8 +671,9 @@ async function sendMessage(q = '', redo = false) {
     isLoading = true;
 
     if (!redo) {
-        displayMessage('user', query);
-        existingMessages.push({role: 'user', content: query});
+        const userMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        displayMessage('user', query, userMessageId);
+        existingMessages.push({role: 'user', content: query, id: userMessageId});
     }
     messageInput.value = '';
     messageInput.style.height = 'auto';
@@ -678,7 +682,8 @@ async function sendMessage(q = '', redo = false) {
     // Save messages to localStorage
     saveChatMessages();
 
-    const assistantMessageDiv = displayMessage('assistant', '');
+    const assistantMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const assistantMessageDiv = displayMessage('assistant', '', assistantMessageId);
 
     let markdownContent = '';
     let thinkContent = '';
@@ -700,7 +705,7 @@ async function sendMessage(q = '', redo = false) {
             method: 'POST',
             headers,
             body: JSON.stringify({
-                messages: existingMessages,
+                messages: existingMessages.map(({role, content}) => ({role, content})),
                 stream: true,
                 reasoning_effort: 'medium',
             }),
@@ -878,6 +883,7 @@ async function sendMessage(q = '', redo = false) {
                     role: 'assistant',
                     content: markdownContent,
                     think: thinkContent,
+                    id: assistantMessageId,
                 });
 
                 // Save messages to localStorage
@@ -931,7 +937,7 @@ function loadAndDisplaySavedMessages() {
     if (existingMessages.length > 0) {
         // Display saved messages
         existingMessages.forEach(message => {
-            const messageDiv = displayMessage(message.role, message.content);
+            const messageDiv = displayMessage(message.role, message.content, message.id);
 
             if (message.role === 'assistant') {
                 // Remove loading indicator
