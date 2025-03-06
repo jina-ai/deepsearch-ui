@@ -937,6 +937,9 @@ function loadAndDisplaySavedMessages() {
     if (existingMessages.length > 0) {
         // Display saved messages
         existingMessages.forEach(message => {
+            if (!message.id) {
+                message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+            }
             const messageDiv = displayMessage(message.role, message.content, message.id);
 
             if (message.role === 'assistant') {
@@ -977,6 +980,7 @@ function loadAndDisplaySavedMessages() {
                 messageDiv.replaceChildren(renderMarkdown(message.content, true, [], 'user'));
             }
         });
+        saveChatMessages();
         makeAllLinksOpenInNewTab();
 
         // Scroll to bottom
