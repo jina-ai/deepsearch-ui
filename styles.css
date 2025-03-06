@@ -156,6 +156,8 @@ textarea::placeholder {
     -o-backdrop-filter: blur(20px);
     padding: 0 8px;
     height: 32px;
+    display: flex;
+    align-items: center;
 }
 
 .action-buttons-container button:hover,
@@ -995,4 +997,36 @@ input:checked + .toggle-slider:before {
 
 .footnote-ref a:hover::after {
     width: 0;
+}
+
+.tooltip-container {
+    position: relative; 
+    display: inline-block;
+}
+
+.tooltip {
+    visibility: hidden;
+    position: absolute;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    font-size: var(--secondary-size);
+    border-radius: 4px;
+    padding: 8px 12px;
+    z-index: 1;
+    top: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+    white-space: nowrap;
+}
+
+.tooltip::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent var(--text-color) transparent;
 }
