@@ -1000,10 +1000,10 @@ input:checked + .toggle-slider:before {
 }
 
 .tooltip-container {
-    position: relative; 
+    position: relative;
     display: inline-block;
 }
-
+  
 .tooltip {
     visibility: hidden;
     position: absolute;
@@ -1018,15 +1018,4 @@ input:checked + .toggle-slider:before {
     transform: translateX(-50%);
     width: fit-content;
     white-space: nowrap;
-}
-
-.tooltip::after {
-    content: "";
-    position: absolute;
-    top: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent var(--text-color) transparent;
 }

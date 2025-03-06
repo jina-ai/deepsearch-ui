@@ -424,16 +424,49 @@ function scrollToBottom() {
     mainContainer.scrollTop = mainContainer.scrollHeight;
 }
 
-function handleTooltipEvent (triggerElement) {
-    if (triggerElement.querySelector('.tooltip')) return;
-
-    const tooltip = document.createElement('div');
-    tooltip.classList.add('tooltip');
-    tooltip.textContent = t(triggerElement.getAttribute('data-tooltip'));
-    triggerElement.appendChild(tooltip);
+function handleTooltipEvent (triggerElement, orientation = 'bottom' | 'top' | 'left' | 'right') {
+    let tooltip = triggerElement.querySelector('.tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.classList.add('tooltip');
+        tooltip.textContent = t(triggerElement.getAttribute('data-tooltip'));
+        triggerElement.appendChild(tooltip);
+    }
 
     triggerElement.addEventListener('mouseenter', () => {
         tooltip.style.visibility = 'visible';
+
+        switch (orientation) {
+            case 'top':
+                tooltip.style.bottom = '125%';
+                tooltip.style.left = '50%';
+                tooltip.style.top = 'unset';
+                tooltip.style.right = 'unset';
+                tooltip.style.transform = 'translateX(-50%)';
+                break;
+            case 'left':
+                tooltip.style.right = '0';
+                tooltip.style.top = '125%';
+                tooltip.style.left = 'unset';
+                tooltip.style.bottom = 'unset';
+                tooltip.style.transform = 'unset';
+                break;
+            case 'right':
+                tooltip.style.left = '0';
+                tooltip.style.top = '125%';
+                tooltip.style.right = 'unset';
+                tooltip.style.bottom = 'unset';
+                tooltip.style.transform = 'unset';
+                break;
+            case 'bottom':
+            default:
+                tooltip.style.top = '125%';
+                tooltip.style.left = '50%';
+                tooltip.style.right = 'unset';
+                tooltip.style.bottom = 'unset';
+                tooltip.style.transform = 'translateX(-50%)';
+                break;
+        }
     });
 
     triggerElement.addEventListener('mouseleave', () => {
@@ -1435,5 +1468,12 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .finally(() => {
             updateEmptyState();
+        });
+
+        [helpButton, toggleApiKeyBtn].forEach(button => {
+            handleTooltipEvent(button, 'left');
+        });
+        [settingsButton, newChatButton].forEach(button => {
+            handleTooltipEvent(button, 'right');
         });
 });
