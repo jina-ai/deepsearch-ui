@@ -1023,6 +1023,30 @@ input:checked + .toggle-slider:before {
     display: flex;
 }
 
+
+#file-drop-area {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border: 2px dashed var(--bg-color-200);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    display: none;
+    z-index: 1;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.drag-over {
+    border: 2px dashed var(--primary-color) !important;
+    background-color: var(--bg-color-100);
+}
+
 #input-error-message {
     display: none;
     width: 100%;

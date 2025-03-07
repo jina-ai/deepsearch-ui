@@ -251,8 +251,7 @@ function loadChatMessages() {
 
 
 // File upload functions
-function handleFileUpload(event) {
-    const files = event.target.files;
+function handleFileUpload(files) {
     if (!files || files.length === 0) return;
 
     // Check total size
@@ -351,7 +350,7 @@ fileUploadButton.addEventListener('click', () => {
     fileInput.click();
 });
 
-fileInput.addEventListener('change', handleFileUpload);
+fileInput.addEventListener('change', e => handleFileUpload(e.target.files));
 
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
@@ -1649,6 +1648,66 @@ function handleFootnoteClick(event) {
 document.getElementById('chat-container').addEventListener('click', handleFootnoteClick);
 
 
+// set up drag and drop file upload
+function setupFileDrop() {
+
+    const container = document.getElementById('message-input-container');
+    const dropArea = document.getElementById('file-drop-area');  
+    // Prevent default to allow drop
+    container.addEventListener('dragenter', (e) => {
+        preventDefaults(e);
+        displayDropArea();
+    });
+
+    container.addEventListener('dragleave', (e) => {
+        preventDefaults(e);
+        const rect = container.getBoundingClientRect();
+        if (!rect) {
+            hideDropArea();
+            return;
+        }
+        if (e.x > rect.left + rect.width || e.x < rect.left ||
+          e.y > rect.top + rect.height || e.y < rect.top) {
+            hideDropArea();
+        }
+    });
+
+    dropArea.addEventListener('dragover', (e) => {
+        preventDefaults(e);
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        preventDefaults(e);
+        let files = [];
+        const items = e.dataTransfer?.items;
+        if (!items) return;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].kind === 'file') {
+                const file = items[i].getAsFile();
+                files.push(file);
+            }
+        }
+
+        handleFileUpload(files);
+        hideDropArea();
+    });
+
+    function displayDropArea() {
+        dropArea.classList.add('drag-over');
+        dropArea.style.display = 'block';
+    }
+
+    function hideDropArea() {
+        dropArea.classList.remove('drag-over');
+        dropArea.style.display = 'none';
+    }
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+}
+
 function ensureHljsLoaded() {
     return new Promise((resolve) => {
         // If HLJS is already loaded, resolve immediately
@@ -1720,4 +1779,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         handleTooltipEvent(fileUploadButton, 'top');
+        setupFileDrop();
 });
