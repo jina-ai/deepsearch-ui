@@ -937,7 +937,7 @@ async function sendMessage(redo = false) {
     const queryText = messageInput.value.trim();
 
     if (isLoading) return;
-    if (!queryText && uploadedFiles.length === 0 && !redo) return;
+    if (!queryText && !redo) return;
     if (redo && existingMessages.length === 0) return;
 
     abortController = new AbortController();
