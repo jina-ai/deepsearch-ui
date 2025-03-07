@@ -199,9 +199,7 @@ const SUPPORTED_FILE_TYPES = {
     'text/plain': 'TXT',
     'image/jpeg': 'JPEG',
     'image/png': 'PNG',
-    'image/gif': 'GIF',
     'image/webp': 'WEBP',
-    'image/svg+xml': 'SVG'
 };
 
 // State variables
@@ -288,8 +286,7 @@ function handleFileUpload(files) {
 
 // Check if file type is supported
 function isSupportedFileType(mimeType) {
-    return mimeType in SUPPORTED_FILE_TYPES || 
-           mimeType.startsWith('image/');
+    return mimeType in SUPPORTED_FILE_TYPES;
 }
 
 // Create file preview
