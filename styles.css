@@ -121,7 +121,7 @@ textarea::placeholder {
 
 /* Center logo when chat is empty */
 #chat-app.empty-chat #logo {
-    margin: 0 auto;
+    margin: 0 auto 40px;
     width: 150px;
     display: flex;
 }
@@ -205,6 +205,7 @@ textarea::placeholder {
     position: sticky;
     bottom: 0;
     padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    flex-direction: column;
 }
 
 #thinking-animation-icon {
@@ -215,7 +216,6 @@ textarea::placeholder {
 #chat-app.empty-chat #input-area {
     position: relative;
     box-shadow: none;
-    flex-direction: column;
     align-items: center;
     gap: 20px;
     border: unset;
@@ -227,9 +227,8 @@ textarea::placeholder {
 }
 
 /* Adjust input width when chat is empty */
-#chat-app.empty-chat #message-input {
+#chat-app.empty-chat #message-input-container {
     margin-bottom: 20px;
-    margin-top: 40px;
 }
 
 /* Ensure send button is properly centered */
@@ -255,9 +254,7 @@ textarea::placeholder {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%235f6368' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-search'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: top 16px left 16px;
-    padding-left: 48px;
-    padding-top: 14px;
-    padding-bottom: 14px;
+    padding: 14px 48px;
     color: var(--text-color);
     font-size: var(--subtitle-size);
     font-family: 'Roboto', Arial, sans-serif;
@@ -1020,8 +1017,25 @@ input:checked + .toggle-slider:before {
     white-space: nowrap;
 }
 
+#message-input-container {
+    width: 100%;
+    position: relative;
+    display: flex;
+}
+
+#input-error-message {
+    display: none;
+    width: 100%;
+    color: var(--negative);
+    font-size: var(--body-size);
+    padding-left: 32px;
+}
+
 /* File upload button styles */
 #file-upload-button {
+    position: absolute;
+    right: 16px;
+    top: 8px;
     background-color: unset;
     padding: 0 8px;
     height: 32px;

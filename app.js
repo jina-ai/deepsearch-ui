@@ -7,7 +7,8 @@ let UI_STRINGS = {
         addKey: () => 'Upgrade',
         updateKey: () => 'Update Key',
         getKey: () => 'Get API Key',
-        purchase: () => 'Purchase More Token'
+        purchase: () => 'Purchase More Token',
+        downloadFile: () => 'Download file'
     },
     think: {
         initial: () => 'Thinking...',
@@ -147,6 +148,7 @@ function applyTranslations() {
           updateKey: () => t('buttons.updateKey'),
           getKey: () => t('buttons.getKey'),
           purchase: () => t('buttons.purchase'),
+          downloadFile: () => t('buttons.downloadFile')
         },
         think: {
           initial: () => t('think.initial'),
@@ -187,9 +189,20 @@ const dialogCloseBtns = document.querySelectorAll('.dialog-close');
 const fileUploadButton = document.getElementById('file-upload-button');
 const fileInput = document.getElementById('file-input');
 const filePreviewContainer = document.getElementById('file-preview-container');
+const inputErrorMessage = document.getElementById('input-error-message');
 
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
+const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+const SUPPORTED_FILE_TYPES = {
+    'application/pdf': 'PDF',
+    'text/plain': 'TXT',
+    'image/jpeg': 'JPEG',
+    'image/png': 'PNG',
+    'image/gif': 'GIF',
+    'image/webp': 'WEBP',
+    'image/svg+xml': 'SVG'
+};
 
 // State variables
 let isLoading = false;
@@ -203,16 +216,6 @@ let compositionEnded = false;
 
 // File upload state
 let uploadedFiles = [];
-const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB in bytes
-const SUPPORTED_FILE_TYPES = {
-    'application/pdf': 'PDF',
-    'text/plain': 'TXT',
-    'image/jpeg': 'JPEG',
-    'image/png': 'PNG',
-    'image/gif': 'GIF',
-    'image/webp': 'WEBP',
-    'image/svg+xml': 'SVG'
-};
 
 // API Key Management
 function initializeApiKey() {
@@ -251,7 +254,8 @@ function handleFileUpload(event) {
     }
 
     if (totalSize > MAX_TOTAL_SIZE) {
-        alert(t('errors.fileSizeLimit'));
+        inputErrorMessage.textContent = t('errors.fileSizeLimit');
+        inputErrorMessage.style.display = 'block';
         return;
     }
 
@@ -259,7 +263,8 @@ function handleFileUpload(event) {
     for (const file of files) {
         // Check file type
         if (!isSupportedFileType(file.type)) {
-            alert(t('errors.fileTypeNotSupported') + ': ' + file.name);
+            inputErrorMessage.textContent = t('errors.fileTypeNotSupported') + ': ' + file.name;
+            inputErrorMessage.style.display = 'block';
             continue;
         }
 
@@ -317,7 +322,7 @@ function createFilePreview(file) {
         // For non-image files, show an icon
         const fileTypeIcon = document.createElement('div');
         fileTypeIcon.classList.add('file-type-icon');
-        fileTypeIcon.textContent = SUPPORTED_FILE_TYPES[file.type] || 'FILE';
+        fileTypeIcon.textContent = getFileTypeDisplay(file.type);
         previewItem.appendChild(fileTypeIcon);
         previewItem.appendChild(fileName);
     }
@@ -339,9 +344,6 @@ fileUploadButton.addEventListener('click', () => {
 });
 
 fileInput.addEventListener('change', handleFileUpload);
-
-// Add tooltip handling for file upload button
-handleTooltipEvent(fileUploadButton, 'right');
 
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
@@ -630,7 +632,7 @@ function handleReDoEvent (redoButton) {
     existingMessages.splice(currentMessageIndex);
     saveChatMessages();
 
-    sendMessage(userMessage, true);
+    sendMessage(true);
 }
 
 function handleCopyEvent (copyButton, copyIcon, content) {
@@ -685,7 +687,7 @@ function createActionButton(content) {
     return buttonContainer;
 }
 
-function displayMessage(role, content, messageId = null) {
+function createMessage(role, content, messageId = null) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', `${role}-message`)
     const id = messageId || `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -704,41 +706,46 @@ function displayMessage(role, content, messageId = null) {
             
             // Process each part
             content.forEach(part => {
-                if (part.type === 'text') {
-                    const textElement = renderMarkdown(part.text, true, [], role);
-                    messageContent.appendChild(textElement);
-                } else if (part.type === 'image') {
-                    const imgContainer = document.createElement('div');
-                    imgContainer.classList.add('message-image-container');
-                    
-                    const img = document.createElement('img');
-                    img.src = part.image;
-                    img.classList.add('message-image');
-                    img.alt = 'Uploaded image';
-                    
-                    imgContainer.appendChild(img);
-                    messageContent.appendChild(imgContainer);
-                } else if (part.type === 'file') {
-                    const fileContainer = document.createElement('div');
-                    fileContainer.classList.add('message-file-container');
-                    
-                    const fileLink = document.createElement('a');
-                    fileLink.href = part.data;
-                    fileLink.download = 'file'; // Generic name
-                    fileLink.classList.add('message-file-link');
-                    
-                    const fileIcon = document.createElement('span');
-                    fileIcon.classList.add('message-file-icon');
-                    fileIcon.textContent = getFileTypeDisplay(part.mimeType);
-                    
-                    const fileName = document.createElement('span');
-                    fileName.classList.add('message-file-name');
-                    fileName.textContent = 'Download file';
-                    
-                    fileLink.appendChild(fileIcon);
-                    fileLink.appendChild(fileName);
-                    fileContainer.appendChild(fileLink);
-                    messageContent.appendChild(fileContainer);
+                switch (part.type) {
+                    case 'image':
+                        const imgContainer = document.createElement('div');
+                        imgContainer.classList.add('message-image-container');
+
+                        const img = document.createElement('img');
+                        img.src = part.image;
+                        img.classList.add('message-image');
+
+                        imgContainer.appendChild(img);
+                        messageContent.appendChild(imgContainer);
+                        break;
+                    case 'file':
+                        const fileContainer = document.createElement('div');
+                        fileContainer.classList.add('message-file-container');
+
+                        const fileLink = document.createElement('a');
+                        fileLink.href = part
+                        fileLink.download = 'file'; // Generic name
+                        fileLink.classList.add('message-file-link');
+
+                        const fileIcon = document.createElement('span');
+                        fileIcon.classList.add('message-file-icon');
+                        fileIcon.textContent = getFileTypeDisplay(part.mimeType);
+
+                        const fileName = document.createElement('span');
+                        fileName.classList.add('message-file-name');
+                        fileName.setAttribute('data-label', 'buttons.downloadFile');
+                        fileName.textContent = UI_STRINGS.buttons.downloadFile();
+
+                        fileLink.appendChild(fileIcon);
+                        fileLink.appendChild(fileName);
+                        fileContainer.appendChild(fileLink);
+                        messageContent.appendChild(fileContainer);
+                        break;
+                    case 'text':
+                    default:
+                        const textElement = renderMarkdown(part.text, true, [], role);
+                        messageContent.appendChild(textElement);
+                        break;
                 }
             });
             
@@ -759,7 +766,7 @@ function removeLoadingIndicator(messageDiv) {
     }
 }
 
-function showErrorWithAction(message, buttonText, onClick) {
+function createErrorMessage(message, buttonText, onClick) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', 'assistant-message');
 
@@ -916,11 +923,13 @@ const makeAllLinksOpenInNewTab = () => {
     });
 };
 
-async function sendMessage(q = '', redo = false) {
-    const query = typeof messageInput.value === 'string' ? messageInput.value.trim() : '';
-    const queryText = query || (typeof q === 'string' ? q : '');
+async function sendMessage(redo = false) {
+    inputErrorMessage.style.display = 'none';
+    const queryText = messageInput.value.trim();
 
-    if ((!queryText && uploadedFiles.length === 0) || isLoading) return;
+    if (isLoading) return;
+    if (!queryText && uploadedFiles.length === 0 && !redo) return;
+    if (redo && existingMessages.length === 0) return;
 
     abortController = new AbortController();
     isLoading = true;
@@ -975,7 +984,7 @@ async function sendMessage(q = '', redo = false) {
 
     if (!redo) {
         const userMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        displayMessage('user', messageContent, userMessageId);
+        createMessage('user', messageContent, userMessageId);
         existingMessages.push({role: 'user', content: messageContent, id: userMessageId});
     }
     
@@ -991,7 +1000,7 @@ async function sendMessage(q = '', redo = false) {
     saveChatMessages();
 
     const assistantMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    const assistantMessageDiv = displayMessage('assistant', '', assistantMessageId);
+    const assistantMessageDiv = createMessage('assistant', '', assistantMessageId);
 
     let markdownContent = '';
     let thinkContent = '';
@@ -1028,21 +1037,21 @@ async function sendMessage(q = '', redo = false) {
 
             switch (res.status) {
                 case 401:
-                    showErrorWithAction(
+                    createErrorMessage(
                         UI_STRINGS.errors.invalidKey(),
                         UI_STRINGS.buttons.updateKey(),
                         () => apiKeyDialog.classList.add('visible')
                     );
                     break;
                 case 402:
-                    showErrorWithAction(
+                    createErrorMessage(
                         UI_STRINGS.errors.insufficientTokens(),
                         UI_STRINGS.buttons.purchase(),
                         () => window.open('https://jina.ai/api-dashboard/key-manager?login=true', '_blank')
                     );
                     break;
                 case 429:
-                    showErrorWithAction(
+                    createErrorMessage(
                         UI_STRINGS.errors.rateLimit(),
                         UI_STRINGS.buttons.addKey(),
                         () => apiKeyDialog.classList.add('visible')
@@ -1248,7 +1257,7 @@ function loadAndDisplaySavedMessages() {
             if (!message.id) {
                 message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
             }
-            const messageDiv = displayMessage(message.role, message.content, message.id);
+            const messageDiv = createMessage(message.role, message.content, message.id);
 
             if (message.role === 'assistant') {
                 // Remove loading indicator
@@ -1696,4 +1705,6 @@ document.addEventListener('DOMContentLoaded', () => {
         [settingsButton, newChatButton].forEach(button => {
             handleTooltipEvent(button, 'right');
         });
+
+        handleTooltipEvent(fileUploadButton, 'top');
 });
