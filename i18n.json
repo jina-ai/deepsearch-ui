@@ -21,7 +21,8 @@
       "settings": "Settings",
       "help": "Support",
       "new": "Clear and start a new conversation",
-      "upgrade": "Upgrade to higher rate limit"
+      "upgrade": "Upgrade to higher rate limit",
+      "upload": "Upload files"
     },
     "think": {
       "initial": "Thinking...",
@@ -34,7 +35,9 @@
     "errors": {
       "invalidKey": "Invalid API key. Please update your key by click the button below\".",
       "insufficientTokens": "Insufficient tokens in your API key. Please purchase more tokens or swap to another key.",
-      "rateLimit": "You have reached the rate limit. Please try again later. You can also upgrade to a higher plan by clicking the button below."
+      "rateLimit": "You have reached the rate limit. Please try again later. You can also upgrade to a higher plan by clicking the button below.",
+      "fileSizeLimit": "Total file size exceeds 10MB limit",
+      "fileTypeNotSupported": "File type not supported"
     },
     "placeholders": {
       "messageInput": "Type your question here",
@@ -85,7 +88,8 @@
       "settings": "设置",
       "help": "帮助",
       "new": "清除并开始新对话",
-      "upgrade": "升级到更高的速率限制"
+      "upgrade": "升级到更高的速率限制",
+      "upload": "上传文件"
     },
     "think": {
       "initial": "思考中...",
@@ -98,7 +102,9 @@
     "errors": {
       "invalidKey": "无效的API密钥。请点击下方按钮更新您的密钥。",
       "insufficientTokens": "您的API密钥中的词元不足。请购买更多词元或更换另一个密钥。",
-      "rateLimit": "您已达到速率限制。请稍后再试。您也可以通过点击下方按钮升级到更高级别的计划。"
+      "rateLimit": "您已达到速率限制。请稍后再试。您也可以通过点击下方按钮升级到更高级别的计划。",
+      "fileSizeLimit": "文件总大小超过10MB限制",
+      "fileTypeNotSupported": "不支持的文件类型"
     },
     "placeholders": {
       "messageInput": "在此输入您的问题",
@@ -149,7 +155,8 @@
       "settings": "設定",
       "help": "帮助",
       "new": "清除並開始新對話",
-      "upgrade": "升級到更高的速度限制"
+      "upgrade": "升級到更高的速度限制",
+      "upload": "上傳檔案"
     },
     "think": {
       "initial": "思考中...",
@@ -162,7 +169,9 @@
     "errors": {
       "invalidKey": "API 金鑰有問題喔。請按下面的按鈕更新金鑰。",
       "insufficientTokens": "你的 API 金鑰詞元不夠用啦。請買多一點詞元，或是換一個金鑰。",
-      "rateLimit": "你已經達到速度上限囉。請等一下再試。也可以按下面的按鈕升級到更高等級的方案。"
+      "rateLimit": "你已經達到速度上限囉。請等一下再試。也可以按下面的按鈕升級到更高等級的方案。",
+      "fileSizeLimit": "檔案總大小超過10MB限制",
+      "fileTypeNotSupported": "不支援的檔案類型"
     },
     "placeholders": {
       "messageInput": "在這裡輸入你的問題",
@@ -213,7 +222,8 @@
       "settings": "設定",
       "help": "サポート",
       "new": "クリアして新しい会話を開始",
-      "upgrade": "上限を引き上げる"
+      "upgrade": "上限を引き上げる",
+      "upload": "ファイルをアップロード"
     },
     "think": {
       "initial": "思考中...",
@@ -226,7 +236,9 @@
     "errors": {
       "invalidKey": "無効なAPIキーです。以下のボタンをクリックしてキーを更新してください。",
       "insufficientTokens": "APIキーのトークン残高が不足しています。トークンを追加購入するか、別のキーに切り替えてください。",
-      "rateLimit": "レート制限に達しました。しばらくしてからもう一度お試しください。以下のボタンをクリックして、上位プランにアップグレードすることもできます。"
+      "rateLimit": "レート制限に達しました。しばらくしてからもう一度お試しください。以下のボタンをクリックして、上位プランにアップグレードすることもできます。",
+      "fileSizeLimit": "ファイルの合計サイズが10MB制限を超えています",
+      "fileTypeNotSupported": "サポートされていないファイル形式です"
     },
     "placeholders": {
       "messageInput": "ここに質問を入力してください",
@@ -277,7 +289,8 @@
       "settings": "Paramètres",
       "help": "Support",
       "new": "Effacer et commencer une nouvelle conversation",
-      "upgrade": "Passer à une limite de taux supérieure"
+      "upgrade": "Passer à une limite de taux supérieure",
+      "upload": "Télécharger des fichiers"
     },
     "think": {
       "initial": "Réflexion en cours...",
@@ -290,7 +303,9 @@
     "errors": {
       "invalidKey": "Clé API invalide. Veuillez mettre à jour votre clé en cliquant sur le bouton ci-dessous.",
       "insufficientTokens": "Jetons insuffisants dans votre clé API. Veuillez acheter plus de jetons ou changer de clé.",
-      "rateLimit": "Vous avez atteint la limite de taux. Veuillez réessayer plus tard. Vous pouvez également passer à un plan supérieur en cliquant sur le bouton ci-dessous."
+      "rateLimit": "Vous avez atteint la limite de taux. Veuillez réessayer plus tard. Vous pouvez également passer à un plan supérieur en cliquant sur le bouton ci-dessous.",
+      "fileSizeLimit": "La taille totale des fichiers dépasse la limite de 10 Mo",
+      "fileTypeNotSupported": "Type de fichier non pris en charge"
     },
     "placeholders": {
       "messageInput": "Tapez votre question ici",

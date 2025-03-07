@@ -184,6 +184,9 @@ const helpDialog = document.getElementById('help-dialog');
 const settingsButton = document.getElementById('settings-button');
 const settingsDialog = document.getElementById('settings-dialog');
 const dialogCloseBtns = document.querySelectorAll('.dialog-close');
+const fileUploadButton = document.getElementById('file-upload-button');
+const fileInput = document.getElementById('file-input');
+const filePreviewContainer = document.getElementById('file-preview-container');
 
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
@@ -197,6 +200,19 @@ let md;
 // Composing state variables for handling IME input
 let isComposing = false;
 let compositionEnded = false;
+
+// File upload state
+let uploadedFiles = [];
+const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+const SUPPORTED_FILE_TYPES = {
+    'application/pdf': 'PDF',
+    'text/plain': 'TXT',
+    'image/jpeg': 'JPEG',
+    'image/png': 'PNG',
+    'image/gif': 'GIF',
+    'image/webp': 'WEBP',
+    'image/svg+xml': 'SVG'
+};
 
 // API Key Management
 function initializeApiKey() {
@@ -223,9 +239,109 @@ function loadChatMessages() {
 }
 
 
+// File upload functions
+function handleFileUpload(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    // Check total size
+    let totalSize = uploadedFiles.reduce((sum, file) => sum + file.size, 0);
+    for (const file of files) {
+        totalSize += file.size;
+    }
+
+    if (totalSize > MAX_TOTAL_SIZE) {
+        alert(t('errors.fileSizeLimit'));
+        return;
+    }
+
+    // Process each file
+    for (const file of files) {
+        // Check file type
+        if (!isSupportedFileType(file.type)) {
+            alert(t('errors.fileTypeNotSupported') + ': ' + file.name);
+            continue;
+        }
+
+        // Add file to uploaded files
+        uploadedFiles.push(file);
+
+        // Create file preview
+        createFilePreview(file);
+    }
+
+    // Reset file input
+    fileInput.value = '';
+}
+
+// Check if file type is supported
+function isSupportedFileType(mimeType) {
+    return mimeType in SUPPORTED_FILE_TYPES || 
+           mimeType.startsWith('image/');
+}
+
+// Create file preview
+function createFilePreview(file) {
+    const reader = new FileReader();
+    const previewItem = document.createElement('div');
+    previewItem.classList.add('file-preview-item');
+    
+    // Create remove button
+    const removeButton = document.createElement('div');
+    removeButton.classList.add('remove-file');
+    removeButton.innerHTML = '×';
+    removeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        uploadedFiles = uploadedFiles.filter(f => f !== file);
+        previewItem.remove();
+    });
+    
+    // Create file name element
+    const fileName = document.createElement('div');
+    fileName.classList.add('file-name');
+    fileName.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
+    fileName.title = file.name;
+    
+    previewItem.appendChild(removeButton);
+    
+    // Handle different file types
+    if (file.type.startsWith('image/')) {
+        reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            previewItem.appendChild(img);
+            previewItem.appendChild(fileName);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // For non-image files, show an icon
+        const fileTypeIcon = document.createElement('div');
+        fileTypeIcon.classList.add('file-type-icon');
+        fileTypeIcon.textContent = SUPPORTED_FILE_TYPES[file.type] || 'FILE';
+        previewItem.appendChild(fileTypeIcon);
+        previewItem.appendChild(fileName);
+    }
+    
+    filePreviewContainer.appendChild(previewItem);
+}
+
+// Helper function to get file type display
+function getFileTypeDisplay(mimeType) {
+    return SUPPORTED_FILE_TYPES[mimeType] || 'FILE';
+}
+
 // Initialize API key
 initializeApiKey();
 
+// File upload event listeners
+fileUploadButton.addEventListener('click', () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', handleFileUpload);
+
+// Add tooltip handling for file upload button
+handleTooltipEvent(fileUploadButton, 'right');
 
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
@@ -578,7 +694,56 @@ function displayMessage(role, content, messageId = null) {
     if (role === 'assistant') {
         messageDiv.innerHTML = `<div id="loading-indicator">${loadingSvg}</div>`;
     } else {
-        messageDiv.replaceChildren(renderMarkdown(content, true, [], role));
+        // Handle user message with potential file content
+        if (typeof content === 'string') {
+            // Simple text message
+            messageDiv.replaceChildren(renderMarkdown(content, true, [], role));
+        } else if (Array.isArray(content)) {
+            // Complex message with text and files
+            const messageContent = document.createElement('div');
+            
+            // Process each part
+            content.forEach(part => {
+                if (part.type === 'text') {
+                    const textElement = renderMarkdown(part.text, true, [], role);
+                    messageContent.appendChild(textElement);
+                } else if (part.type === 'image') {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.classList.add('message-image-container');
+                    
+                    const img = document.createElement('img');
+                    img.src = part.image;
+                    img.classList.add('message-image');
+                    img.alt = 'Uploaded image';
+                    
+                    imgContainer.appendChild(img);
+                    messageContent.appendChild(imgContainer);
+                } else if (part.type === 'file') {
+                    const fileContainer = document.createElement('div');
+                    fileContainer.classList.add('message-file-container');
+                    
+                    const fileLink = document.createElement('a');
+                    fileLink.href = part.data;
+                    fileLink.download = 'file'; // Generic name
+                    fileLink.classList.add('message-file-link');
+                    
+                    const fileIcon = document.createElement('span');
+                    fileIcon.classList.add('message-file-icon');
+                    fileIcon.textContent = getFileTypeDisplay(part.mimeType);
+                    
+                    const fileName = document.createElement('span');
+                    fileName.classList.add('message-file-name');
+                    fileName.textContent = 'Download file';
+                    
+                    fileLink.appendChild(fileIcon);
+                    fileLink.appendChild(fileName);
+                    fileContainer.appendChild(fileLink);
+                    messageContent.appendChild(fileContainer);
+                }
+            });
+            
+            messageDiv.appendChild(messageContent);
+        }
     }
 
     chatContainer.appendChild(messageDiv);
@@ -732,6 +897,9 @@ function clearMessages() {
     abortController?.abort();
     // Clear messages from localStorage
     localStorage.removeItem('chat_messages');
+    // Clear uploaded files
+    uploadedFiles = [];
+    filePreviewContainer.innerHTML = '';
     updateEmptyState();
 }
 
@@ -749,20 +917,74 @@ const makeAllLinksOpenInNewTab = () => {
 };
 
 async function sendMessage(q = '', redo = false) {
-    const query = messageInput.value.trim() || q;
+    const query = typeof messageInput.value === 'string' ? messageInput.value.trim() : '';
+    const queryText = query || (typeof q === 'string' ? q : '');
 
-    if (!query || isLoading) return;
+    if ((!queryText && uploadedFiles.length === 0) || isLoading) return;
 
     abortController = new AbortController();
     isLoading = true;
 
+    let messageContent;
+    
+    // Create message content based on text and files
+    if (uploadedFiles.length > 0) {
+        messageContent = [];
+        
+        // Add text part if there's text
+        if (queryText) {
+            messageContent.push({
+                type: 'text',
+                text: queryText
+            });
+        }
+        
+        // Process files
+        const filePromises = uploadedFiles.map(file => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64Data = reader.result;
+                    
+                    if (file.type.startsWith('image/')) {
+                        resolve({
+                            type: 'image',
+                            image: base64Data,
+                            mimeType: file.type
+                        });
+                    } else {
+                        resolve({
+                            type: 'file',
+                            data: base64Data,
+                            mimeType: file.type
+                        });
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        });
+        
+        // Wait for all files to be processed
+        const fileParts = await Promise.all(filePromises);
+        messageContent.push(...fileParts);
+    } else {
+        // Just text
+        messageContent = queryText;
+    }
+
     if (!redo) {
         const userMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        displayMessage('user', query, userMessageId);
-        existingMessages.push({role: 'user', content: query, id: userMessageId});
+        displayMessage('user', messageContent, userMessageId);
+        existingMessages.push({role: 'user', content: messageContent, id: userMessageId});
     }
+    
+    // Clear input and files
     messageInput.value = '';
     messageInput.style.height = 'auto';
+    uploadedFiles = [];
+    filePreviewContainer.innerHTML = '';
+    
     // To clear the badge
     clearFaviconBadge();
     // Save messages to localStorage
@@ -1061,10 +1283,8 @@ function loadAndDisplaySavedMessages() {
                         thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
                     }
                 }
-            } else if (message.role === 'user') {
-                // Ensure user message content is displayed
-                messageDiv.replaceChildren(renderMarkdown(message.content, true, [], 'user'));
             }
+            // User messages are already handled in displayMessage
         });
         saveChatMessages();
         makeAllLinksOpenInNewTab();
