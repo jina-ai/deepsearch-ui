@@ -1144,6 +1144,10 @@ input:checked + .toggle-slider:before {
     display: inline-block;
 }
 
+.message-file-container + .message-file-container {
+    margin-left: 8px;
+}
+
 .message-file-link {
     display: flex;
     align-items: center;

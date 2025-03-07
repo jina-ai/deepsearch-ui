@@ -228,7 +228,15 @@ function initializeApiKey() {
 
 // Chat Message Persistence
 function saveChatMessages() {
-    localStorage.setItem('chat_messages', JSON.stringify(existingMessages));
+    const thinMessage = existingMessages.map(m => {
+        return {
+            role: m.role,
+            content: typeof m.content === 'string' ? m.content : m.content.map(c => ({ type: c.type, text: c.text, mimeType: c.mimeType })),
+            id: m.id
+        };
+    });
+    
+    localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
 }
 
 function loadChatMessages() {
@@ -712,7 +720,7 @@ function createMessage(role, content, messageId = null) {
                         imgContainer.classList.add('message-image-container');
 
                         const img = document.createElement('img');
-                        img.src = part.image;
+                        img.src = part.image || 'fallback-image.svg';
                         img.classList.add('message-image');
 
                         imgContainer.appendChild(img);
@@ -723,7 +731,7 @@ function createMessage(role, content, messageId = null) {
                         fileContainer.classList.add('message-file-container');
 
                         const fileLink = document.createElement('a');
-                        fileLink.href = part
+                        fileLink.href = part.data;
                         fileLink.download = 'file'; // Generic name
                         fileLink.classList.add('message-file-link');
 
@@ -731,13 +739,18 @@ function createMessage(role, content, messageId = null) {
                         fileIcon.classList.add('message-file-icon');
                         fileIcon.textContent = getFileTypeDisplay(part.mimeType);
 
-                        const fileName = document.createElement('span');
-                        fileName.classList.add('message-file-name');
-                        fileName.setAttribute('data-label', 'buttons.downloadFile');
-                        fileName.textContent = UI_STRINGS.buttons.downloadFile();
+                        let fileName;
+                        if (part.data) {
+                            fileName = document.createElement('span');
+                            fileName.classList.add('message-file-name');
+                            fileName.setAttribute('data-label', 'buttons.downloadFile');
+                            fileName.textContent = UI_STRINGS.buttons.downloadFile();
+                        }
 
                         fileLink.appendChild(fileIcon);
-                        fileLink.appendChild(fileName);
+                        if (fileName) {
+                            fileLink.appendChild(fileName);
+                        }
                         fileContainer.appendChild(fileLink);
                         messageContent.appendChild(fileContainer);
                         break;
