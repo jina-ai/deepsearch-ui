@@ -7,7 +7,8 @@ let UI_STRINGS = {
         addKey: () => 'Upgrade',
         updateKey: () => 'Update Key',
         getKey: () => 'Get API Key',
-        purchase: () => 'Purchase More Token'
+        purchase: () => 'Purchase More Token',
+        downloadFile: () => 'Download file'
     },
     think: {
         initial: () => 'Thinking...',
@@ -147,6 +148,7 @@ function applyTranslations() {
           updateKey: () => t('buttons.updateKey'),
           getKey: () => t('buttons.getKey'),
           purchase: () => t('buttons.purchase'),
+          downloadFile: () => t('buttons.downloadFile')
         },
         think: {
           initial: () => t('think.initial'),
@@ -184,9 +186,21 @@ const helpDialog = document.getElementById('help-dialog');
 const settingsButton = document.getElementById('settings-button');
 const settingsDialog = document.getElementById('settings-dialog');
 const dialogCloseBtns = document.querySelectorAll('.dialog-close');
+const fileUploadButton = document.getElementById('file-upload-button');
+const fileInput = document.getElementById('file-input');
+const filePreviewContainer = document.getElementById('file-preview-container');
+const inputErrorMessage = document.getElementById('input-error-message');
 
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
+const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+const SUPPORTED_FILE_TYPES = {
+    'application/pdf': 'PDF',
+    'text/plain': 'TXT',
+    'image/jpeg': 'JPEG',
+    'image/png': 'PNG',
+    'image/webp': 'WEBP',
+};
 
 // State variables
 let isLoading = false;
@@ -197,6 +211,9 @@ let md;
 // Composing state variables for handling IME input
 let isComposing = false;
 let compositionEnded = false;
+
+// File upload state
+let uploadedFiles = [];
 
 // API Key Management
 function initializeApiKey() {
@@ -209,7 +226,15 @@ function initializeApiKey() {
 
 // Chat Message Persistence
 function saveChatMessages() {
-    localStorage.setItem('chat_messages', JSON.stringify(existingMessages));
+    const thinMessage = existingMessages.map(m => {
+        return {
+            role: m.role,
+            content: typeof m.content === 'string' ? m.content : m.content.map(c => ({ type: c.type, text: c.text, mimeType: c.mimeType })),
+            id: m.id
+        };
+    });
+    
+    localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
 }
 
 function loadChatMessages() {
@@ -223,9 +248,106 @@ function loadChatMessages() {
 }
 
 
+// File upload functions
+function handleFileUpload(files) {
+    if (!files || files.length === 0) return;
+
+    // Check total size
+    let totalSize = uploadedFiles.reduce((sum, file) => sum + file.size, 0);
+    for (const file of files) {
+        totalSize += file.size;
+    }
+
+    if (totalSize > MAX_TOTAL_SIZE) {
+        inputErrorMessage.textContent = t('errors.fileSizeLimit');
+        inputErrorMessage.style.display = 'block';
+        return;
+    }
+
+    // Process each file
+    for (const file of files) {
+        // Check file type
+        if (!isSupportedFileType(file.type)) {
+            inputErrorMessage.textContent = t('errors.fileTypeNotSupported') + ': ' + file.name;
+            inputErrorMessage.style.display = 'block';
+            continue;
+        }
+
+        // Add file to uploaded files
+        uploadedFiles.push(file);
+
+        // Create file preview
+        createFilePreview(file);
+    }
+
+    // Reset file input
+    fileInput.value = '';
+}
+
+// Check if file type is supported
+function isSupportedFileType(mimeType) {
+    return mimeType in SUPPORTED_FILE_TYPES;
+}
+
+// Create file preview
+function createFilePreview(file) {
+    const reader = new FileReader();
+    const previewItem = document.createElement('div');
+    previewItem.classList.add('file-preview-item');
+    
+    // Create remove button
+    const removeButton = document.createElement('div');
+    removeButton.classList.add('remove-file');
+    removeButton.innerHTML = '×';
+    removeButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        uploadedFiles = uploadedFiles.filter(f => f !== file);
+        previewItem.remove();
+    });
+    
+    // Create file name element
+    const fileName = document.createElement('div');
+    fileName.classList.add('file-name');
+    fileName.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
+    fileName.title = file.name;
+    
+    previewItem.appendChild(removeButton);
+    
+    // Handle different file types
+    if (file.type.startsWith('image/')) {
+        reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            previewItem.appendChild(img);
+            previewItem.appendChild(fileName);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // For non-image files, show an icon
+        const fileTypeIcon = document.createElement('div');
+        fileTypeIcon.classList.add('file-type-icon');
+        fileTypeIcon.textContent = getFileTypeDisplay(file.type);
+        previewItem.appendChild(fileTypeIcon);
+        previewItem.appendChild(fileName);
+    }
+    
+    filePreviewContainer.appendChild(previewItem);
+}
+
+// Helper function to get file type display
+function getFileTypeDisplay(mimeType) {
+    return SUPPORTED_FILE_TYPES[mimeType] || 'FILE';
+}
+
 // Initialize API key
 initializeApiKey();
 
+// File upload event listeners
+fileUploadButton.addEventListener('click', () => {
+    fileInput.click();
+});
+
+fileInput.addEventListener('change', e => handleFileUpload(e.target.files));
 
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
@@ -514,7 +636,7 @@ function handleReDoEvent (redoButton) {
     existingMessages.splice(currentMessageIndex);
     saveChatMessages();
 
-    sendMessage(userMessage, true);
+    sendMessage(true);
 }
 
 function handleCopyEvent (copyButton, copyIcon, content) {
@@ -569,7 +691,7 @@ function createActionButton(content) {
     return buttonContainer;
 }
 
-function displayMessage(role, content, messageId = null) {
+function createMessage(role, content, messageId = null) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', `${role}-message`)
     const id = messageId || `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
@@ -578,7 +700,66 @@ function displayMessage(role, content, messageId = null) {
     if (role === 'assistant') {
         messageDiv.innerHTML = `<div id="loading-indicator">${loadingSvg}</div>`;
     } else {
-        messageDiv.replaceChildren(renderMarkdown(content, true, [], role));
+        // Handle user message with potential file content
+        if (typeof content === 'string') {
+            // Simple text message
+            messageDiv.replaceChildren(renderMarkdown(content, true, [], role));
+        } else if (Array.isArray(content)) {
+            // Complex message with text and files
+            const messageContent = document.createElement('div');
+            
+            // Process each part
+            content.forEach(part => {
+                switch (part.type) {
+                    case 'image':
+                        const imgContainer = document.createElement('div');
+                        imgContainer.classList.add('message-image-container');
+
+                        const img = document.createElement('img');
+                        img.src = part.image || 'fallback-image.svg';
+                        img.classList.add('message-image');
+
+                        imgContainer.appendChild(img);
+                        messageContent.appendChild(imgContainer);
+                        break;
+                    case 'file':
+                        const fileContainer = document.createElement('div');
+                        fileContainer.classList.add('message-file-container');
+
+                        const fileLink = document.createElement('a');
+                        fileLink.href = part.data;
+                        fileLink.download = 'file'; // Generic name
+                        fileLink.classList.add('message-file-link');
+
+                        const fileIcon = document.createElement('span');
+                        fileIcon.classList.add('message-file-icon');
+                        fileIcon.textContent = getFileTypeDisplay(part.mimeType);
+
+                        let fileName;
+                        if (part.data) {
+                            fileName = document.createElement('span');
+                            fileName.classList.add('message-file-name');
+                            fileName.setAttribute('data-label', 'buttons.downloadFile');
+                            fileName.textContent = UI_STRINGS.buttons.downloadFile();
+                        }
+
+                        fileLink.appendChild(fileIcon);
+                        if (fileName) {
+                            fileLink.appendChild(fileName);
+                        }
+                        fileContainer.appendChild(fileLink);
+                        messageContent.appendChild(fileContainer);
+                        break;
+                    case 'text':
+                    default:
+                        const textElement = renderMarkdown(part.text, true, [], role);
+                        messageContent.appendChild(textElement);
+                        break;
+                }
+            });
+            
+            messageDiv.appendChild(messageContent);
+        }
     }
 
     chatContainer.appendChild(messageDiv);
@@ -594,7 +775,7 @@ function removeLoadingIndicator(messageDiv) {
     }
 }
 
-function showErrorWithAction(message, buttonText, onClick) {
+function createErrorMessage(message, buttonText, onClick) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', 'assistant-message');
 
@@ -732,6 +913,9 @@ function clearMessages() {
     abortController?.abort();
     // Clear messages from localStorage
     localStorage.removeItem('chat_messages');
+    // Clear uploaded files
+    uploadedFiles = [];
+    filePreviewContainer.innerHTML = '';
     updateEmptyState();
 }
 
@@ -748,28 +932,84 @@ const makeAllLinksOpenInNewTab = () => {
     });
 };
 
-async function sendMessage(q = '', redo = false) {
-    const query = messageInput.value.trim() || q;
+async function sendMessage(redo = false) {
+    inputErrorMessage.style.display = 'none';
+    const queryText = messageInput.value.trim();
 
-    if (!query || isLoading) return;
+    if (isLoading) return;
+    if (!queryText && !redo) return;
+    if (redo && existingMessages.length === 0) return;
 
     abortController = new AbortController();
     isLoading = true;
 
+    let messageContent;
+    
+    // Create message content based on text and files
+    if (uploadedFiles.length > 0) {
+        messageContent = [];
+        
+        // Add text part if there's text
+        if (queryText) {
+            messageContent.push({
+                type: 'text',
+                text: queryText
+            });
+        }
+        
+        // Process files
+        const filePromises = uploadedFiles.map(file => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const base64Data = reader.result;
+                    
+                    if (file.type.startsWith('image/')) {
+                        resolve({
+                            type: 'image',
+                            image: base64Data,
+                            mimeType: file.type
+                        });
+                    } else {
+                        resolve({
+                            type: 'file',
+                            data: base64Data,
+                            mimeType: file.type
+                        });
+                    }
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        });
+        
+        // Wait for all files to be processed
+        const fileParts = await Promise.all(filePromises);
+        messageContent.push(...fileParts);
+    } else {
+        // Just text
+        messageContent = queryText;
+    }
+
     if (!redo) {
         const userMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        displayMessage('user', query, userMessageId);
-        existingMessages.push({role: 'user', content: query, id: userMessageId});
+        createMessage('user', messageContent, userMessageId);
+        existingMessages.push({role: 'user', content: messageContent, id: userMessageId});
     }
+    
+    // Clear input and files
     messageInput.value = '';
     messageInput.style.height = 'auto';
+    uploadedFiles = [];
+    filePreviewContainer.innerHTML = '';
+    
     // To clear the badge
     clearFaviconBadge();
     // Save messages to localStorage
     saveChatMessages();
 
     const assistantMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-    const assistantMessageDiv = displayMessage('assistant', '', assistantMessageId);
+    const assistantMessageDiv = createMessage('assistant', '', assistantMessageId);
 
     let markdownContent = '';
     let thinkContent = '';
@@ -806,21 +1046,21 @@ async function sendMessage(q = '', redo = false) {
 
             switch (res.status) {
                 case 401:
-                    showErrorWithAction(
+                    createErrorMessage(
                         UI_STRINGS.errors.invalidKey(),
                         UI_STRINGS.buttons.updateKey(),
                         () => apiKeyDialog.classList.add('visible')
                     );
                     break;
                 case 402:
-                    showErrorWithAction(
+                    createErrorMessage(
                         UI_STRINGS.errors.insufficientTokens(),
                         UI_STRINGS.buttons.purchase(),
                         () => window.open('https://jina.ai/api-dashboard/key-manager?login=true', '_blank')
                     );
                     break;
                 case 429:
-                    showErrorWithAction(
+                    createErrorMessage(
                         UI_STRINGS.errors.rateLimit(),
                         UI_STRINGS.buttons.addKey(),
                         () => apiKeyDialog.classList.add('visible')
@@ -1026,7 +1266,7 @@ function loadAndDisplaySavedMessages() {
             if (!message.id) {
                 message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
             }
-            const messageDiv = displayMessage(message.role, message.content, message.id);
+            const messageDiv = createMessage(message.role, message.content, message.id);
 
             if (message.role === 'assistant') {
                 // Remove loading indicator
@@ -1061,10 +1301,8 @@ function loadAndDisplaySavedMessages() {
                         thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
                     }
                 }
-            } else if (message.role === 'user') {
-                // Ensure user message content is displayed
-                messageDiv.replaceChildren(renderMarkdown(message.content, true, [], 'user'));
             }
+            // User messages are already handled in displayMessage
         });
         saveChatMessages();
         makeAllLinksOpenInNewTab();
@@ -1407,6 +1645,66 @@ function handleFootnoteClick(event) {
 document.getElementById('chat-container').addEventListener('click', handleFootnoteClick);
 
 
+// set up drag and drop file upload
+function setupFileDrop() {
+
+    const container = document.getElementById('message-input-container');
+    const dropArea = document.getElementById('file-drop-area');  
+    // Prevent default to allow drop
+    container.addEventListener('dragenter', (e) => {
+        preventDefaults(e);
+        displayDropArea();
+    });
+
+    container.addEventListener('dragleave', (e) => {
+        preventDefaults(e);
+        const rect = container.getBoundingClientRect();
+        if (!rect) {
+            hideDropArea();
+            return;
+        }
+        if (e.x > rect.left + rect.width || e.x < rect.left ||
+          e.y > rect.top + rect.height || e.y < rect.top) {
+            hideDropArea();
+        }
+    });
+
+    dropArea.addEventListener('dragover', (e) => {
+        preventDefaults(e);
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+        preventDefaults(e);
+        let files = [];
+        const items = e.dataTransfer?.items;
+        if (!items) return;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].kind === 'file') {
+                const file = items[i].getAsFile();
+                files.push(file);
+            }
+        }
+
+        handleFileUpload(files);
+        hideDropArea();
+    });
+
+    function displayDropArea() {
+        dropArea.classList.add('drag-over');
+        dropArea.style.display = 'block';
+    }
+
+    function hideDropArea() {
+        dropArea.classList.remove('drag-over');
+        dropArea.style.display = 'none';
+    }
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+}
+
 function ensureHljsLoaded() {
     return new Promise((resolve) => {
         // If HLJS is already loaded, resolve immediately
@@ -1476,4 +1774,7 @@ document.addEventListener('DOMContentLoaded', () => {
         [settingsButton, newChatButton].forEach(button => {
             handleTooltipEvent(button, 'right');
         });
+
+        handleTooltipEvent(fileUploadButton, 'top');
+        setupFileDrop();
 });
