@@ -23,7 +23,7 @@
       "help": "Support",
       "new": "Clear and start a new conversation",
       "upgrade": "Upgrade to higher rate limit",
-      "upload": "Upload files"
+      "upload": "Upload files (txt/pdf/png/jpeg/webp supported)"
     },
     "think": {
       "initial": "Thinking...",
@@ -91,7 +91,7 @@
       "help": "帮助",
       "new": "清除并开始新对话",
       "upgrade": "升级到更高的速率限制",
-      "upload": "上传文件"
+      "upload": "上传文件，支持txt/pdf/png/jpeg/webp格式"
     },
     "think": {
       "initial": "思考中...",
@@ -159,7 +159,7 @@
       "help": "帮助",
       "new": "清除並開始新對話",
       "upgrade": "升級到更高的速度限制",
-      "upload": "上傳檔案"
+      "upload": "上傳檔案 (支援 txt/pdf/png/jpeg/webp 格式)"
     },
     "think": {
       "initial": "思考中...",
@@ -227,7 +227,7 @@
       "help": "サポート",
       "new": "クリアして新しい会話を開始",
       "upgrade": "上限を引き上げる",
-      "upload": "ファイルをアップロード"
+      "upload": "ファイルをアップロード (txt/pdf/png/jpeg/webp形式)"
     },
     "think": {
       "initial": "思考中...",
@@ -295,7 +295,7 @@
       "help": "Support",
       "new": "Effacer et commencer une nouvelle conversation",
       "upgrade": "Passer à une limite de taux supérieure",
-      "upload": "Télécharger des fichiers"
+      "upload": "Télécharger des fichiers (formats txt/pdf/png/jpeg/webp pris en charge)"
     },
     "think": {
       "initial": "Réflexion en cours...",

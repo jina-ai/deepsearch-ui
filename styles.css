@@ -1065,7 +1065,6 @@ input:checked + .toggle-slider:before {
     height: 32px;
     display: flex;
     align-items: center;
-    border: none;
 }
 
 #file-upload-button:hover {
@@ -1087,33 +1086,32 @@ input:checked + .toggle-slider:before {
 /* File preview item styles */
 .file-preview-item {
     position: relative;
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
+    width: 64px;
+    height: 64px;
+    border-radius: 4px;
     overflow: hidden;
     background-color: var(--bg-color-100);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4px;
 }
 
 .file-preview-item img {
-    max-width: 100%;
     max-height: 100%;
     object-fit: contain;
 }
 
 .file-preview-item .file-name {
-    font-size: var(--secondary-size);
+    font-size: 0.7em;
     color: var(--text-secondary);
     text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 100%;
-    margin-top: 4px;
+    width: 90%;
+    position: absolute;
+    bottom: 6px;
 }
 
 .file-preview-item .remove-file {
@@ -1122,7 +1120,6 @@ input:checked + .toggle-slider:before {
     right: 2px;
     width: 16px;
     height: 16px;
-    background-color: var(--bg-color-300);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -1139,10 +1136,20 @@ input:checked + .toggle-slider:before {
 }
 
 .file-type-icon {
-    font-size: 24px;
     color: var(--text-secondary);
+    display: inline-flex;
+    padding-bottom: 10px;
 }
 
+.message-file-icon {
+    display: inline-flex;
+}
+
+.message-file-icon svg,
+.file-type-icon svg {
+    height: 16px;
+    width: 16px;
+}
 /* Hide file preview container when empty */
 #file-preview-container:empty {
     display: none;
@@ -1151,7 +1158,6 @@ input:checked + .toggle-slider:before {
 /* Message file and image styles */
 .message-image-container {
     margin: 8px 0;
-    max-width: 100%;
 }
 
 .message-image {
@@ -1161,10 +1167,9 @@ input:checked + .toggle-slider:before {
 }
 
 .message-file-container {
-    margin: 8px 0;
-    padding: 8px;
+    padding: 4px;
     background-color: var(--bg-color-100);
-    border-radius: 8px;
+    border-radius: 4px;
     display: inline-block;
 }
 
@@ -1177,11 +1182,7 @@ input:checked + .toggle-slider:before {
     align-items: center;
     color: var(--primary);
     text-decoration: none;
-}
-
-.message-file-icon {
-    margin-right: 8px;
-    font-weight: bold;
+    line-height: 1;
 }
 
 .user-message .message-file-link {
@@ -1190,4 +1191,9 @@ input:checked + .toggle-slider:before {
 
 .user-message .message-file-container {
     background-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-message .message-file-name {
+    font-size: 0.7em;
+    padding-left: 0.2rem;
 }

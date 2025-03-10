@@ -40,7 +40,7 @@ async function loadTranslations() {
 function t(key, replacements = {}, fallbackLanguage = 'en') {
     const keys = key.split('.');
     let value = i18n[currentLanguage];
-  
+
     for (const k of keys) {
       if (value && typeof value === 'object' && value !== null && k in value) {
         value = value[k];
@@ -65,7 +65,7 @@ function t(key, replacements = {}, fallbackLanguage = 'en') {
         break;
       }
     }
-  
+
     // Apply replacements if provided
     if (typeof value === 'string' && replacements) {
       for (const replacementKey in replacements) {
@@ -76,10 +76,10 @@ function t(key, replacements = {}, fallbackLanguage = 'en') {
         }
       }
     }
-  
+
     return value;
 }
-  
+
 
 // Function to apply translations to the UI
 function applyTranslations() {
@@ -91,7 +91,7 @@ function applyTranslations() {
 
     // Update document title and meta tags
     document.title = t('title');
-    
+
     // Update meta tags
     const metaTags = [
         'meta[name="title"]',
@@ -101,16 +101,16 @@ function applyTranslations() {
         'meta[property="twitter:title"]',
         'meta[property="twitter:description"]'
     ];
-    
+
     metaTags.forEach(selector => {
         const tag = document.querySelector(selector);
         if (tag) {
             const key = selector.includes('description') ? 'description' : 'title';
-            
+
             tag.content = t(key);
         }
     });
-    
+
     // Update all elements with data-label attributes
     document.querySelectorAll('[data-label]').forEach(element => {
         const labelKey = element.getAttribute('data-label');
@@ -119,7 +119,7 @@ function applyTranslations() {
             element.textContent = newVal;
         }
     });
-    
+
     // Update input placeholders
     document.querySelectorAll('[data-placeholder]').forEach(input => {
         const placeholderKey = input.getAttribute('data-placeholder');
@@ -194,12 +194,15 @@ const inputErrorMessage = document.getElementById('input-error-message');
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
 const MAX_TOTAL_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+
+const docIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>'
+const imgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-image"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>'
 const SUPPORTED_FILE_TYPES = {
-    'application/pdf': 'PDF',
-    'text/plain': 'TXT',
-    'image/jpeg': 'JPEG',
-    'image/png': 'PNG',
-    'image/webp': 'WEBP',
+    'application/pdf': docIcon,
+    'text/plain': docIcon,
+    'image/jpeg': imgIcon,
+    'image/png': imgIcon,
+    'image/webp': imgIcon,
 };
 
 // State variables
@@ -229,11 +232,11 @@ function saveChatMessages() {
     const thinMessage = existingMessages.map(m => {
         return {
             role: m.role,
-            content: typeof m.content === 'string' ? m.content : m.content.map(c => ({ type: c.type, text: c.text, mimeType: c.mimeType })),
+            content: typeof m.content === 'string' ? m.content : m.content.map(c => ({ type: c.type, text: c.text, mimeType: c.mimeType, fileName: c.fileName })),
             id: m.id
         };
     });
-    
+
     localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
 }
 
@@ -294,7 +297,7 @@ function createFilePreview(file) {
     const reader = new FileReader();
     const previewItem = document.createElement('div');
     previewItem.classList.add('file-preview-item');
-    
+
     // Create remove button
     const removeButton = document.createElement('div');
     removeButton.classList.add('remove-file');
@@ -304,15 +307,15 @@ function createFilePreview(file) {
         uploadedFiles = uploadedFiles.filter(f => f !== file);
         previewItem.remove();
     });
-    
+
     // Create file name element
     const fileName = document.createElement('div');
     fileName.classList.add('file-name');
     fileName.textContent = file.name.length > 15 ? file.name.substring(0, 12) + '...' : file.name;
     fileName.title = file.name;
-    
+
     previewItem.appendChild(removeButton);
-    
+
     // Handle different file types
     if (file.type.startsWith('image/')) {
         reader.onload = (e) => {
@@ -326,11 +329,11 @@ function createFilePreview(file) {
         // For non-image files, show an icon
         const fileTypeIcon = document.createElement('div');
         fileTypeIcon.classList.add('file-type-icon');
-        fileTypeIcon.textContent = getFileTypeDisplay(file.type);
+        fileTypeIcon.innerHTML = getFileTypeDisplay(file.type);
         previewItem.appendChild(fileTypeIcon);
         previewItem.appendChild(fileName);
     }
-    
+
     filePreviewContainer.appendChild(previewItem);
 }
 
@@ -707,40 +710,28 @@ function createMessage(role, content, messageId = null) {
         } else if (Array.isArray(content)) {
             // Complex message with text and files
             const messageContent = document.createElement('div');
-            
+
             // Process each part
             content.forEach(part => {
                 switch (part.type) {
                     case 'image':
-                        const imgContainer = document.createElement('div');
-                        imgContainer.classList.add('message-image-container');
-
-                        const img = document.createElement('img');
-                        img.src = part.image || 'fallback-image.svg';
-                        img.classList.add('message-image');
-
-                        imgContainer.appendChild(img);
-                        messageContent.appendChild(imgContainer);
-                        break;
                     case 'file':
                         const fileContainer = document.createElement('div');
                         fileContainer.classList.add('message-file-container');
 
-                        const fileLink = document.createElement('a');
-                        fileLink.href = part.data;
-                        fileLink.download = 'file'; // Generic name
+                        const fileLink = document.createElement('div');
                         fileLink.classList.add('message-file-link');
 
                         const fileIcon = document.createElement('span');
                         fileIcon.classList.add('message-file-icon');
-                        fileIcon.textContent = getFileTypeDisplay(part.mimeType);
+                        fileIcon.innerHTML = getFileTypeDisplay(part.mimeType);
 
                         let fileName;
-                        if (part.data) {
+                        if (part.fileName) {
                             fileName = document.createElement('span');
                             fileName.classList.add('message-file-name');
                             fileName.setAttribute('data-label', 'buttons.downloadFile');
-                            fileName.textContent = UI_STRINGS.buttons.downloadFile();
+                            fileName.textContent = part.fileName;
                         }
 
                         fileLink.appendChild(fileIcon);
@@ -757,7 +748,7 @@ function createMessage(role, content, messageId = null) {
                         break;
                 }
             });
-            
+
             messageDiv.appendChild(messageContent);
         }
     }
@@ -944,11 +935,11 @@ async function sendMessage(redo = false) {
     isLoading = true;
 
     let messageContent;
-    
+
     // Create message content based on text and files
     if (uploadedFiles.length > 0) {
         messageContent = [];
-        
+
         // Add text part if there's text
         if (queryText) {
             messageContent.push({
@@ -956,25 +947,27 @@ async function sendMessage(redo = false) {
                 text: queryText
             });
         }
-        
+
         // Process files
         const filePromises = uploadedFiles.map(file => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () => {
                     const base64Data = reader.result;
-                    
+
                     if (file.type.startsWith('image/')) {
                         resolve({
                             type: 'image',
                             image: base64Data,
-                            mimeType: file.type
+                            mimeType: file.type,
+                            fileName: file.name
                         });
                     } else {
                         resolve({
                             type: 'file',
                             data: base64Data,
-                            mimeType: file.type
+                            mimeType: file.type,
+                            fileName: file.name
                         });
                     }
                 };
@@ -982,7 +975,7 @@ async function sendMessage(redo = false) {
                 reader.readAsDataURL(file);
             });
         });
-        
+
         // Wait for all files to be processed
         const fileParts = await Promise.all(filePromises);
         messageContent.push(...fileParts);
@@ -996,13 +989,13 @@ async function sendMessage(redo = false) {
         createMessage('user', messageContent, userMessageId);
         existingMessages.push({role: 'user', content: messageContent, id: userMessageId});
     }
-    
+
     // Clear input and files
     messageInput.value = '';
     messageInput.style.height = 'auto';
     uploadedFiles = [];
     filePreviewContainer.innerHTML = '';
-    
+
     // To clear the badge
     clearFaviconBadge();
     // Save messages to localStorage
@@ -1321,7 +1314,7 @@ function initializeSettings() {
     const themeToggleInput = document.getElementById('theme-toggle-input');
     themeToggleInput.checked = savedTheme === 'dark';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    
+
     // Initialize language
     currentLanguage = localStorage.getItem('language') || (window.getBrowserLanguage && getBrowserLanguage()) || 'en';
     const languageSelect = document.getElementById('language-select');
@@ -1649,7 +1642,7 @@ document.getElementById('chat-container').addEventListener('click', handleFootno
 function setupFileDrop() {
 
     const container = document.getElementById('message-input-container');
-    const dropArea = document.getElementById('file-drop-area');  
+    const dropArea = document.getElementById('file-drop-area');
     // Prevent default to allow drop
     container.addEventListener('dragenter', (e) => {
         preventDefaults(e);
@@ -1712,7 +1705,7 @@ function ensureHljsLoaded() {
             resolve();
             return;
         }
-        
+
         // Listen for the hljs-loaded event that's dispatched in hljs.js
         window.addEventListener('hljs-loaded', () => {
             resolve();
@@ -1734,11 +1727,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.initializeAppearance) {
         window.initializeAppearance();
     }
-    
+
     // Check for URL parameters first to determine initialization flow
     const urlParams = new URLSearchParams(window.location.search);
     const initPrompt = urlParams.get('q');
-    
+
     // Promise chain for initialization
     Promise.resolve()
         .then(() => loadTranslations())
@@ -1760,7 +1753,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error during application initialization:', error);
-            
+
             // Attempt to render initial UI even if other features failed
             clearMessages();
         })
