@@ -231,7 +231,8 @@ function saveChatMessages() {
         return {
             role: m.role,
             content: typeof m.content === 'string' ? m.content : m.content.map(c => ({ type: c.type, text: c.text, mimeType: c.mimeType, fileName: c.fileName })),
-            id: m.id
+            id: m.id,
+            think: m.think,
         };
     });
 
@@ -558,7 +559,7 @@ function handleTooltipEvent (triggerElement, orientation = 'bottom' | 'top' | 'l
     }
 
     triggerElement.addEventListener('mouseenter', () => {
-        tooltip.style.visibility = 'visible';
+        tooltip.style.display = 'block';
 
         switch (orientation) {
             case 'top':
@@ -608,7 +609,7 @@ function handleTooltipEvent (triggerElement, orientation = 'bottom' | 'top' | 'l
     };
 
     triggerElement.addEventListener('mouseleave', () => {
-        tooltip.style.visibility = 'hidden';
+        tooltip.style.display = 'none';
     });
 }
 
