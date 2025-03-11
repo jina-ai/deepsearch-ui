@@ -671,6 +671,20 @@ function handleCopyEvent (copyButton, copyIcon, content) {
     });
 }
 
+function handleStopEvent (stopButton) {
+    stopButton.addEventListener('click', () => {
+        if (abortController) {
+            abortController.abort();
+            isLoading = false;
+            stopButton.remove();
+            const animationElement = document.querySelector('#thinking-animation');
+            if (animationElement) {
+                animationElement.remove();
+            }
+        }
+    });
+}
+
 function createActionButton(content) {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('action-buttons-container');
@@ -703,6 +717,26 @@ function createActionButton(content) {
     [redoButton, copyButton].forEach(button => {
         handleTooltipEvent(button);
     });
+
+    return buttonContainer;
+}
+
+function createStopButton() {
+    if (!isLoading) return;
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('action-buttons-container');
+    buttonContainer.id = 'stop-message';
+
+    const stopButton = document.createElement('button');
+    stopButton.classList.add('stop-button', 'tooltip-container');
+    stopButton.setAttribute('data-tooltip', 'tooltips.stop');
+    const stopIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-stop-circle"><circle cx="12" cy="12" r="10"></circle><rect x="9" y="9" width="6" height="6"></rect></svg>`;
+    stopButton.innerHTML = stopIcon;
+
+    buttonContainer.appendChild(stopButton);
+
+    handleStopEvent(stopButton);
+    handleTooltipEvent(stopButton);
 
     return buttonContainer;
 }
@@ -1084,6 +1118,10 @@ async function sendMessage(redo = false) {
         const markdownDiv = document.createElement('div');
         markdownDiv.classList.add('markdown');
         assistantMessageDiv.appendChild(markdownDiv);
+        const stopButton = createStopButton();
+        if (stopButton) {
+            assistantMessageDiv.appendChild(stopButton);
+        }
 
         if (res.headers.get('content-type')?.includes('text/event-stream')) {
             const reader = res.body?.getReader();
@@ -1197,6 +1235,8 @@ async function sendMessage(redo = false) {
                     }
                 }
             }
+            
+            stopButton?.remove();
 
             if (markdownContent) {
                 const markdown = renderMarkdown(markdownContent, true, visitedURLs);
@@ -1241,20 +1281,31 @@ async function sendMessage(redo = false) {
 
     } catch (error) {
         removeLoadingIndicator(assistantMessageDiv);
-        const errorText = document.createElement('span');
-        const errorIcon = `<svg id="error-icon" class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
-        if (error.name !== 'AbortError') {
-            errorText.innerHTML = errorIcon + `Error: ${error.message || String(error)}`;
-
+        if (error.name === 'AbortError') {
+            const actionButton = createActionButton(thinkContent + markdownContent);
+            assistantMessageDiv.appendChild(actionButton);
+            existingMessages.push({
+                role: 'assistant',
+                content: markdownContent,
+                think: thinkContent,
+                id: assistantMessageId,
+            });
         } else {
-            if (assistantMessageDiv) {
-                errorText.innerHTML = errorIcon + `Error: Request cancelled.`;
+            const errorText = document.createElement('span');
+            const errorIcon = `<svg id="error-icon" class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+            if (error.name !== 'AbortError') {
+                errorText.innerHTML = errorIcon + `Error: ${error.message || String(error)}`;
+
+            } else {
+                if (assistantMessageDiv) {
+                    errorText.innerHTML = errorIcon + `Error: Request cancelled.`;
+                }
             }
+            const errorContainer = document.createElement('div');
+            errorContainer.className = 'error-message';
+            errorContainer.appendChild(errorText);
+            assistantMessageDiv.appendChild(errorContainer);
         }
-        const errorContainer = document.createElement('div');
-        errorContainer.className = 'error-message';
-        errorContainer.appendChild(errorText);
-        assistantMessageDiv.appendChild(errorContainer);
     } finally {
         isLoading = false;
         makeAllLinksOpenInNewTab();
