@@ -731,7 +731,7 @@ function createStopButton() {
     const stopButton = document.createElement('button');
     stopButton.classList.add('stop-button', 'tooltip-container');
     stopButton.setAttribute('data-tooltip', 'tooltips.stop');
-    const stopIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-stop-circle"><circle cx="12" cy="12" r="10"></circle><rect x="9" y="9" width="6" height="6"></rect></svg>`;
+    const stopIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pause"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
     stopButton.innerHTML = stopIcon;
 
     buttonContainer.appendChild(stopButton);
