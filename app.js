@@ -8,7 +8,6 @@ let UI_STRINGS = {
         updateKey: () => 'Update Key',
         getKey: () => 'Get API Key',
         purchase: () => 'Purchase More Token',
-        downloadFile: () => 'Download file'
     },
     think: {
         initial: () => 'Thinking...',
@@ -148,7 +147,6 @@ function applyTranslations() {
           updateKey: () => t('buttons.updateKey'),
           getKey: () => t('buttons.getKey'),
           purchase: () => t('buttons.purchase'),
-          downloadFile: () => t('buttons.downloadFile')
         },
         think: {
           initial: () => t('think.initial'),
@@ -416,14 +414,15 @@ const renderFaviconList = async (visitedURLs) => {
                 img.width = img.height = 16;
                 img.alt = domain;
 
-                item.classList.add('favicon-item');
-                item.setAttribute('data-url', url);
+                item.classList.add('favicon-item', 'tooltip-container');
+                item.setAttribute('data-tooltip', url);
                 item.appendChild(img);
 
                 // Add click handler for favicon
                 item.addEventListener('click', () => {
                     window.open(url, '_blank');
                 });
+                handleTooltipEvent(item, 'top');
 
                 // Add cursor pointer style
                 item.style.cursor = 'pointer';
@@ -564,35 +563,49 @@ function handleTooltipEvent (triggerElement, orientation = 'bottom' | 'top' | 'l
         switch (orientation) {
             case 'top':
                 tooltip.style.bottom = '125%';
-                tooltip.style.left = '50%';
                 tooltip.style.top = 'unset';
-                tooltip.style.right = 'unset';
-                tooltip.style.transform = 'translateX(-50%)';
+                adjustHorizontalPosition(triggerElement, tooltip);
                 break;
             case 'left':
-                tooltip.style.right = '0';
-                tooltip.style.top = '125%';
+                tooltip.style.right = `calc(100% + 10px)`;
                 tooltip.style.left = 'unset';
+                tooltip.style.top = '50%';
                 tooltip.style.bottom = 'unset';
-                tooltip.style.transform = 'unset';
+                tooltip.style.transform = 'translateY(-50%)';
                 break;
             case 'right':
-                tooltip.style.left = '0';
-                tooltip.style.top = '125%';
+                tooltip.style.left = `calc(100% + 10px)`;
                 tooltip.style.right = 'unset';
+                tooltip.style.top = '0';
                 tooltip.style.bottom = 'unset';
-                tooltip.style.transform = 'unset';
+                tooltip.style.transform = 'translateY(-50%)';
                 break;
             case 'bottom':
             default:
                 tooltip.style.top = '125%';
-                tooltip.style.left = '50%';
-                tooltip.style.right = 'unset';
                 tooltip.style.bottom = 'unset';
-                tooltip.style.transform = 'translateX(-50%)';
+                adjustHorizontalPosition(triggerElement, tooltip);
                 break;
         }
     });
+
+    const adjustHorizontalPosition = (triggerElement,  tooltip) => {
+        const rect = triggerElement.getBoundingClientRect();
+        const tooltipRect = tooltip.getBoundingClientRect();
+        if (rect.left < tooltipRect.width / 2) {
+            tooltip.style.left = '0';
+            tooltip.style.right = 'unset';
+            tooltip.style.transform = 'unset';
+        } else if (window.innerWidth - rect.right < tooltipRect.width / 2) {
+            tooltip.style.right = '0';
+            tooltip.style.left = 'unset';
+            tooltip.style.transform = 'unset';
+        } else {
+            tooltip.style.left = '50%';
+            tooltip.style.right = 'unset';
+            tooltip.style.transform = 'translateX(-50%)';
+        }
+    };
 
     triggerElement.addEventListener('mouseleave', () => {
         tooltip.style.visibility = 'hidden';
@@ -730,7 +743,6 @@ function createMessage(role, content, messageId = null) {
                         if (part.fileName) {
                             fileName = document.createElement('span');
                             fileName.classList.add('message-file-name');
-                            fileName.setAttribute('data-label', 'buttons.downloadFile');
                             fileName.textContent = part.fileName;
                         }
 
@@ -1761,11 +1773,8 @@ document.addEventListener('DOMContentLoaded', () => {
             updateEmptyState();
         });
 
-        [helpButton, toggleApiKeyBtn].forEach(button => {
-            handleTooltipEvent(button, 'left');
-        });
-        [settingsButton, newChatButton].forEach(button => {
-            handleTooltipEvent(button, 'right');
+        [settingsButton, newChatButton, helpButton, toggleApiKeyBtn].forEach(button => {
+            handleTooltipEvent(button, 'bottom');
         });
 
         handleTooltipEvent(fileUploadButton, 'top');

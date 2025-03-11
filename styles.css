@@ -714,23 +714,6 @@ ol.footnotes-list {
     position: absolute;
 }
 
-.favicon-item:hover::after {
-    content: attr(data-url);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    max-width: 200px;
-    overflow-wrap: break-word;
-    transform: translateX(-50%);
-    background-color: var(--text-color);
-    color: var(--bg-color);
-    padding: 8px 12px;
-    border-radius: 4px;
-    font-size: var(--secondary-size);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-}
-
 .sources-count {
     color: var(--text-secondary);
     font-size: var(--secondary-size);
@@ -999,7 +982,7 @@ input:checked + .toggle-slider:before {
     position: relative;
     display: inline-block;
 }
-  
+
 .tooltip {
     visibility: hidden;
     position: absolute;
@@ -1012,8 +995,11 @@ input:checked + .toggle-slider:before {
     top: 125%;
     left: 50%;
     transform: translateX(-50%);
-    width: fit-content;
-    white-space: nowrap;
+    max-width: 200px;
+    width: max-content;
+    overflow-wrap: break-word;
+    white-space: normal;
+    text-align: left;
 }
 
 #message-input-container {

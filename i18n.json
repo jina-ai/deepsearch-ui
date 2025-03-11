@@ -13,8 +13,7 @@
       "getKey": "Get API Key",
       "saveKey": "Save",
       "purchase": "Purchase More Tokens",
-      "contactUs": "Contact Us",
-      "downloadFile": "Download File"
+      "contactUs": "Contact Us"
     },
     "tooltips": {
       "copy": "Copy",
@@ -81,8 +80,7 @@
       "getKey": "获取API密钥",
       "saveKey": "保存",
       "purchase": "购买更多词元",
-      "contactUs": "联系我们",
-      "downloadFile": "下载文件"
+      "contactUs": "联系我们"
     },
     "tooltips": {
       "copy": "复制",
@@ -149,8 +147,7 @@
       "getKey": "取得 API 金鑰",
       "saveKey": "存起來",
       "purchase": "買更多詞元",
-      "contactUs": "聯絡我們",
-      "downloadFile": "下載檔案"
+      "contactUs": "聯絡我們"
     },
     "tooltips": {
       "copy": "複製",
@@ -217,8 +214,7 @@
       "getKey": "APIキーを取得",
       "saveKey": "保存",
       "purchase": "トークンを購入",
-      "contactUs": "お問い合わせ",
-      "downloadFile": "ファイルをダウンロード"
+      "contactUs": "お問い合わせ"
     },
     "tooltips": {
       "copy": "コピー",
@@ -285,8 +281,7 @@
       "getKey": "Obtenir la clé API",
       "saveKey": "Enregistrer",
       "purchase": "Acheter plus de jetons",
-      "contactUs": "Nous contacter",
-      "downloadFile": "Télécharger le fichier"
+      "contactUs": "Nous contacter"
     },
     "tooltips": {
       "copy": "Copier",
@@ -353,8 +348,7 @@
       "getKey": "API-Schlüssel abrufen",
       "saveKey": "Speichern",
       "purchase": "Weitere Token kaufen",
-      "contactUs": "Kontaktieren Sie uns",
-      "downloadFile": "Datei herunterladen"
+      "contactUs": "Kontaktieren Sie uns"
     },
     "tooltips": {
       "copy": "Kopieren",
@@ -418,8 +412,7 @@
       "getKey": "API 키 가져오기",
       "saveKey": "저장",
       "purchase": "토큰 더 구매",
-      "contactUs": "문의하기",
-      "downloadFile": "파일 다운로드"
+      "contactUs": "문의하기"
     },
     "tooltips": {
       "copy": "복사",
