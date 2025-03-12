@@ -198,9 +198,11 @@ const imgIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
 const SUPPORTED_FILE_TYPES = {
     'application/pdf': docIcon,
     'text/plain': docIcon,
+    'text/csv': docIcon,
     'image/jpeg': imgIcon,
     'image/png': imgIcon,
     'image/webp': imgIcon,
+    'image/gif': imgIcon,
 };
 
 // State variables
@@ -1743,6 +1745,21 @@ function setupFileDrop() {
 
         handleFileUpload(files);
         hideDropArea();
+    });
+
+    messageInput.addEventListener('paste', (e) => {
+        const items = e.clipboardData?.items;
+        if (!items) return;
+
+        let files = [];
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].kind === 'file') {
+                e.preventDefault();
+                const file = items[i].getAsFile();
+                files.push(file);
+            }
+        }
+        handleFileUpload(files);
     });
 
     function displayDropArea() {
