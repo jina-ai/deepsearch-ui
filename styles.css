@@ -73,12 +73,6 @@ a {
     text-decoration: none;
 }
 
-textarea::placeholder {
-    font-family: 'Roboto', Arial, sans-serif;
-    font-size: var(--subtitle-size);
-    color: var(--text-secondary);
-}
-
 .action-icon {
     color: var(--text-secondary);
 }
@@ -245,6 +239,7 @@ textarea::placeholder {
 }
 
 #message-input {
+    position: relative;
     width: calc(100% - 40px);
     resize: none;
     max-height: 40vh;
@@ -259,11 +254,12 @@ textarea::placeholder {
     transition: box-shadow 0.2s;
     overflow-y: hidden;
     margin: 0;
+    line-height: 1.25rem;
 }
 
 #search-icon-container {
     position: absolute;
-    top: 8px;
+    top: 9px;
     left: 12px;
     display: flex;
     align-items: center;
@@ -982,7 +978,9 @@ input:checked + .toggle-slider:before {
 
 #message-input::placeholder {
     color: var(--bg-color-400);
-    line-height: 1rem;
+    line-height: 1.25rem;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: var(--subtitle-size);
 }
 
 .footnote-ref a:hover {
@@ -1060,7 +1058,7 @@ input:checked + .toggle-slider:before {
 #file-upload-button {
     position: absolute;
     right: 12px;
-    top: 8px;
+    top: 9px;
     background-color: unset;
     padding: 0 8px;
     height: 32px;
