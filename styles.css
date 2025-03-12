@@ -258,12 +258,13 @@ textarea::placeholder {
     font-family: 'Roboto', Arial, sans-serif;
     transition: box-shadow 0.2s;
     overflow-y: hidden;
+    margin: 0;
 }
 
 #search-icon-container {
     position: absolute;
     top: 8px;
-    left: 16px;
+    left: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1058,7 +1059,7 @@ input:checked + .toggle-slider:before {
 /* File upload button styles */
 #file-upload-button {
     position: absolute;
-    right: 16px;
+    right: 12px;
     top: 8px;
     background-color: unset;
     padding: 0 8px;
