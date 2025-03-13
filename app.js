@@ -188,6 +188,7 @@ const fileUploadButton = document.getElementById('file-upload-button');
 const fileInput = document.getElementById('file-input');
 const filePreviewContainer = document.getElementById('file-preview-container');
 const inputErrorMessage = document.getElementById('input-error-message');
+const stopMessageButton = document.getElementById('stop-message-button');
 
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
@@ -674,18 +675,16 @@ function handleCopyEvent (copyButton, copyIcon, content) {
     });
 }
 
-function handleStopEvent (stopButton) {
-    stopButton.addEventListener('click', () => {
-        if (abortController) {
-            abortController.abort();
-            isLoading = false;
-            stopButton.remove();
-            const animationElement = document.querySelector('#thinking-animation');
-            if (animationElement) {
-                animationElement.remove();
-            }
+function handleStopEvent () {
+    if (abortController) {
+        abortController.abort();
+        isLoading = false;
+        toggleStopMessage(false);
+        const animationElement = document.querySelector('#thinking-animation');
+        if (animationElement) {
+            animationElement.remove();
         }
-    });
+    }
 }
 
 function createActionButton(content) {
@@ -724,23 +723,14 @@ function createActionButton(content) {
     return buttonContainer;
 }
 
-function createStopButton() {
-    if (!isLoading) return;
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('action-buttons-container');
-
-    const stopButton = document.createElement('button');
-    stopButton.classList.add('stop-button', 'tooltip-container');
-    stopButton.setAttribute('data-tooltip', 'tooltips.stop');
-    const stopIcon = `<svg id="stop-message" class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pause"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>`;
-    stopButton.innerHTML = stopIcon;
-
-    buttonContainer.appendChild(stopButton);
-
-    handleStopEvent(stopButton);
-    handleTooltipEvent(stopButton);
-
-    return buttonContainer;
+function toggleStopMessage(show) {
+    if (show) {
+        fileUploadButton.style.display = 'none';
+        stopMessageButton.style.display = 'block';
+    } else {
+        stopMessageButton.style.display = 'none';
+        fileUploadButton.style.display = 'block';
+    }
 }
 
 function createMessage(role, content, messageId = null) {
@@ -1120,10 +1110,7 @@ async function sendMessage(redo = false) {
         const markdownDiv = document.createElement('div');
         markdownDiv.classList.add('markdown');
         assistantMessageDiv.appendChild(markdownDiv);
-        const stopButton = createStopButton();
-        if (stopButton) {
-            assistantMessageDiv.appendChild(stopButton);
-        }
+        toggleStopMessage(true);
 
         if (res.headers.get('content-type')?.includes('text/event-stream')) {
             const reader = res.body?.getReader();
@@ -1238,7 +1225,7 @@ async function sendMessage(redo = false) {
                 }
             }
             
-            stopButton?.remove();
+            toggleStopMessage(false);
 
             if (markdownContent) {
                 const markdown = renderMarkdown(markdownContent, true, visitedURLs);
@@ -1700,7 +1687,9 @@ function handleFootnoteClick(event) {
 }
 
 // Add the event listener to the chat container to handle all footnote clicks
-document.getElementById('chat-container').addEventListener('click', handleFootnoteClick);
+chatContainer.addEventListener('click', handleFootnoteClick);
+
+stopMessageButton.addEventListener('click', handleStopEvent);
 
 
 // set up drag and drop file upload
@@ -1844,7 +1833,9 @@ document.addEventListener('DOMContentLoaded', () => {
         [settingsButton, newChatButton, helpButton, toggleApiKeyBtn].forEach(button => {
             handleTooltipEvent(button, 'bottom');
         });
+        [fileUploadButton, stopMessageButton].forEach(button => {
+            handleTooltipEvent(button, 'top');
+        });
 
-        handleTooltipEvent(fileUploadButton, 'top');
         setupFileDrop();
 });

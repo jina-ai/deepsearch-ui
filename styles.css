@@ -1055,7 +1055,7 @@ input:checked + .toggle-slider:before {
 }
 
 /* File upload button styles */
-#file-upload-button {
+#file-upload-button, #stop-message-button {
     position: absolute;
     right: 12px;
     top: 9px;
@@ -1197,6 +1197,10 @@ input:checked + .toggle-slider:before {
     padding-left: 0.2rem;
 }
 
-#stop-message {
+#stop-message-button {
+    display: none;
+}
+
+#stop-icon {
     color: var(--negative);
 }
