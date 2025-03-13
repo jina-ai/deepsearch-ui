@@ -726,10 +726,10 @@ function createActionButton(content) {
 function toggleStopMessage(show) {
     if (show) {
         fileUploadButton.style.display = 'none';
-        stopMessageButton.style.display = 'block';
+        stopMessageButton.style.display = 'flex';
     } else {
         stopMessageButton.style.display = 'none';
-        fileUploadButton.style.display = 'block';
+        fileUploadButton.style.display = 'flex';
     }
 }
 
