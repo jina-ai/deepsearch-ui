@@ -96,9 +96,9 @@ a {
 /* Modified: Use flex and proper padding instead of manual calculations */
 #main-container {
     flex: 1;
-    width: 100%;
-    overflow-y: auto;
+    overflow-y: scroll;
     contain: layout;
+    padding-inline-start: 12px;
 }
 
 #chat-app.empty-chat #main-container {
@@ -958,6 +958,9 @@ input:checked + .toggle-slider:before {
         border-bottom: none;
         gap: 5px;
     }
+    #main-container {
+        padding-inline-start: 0;
+    }
 }
 
 .footnote-ref a {
@@ -1204,4 +1207,54 @@ input:checked + .toggle-slider:before {
 
 #stop-icon {
     color: var(--negative);
+}
+
+// customize scrollbar
+@media (pointer:fine) {
+    ::-webkit-scrollbar,
+    ::-webkit-scrollbar-corner {
+      background: transparent;
+      height: 12px;
+      width: 12px;
+    }
+  
+    ::-webkit-scrollbar-thumb {
+      background: content-box transparent;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      min-height: 48px;
+      min-width: 48px;
+    }
+  
+    @supports not (scrollbar-color:auto) {
+      :hover {
+        will-change: scrollbar-color;
+      }
+    }
+  
+    :hover::-webkit-scrollbar-thumb {
+      background: content-box var(--bg-color-300);
+    }
+  
+    ::-webkit-scrollbar-thumb:active,
+    ::-webkit-scrollbar-thumb:hover {
+      background: content-box var(--bg-color-400);
+    }
+  
+    ::-webkit-scrollbar-button {
+      height: 0;
+      width: 0
+    }
+  
+    @supports not (selector(::-webkit-scrollbar)) {
+      * {
+        scrollbar-color: transparent transparent;
+        scrollbar-gutter: auto;
+        scrollbar-width: thin
+      }
+  
+      *:hover {
+        scrollbar-color: var(--bg-color-400) transparent;
+      }
+    }
 }
