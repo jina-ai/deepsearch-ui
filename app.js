@@ -347,9 +347,67 @@ function loadSession(sessionId) {
     // Load session messages
     existingMessages = session.messages;
     
-    // Update UI
-    loadAndDisplaySavedMessages();
+    // Display each message in the UI
+    existingMessages.forEach(message => {
+        if (!message.id) {
+            message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        }
+        
+        // Create message element
+        const messageDiv = createMessage(message.role, message.content, message.id);
+        
+        if (message.role === 'assistant') {
+            // Remove loading indicator
+            removeLoadingIndicator(messageDiv);
+            
+            // Create markdown div
+            const markdownDiv = document.createElement('div');
+            markdownDiv.classList.add('markdown');
+            messageDiv.appendChild(markdownDiv);
+            
+            try {
+                // Render markdown content with error handling
+                const markdown = renderMarkdown(message.content, true);
+                markdownDiv.replaceChildren(markdown);
+                
+                // Add copy button
+                const copyButton = createActionButton(message.content);
+                const referencesSection = markdownDiv.querySelector('.references-section');
+                if (referencesSection) {
+                    referencesSection.insertAdjacentElement('beforebegin', copyButton);
+                } else {
+                    markdownDiv.appendChild(copyButton);
+                }
+                
+                // Check for think content
+                if (message.think) {
+                    const thinkSectionElement = createThinkSection(messageDiv);
+                    const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                    thinkContentElement.textContent = message.think;
+                    
+                    const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
+                    if (thinkHeaderElement) {
+                        thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                    }
+                }
+            } catch (e) {
+                console.error('Error rendering message content:', e);
+                markdownDiv.textContent = typeof message.content === 'string' 
+                    ? message.content 
+                    : JSON.stringify(message.content);
+            }
+        }
+    });
+    
+    // Make all links open in new tab
+    makeAllLinksOpenInNewTab();
+    
+    // Update UI state
     updateEmptyState();
+    
+    // Scroll to bottom
+    messageInput.focus();
+    scrollToBottom();
     
     // Close dropdown
     toggleSessionsDropdown(false);
@@ -1079,10 +1137,42 @@ function renderMarkdown(content, returnElement = false, visitedURLs = [], role =
     }
     const tempDiv = document.createElement('div');
     tempDiv.classList.add('markdown-inner');
+    
+    // Handle null, undefined, or non-string content
+    if (content === null || content === undefined) {
+        content = '';
+    } else if (typeof content !== 'string') {
+        // Handle array or object content by extracting text or converting to string
+        try {
+            if (Array.isArray(content) && content.length > 0) {
+                // Try to extract text from array content
+                const textParts = content
+                    .filter(part => part && (part.text || part.type === 'text'))
+                    .map(part => part.text || '');
+                content = textParts.join('\n\n');
+            } else {
+                content = JSON.stringify(content);
+            }
+        } catch (e) {
+            content = '';
+            console.error('Error processing non-string content:', e);
+        }
+    }
+    
+    // Ensure content is a string before rendering
+    if (typeof content !== 'string') {
+        content = '';
+    }
+    
     tempDiv.innerHTML = content;
     if (md) {
-        const rendered = md.render(content);
-        tempDiv.innerHTML = rendered;
+        try {
+            const rendered = md.render(content);
+            tempDiv.innerHTML = rendered;
+        } catch (e) {
+            console.error('Error rendering markdown:', e);
+            tempDiv.innerHTML = content;
+        }
 
         const footnoteAnchors = tempDiv.querySelectorAll('.footnote-ref a');
         footnoteAnchors.forEach(a => {
@@ -1141,6 +1231,11 @@ function clearMessages() {
     uploadedFiles = [];
     filePreviewContainer.innerHTML = '';
     updateEmptyState();
+    
+    // Close sessions dropdown if open
+    if (isSessionsDropdownOpen) {
+        toggleSessionsDropdown(false);
+    }
 }
 
 const makeAllLinksOpenInNewTab = () => {
@@ -1498,9 +1593,11 @@ async function sendMessage(redo = false) {
 
 // Load and display saved messages
 function loadAndDisplaySavedMessages() {
-    existingMessages = loadChatMessages();
-
-    if (existingMessages.length > 0) {
+    const messages = loadChatMessages();
+    
+    if (messages && messages.length > 0) {
+        existingMessages = messages;
+        
         // Display saved messages
         existingMessages.forEach(message => {
             if (!message.id) {
@@ -1517,29 +1614,36 @@ function loadAndDisplaySavedMessages() {
                 markdownDiv.classList.add('markdown');
                 messageDiv.appendChild(markdownDiv);
 
-                // Render markdown content
-                const markdown = renderMarkdown(message.content, true);
-                markdownDiv.replaceChildren(markdown);
+                try {
+                    // Render markdown content with error handling
+                    const markdown = renderMarkdown(message.content, true);
+                    markdownDiv.replaceChildren(markdown);
 
-                // Add copy button
-                const copyButton = createActionButton(message.content);
-                const referencesSection = markdownDiv.querySelector('.references-section');
-                if (referencesSection) {
-                    referencesSection.insertAdjacentElement('beforebegin', copyButton);
-                } else {
-                    markdownDiv.appendChild(copyButton);
-                }
-
-                // Check for think content
-                if (message.think) {
-                    const thinkSectionElement = createThinkSection(messageDiv);
-                    const thinkContentElement = thinkSectionElement.querySelector('.think-content');
-                    thinkContentElement.textContent = message.think;
-
-                    const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
-                    if (thinkHeaderElement) {
-                        thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                    // Add copy button
+                    const copyButton = createActionButton(message.content);
+                    const referencesSection = markdownDiv.querySelector('.references-section');
+                    if (referencesSection) {
+                        referencesSection.insertAdjacentElement('beforebegin', copyButton);
+                    } else {
+                        markdownDiv.appendChild(copyButton);
                     }
+
+                    // Check for think content
+                    if (message.think) {
+                        const thinkSectionElement = createThinkSection(messageDiv);
+                        const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                        thinkContentElement.textContent = message.think;
+
+                        const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
+                        if (thinkHeaderElement) {
+                            thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error rendering message content:', e);
+                    markdownDiv.textContent = typeof message.content === 'string' 
+                        ? message.content 
+                        : JSON.stringify(message.content);
                 }
             }
             // User messages are already handled in displayMessage
