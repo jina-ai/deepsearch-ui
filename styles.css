@@ -475,6 +475,7 @@ a {
 /* Recent sessions styles */
 #recent-sessions-container {
     position: relative;
+    display: none;
 }
 
 #recent-sessions-button {
@@ -490,12 +491,12 @@ a {
     transform: rotate(180deg);
 }
 
-.sessions-dropdown {
+#sessions-dropdown {
     position: absolute;
     top: 100%;
-    right: 0;
+    left: 0;
     width: 250px;
-    max-height: 300px;
+    max-height: 60vh;
     background-color: var(--bg-color);
     border: 1px solid var(--bg-color-200);
     border-radius: 4px;
@@ -505,12 +506,14 @@ a {
     overflow-y: auto;
 }
 
-.sessions-dropdown.show {
+#sessions-dropdown.show {
     display: block;
 }
 
-.sessions-list {
+#sessions-list {
     padding: 8px 0;
+    margin: 0;
+    list-style-type: none;
 }
 
 .session-item {
@@ -559,28 +562,24 @@ a {
     border-color: transparent;
 }
 
-.sessions-footer {
+#sessions-header {
+    padding: 16px 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-secondary);
+    font-size: var(--body-size);
+}
+
+#sessions-footer {
     padding: 8px;
     border-top: 1px solid var(--bg-color-200);
     display: flex;
     justify-content: flex-end;
 }
 
-.clear-all-button {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: var(--body-size);
-    padding: 4px 8px;
-    height: auto;
-}
-
-.clear-all-button:hover {
+#clear-all-sessions:hover {
     color: var(--negative);
-    background-color: transparent;
-    box-shadow: none;
-    border-color: transparent;
 }
 
 .help-list {

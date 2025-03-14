@@ -239,6 +239,10 @@ function initializeApiKey() {
     toggleApiKeyBtnText.textContent = savedKey ? UI_STRINGS.buttons.updateKey() : UI_STRINGS.buttons.addKey();
 }
 
+function generateId(type = 'message') {
+    return `${type}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+}
+
 // Chat Message Persistence
 function saveChatMessages() {
     try {
@@ -273,9 +277,8 @@ function saveChatMessages() {
         localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
         
         // Save current session if there are messages
-        if (existingMessages.length > 0) {
-            saveCurrentSession();
-        }
+        saveCurrentSession(thinMessage);
+  
     } catch (e) {
         console.error('Error saving chat messages:', e);
     }
@@ -295,10 +298,10 @@ function loadChatMessages() {
 function loadChatSessions() {
     try {
         const savedSessions = localStorage.getItem('chat_sessions');
-        chatSessions = savedSessions ? JSON.parse(savedSessions) : [];
+        return savedSessions ? JSON.parse(savedSessions) : [];
     } catch (e) {
         console.error('Error parsing saved sessions:', e);
-        chatSessions = [];
+        return [];
     }
 }
 
@@ -315,56 +318,52 @@ function saveChatSessions() {
     }
 }
 
-function saveCurrentSession() {
-    if (existingMessages.length === 0) return;
+function saveCurrentSession(messages) {
+    if (messages.length === 0) return;
     
-    // Get the first user message as the session title
-    const firstUserMessage = existingMessages.find(m => m.role === 'user');
-    if (!firstUserMessage) return;
+    const firstUserMessage = messages[0];
+    const currentSessionIndex = chatSessions?.findIndex(s => s.messages[0].id === firstUserMessage.id);
     
-    const sessionId = Date.now().toString();
-    let sessionTitle = '';
-    
-    try {
-        if (typeof firstUserMessage.content === 'string') {
-            sessionTitle = firstUserMessage.content;
-        } else if (Array.isArray(firstUserMessage.content)) {
-            // Extract text from array content
-            sessionTitle = firstUserMessage.content
-                .filter(c => c && (c.text || c.type === 'text'))
-                .map(c => c.text || '')
-                .join(' ');
-        } else if (firstUserMessage.content) {
-            // Try to convert other content types to string
-            sessionTitle = JSON.stringify(firstUserMessage.content);
-        }
-    } catch (e) {
-        console.error('Error extracting session title:', e);
-        sessionTitle = 'Chat session';
-    }
-    
-    // Fallback if we couldn't extract a title
-    if (!sessionTitle.trim()) {
-        sessionTitle = 'Chat session';
-    }
-    
-    // Check if this session already exists
-    const existingSessionIndex = chatSessions.findIndex(s => 
-        JSON.stringify(s.messages) === JSON.stringify(existingMessages));
-    
-    if (existingSessionIndex !== -1) {
-        // Update existing session timestamp
-        chatSessions[existingSessionIndex].timestamp = Date.now();
+    if (currentSessionIndex !== -1) {
+        // Check if the messages are the same
+        if (JSON.stringify(chatSessions[currentSessionIndex].messages) === JSON.stringify(messages)) return;
         
         // Move to the top of the list
-        const session = chatSessions.splice(existingSessionIndex, 1)[0];
+        const session = chatSessions.splice(currentSessionIndex, 1)[0];
+        session.messages = messages;
+        session.updatedAt = Date.now();
         chatSessions.unshift(session);
     } else {
+        let sessionTitle = '';
+    
+        try {
+            if (typeof firstUserMessage.content === 'string') {
+                sessionTitle = firstUserMessage.content;
+            } else if (Array.isArray(firstUserMessage.content)) {
+                // Extract text from array content
+                sessionTitle = firstUserMessage.content
+                    .filter(c => c && (c.text || c.type === 'text'))
+                    .map(c => c.text || '')
+                    .join(' ');
+            } else if (firstUserMessage.content) {
+                // Try to convert other content types to string
+                sessionTitle = JSON.stringify(firstUserMessage.content);
+            }
+        } catch (e) {
+            console.error('Error extracting session title:', e);
+            sessionTitle = 'Chat session';
+        }
+        
+        // Fallback if we couldn't extract a title
+        if (!sessionTitle.trim()) {
+            sessionTitle = 'Chat session';
+        }
+        
         // Add new session
         const newSession = {
-            id: sessionId,
-            firstMessage: sessionTitle,
-            timestamp: Date.now(),
+            id: generateId('session'),
+            title: sessionTitle,
+            updatedAt: Date.now(),
             messages: existingMessages
         };
         
@@ -376,103 +375,35 @@ function saveCurrentSession() {
             chatSessions = chatSessions.slice(0, MAX_SESSIONS);
         }
     }
-    
     saveChatSessions();
     updateSessionsList();
 }
 
-function loadSession(sessionId) {
+function handleClickSessionEvent(sessionId) {
     const session = chatSessions.find(s => s.id === sessionId);
     if (!session) return;
-    
-    // Clear current messages
+
+    // Clear existing messages
     clearMessages();
-    
+
     // Load session messages
     existingMessages = session.messages;
-    
-    // Display each message in the UI
-    existingMessages.forEach(message => {
-        if (!message.id) {
-            message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-        }
-        
-        try {
-            // Create message element
-            const messageDiv = createMessage(message.role, message.content, message.id);
-            
-            if (message.role === 'assistant') {
-                // Remove loading indicator
-                removeLoadingIndicator(messageDiv);
-                
-                // Create markdown div
-                const markdownDiv = document.createElement('div');
-                markdownDiv.classList.add('markdown');
-                messageDiv.appendChild(markdownDiv);
-                
-                try {
-                    // Render markdown content with error handling
-                    const markdown = renderMarkdown(message.content, true);
-                    markdownDiv.replaceChildren(markdown);
-                    
-                    // Add copy button
-                    const copyButton = createActionButton(message.content);
-                    const referencesSection = markdownDiv.querySelector('.references-section');
-                    if (referencesSection) {
-                        referencesSection.insertAdjacentElement('beforebegin', copyButton);
-                    } else {
-                        markdownDiv.appendChild(copyButton);
-                    }
-                    
-                    // Check for think content
-                    if (message.think) {
-                        const thinkSectionElement = createThinkSection(messageDiv);
-                        const thinkContentElement = thinkSectionElement.querySelector('.think-content');
-                        thinkContentElement.textContent = message.think;
-                        
-                        const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
-                        if (thinkHeaderElement) {
-                            thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error rendering message content:', e);
-                    markdownDiv.textContent = typeof message.content === 'string' 
-                        ? message.content 
-                        : JSON.stringify(message.content);
-                }
-            }
-        } catch (e) {
-            console.error('Error creating message:', e, message);
-        }
-    });
-    
-    // Make all links open in new tab
-    makeAllLinksOpenInNewTab();
-    
-    // Update UI state
-    updateEmptyState();
-    
-    // Scroll to bottom
-    messageInput.focus();
-    scrollToBottom();
+    updateMessagesList();
+    saveChatMessages();
     
     // Close dropdown
     toggleSessionsDropdown(false);
 }
 
-function deleteSession(sessionId, event) {
-    // Prevent click from bubbling to parent (which would load the session)
-    if (event) {
-        event.stopPropagation();
-    }
+function handleDeleteSessionEvent(sessionId, event) {
+    event?.stopPropagation();
     
     chatSessions = chatSessions.filter(s => s.id !== sessionId);
     saveChatSessions();
     updateSessionsList();
 }
 
-function clearAllSessions() {
+function handleClearAllSessionsEvent() {
     chatSessions = [];
     saveChatSessions();
     updateSessionsList();
@@ -482,38 +413,38 @@ function clearAllSessions() {
 function updateSessionsList() {
     // Clear current list
     sessionsList.innerHTML = '';
-    
-    if (chatSessions.length === 0) {
-        const emptyMessage = document.createElement('div');
-        emptyMessage.classList.add('session-empty');
-        emptyMessage.textContent = 'No recent sessions';
-        sessionsList.appendChild(emptyMessage);
+
+    if (!chatSessions?.length) {
+        toggleSessionsDropdown(false);
+        recentSessionsContainer.style.display = 'none';
         return;
-    }
+    };
     
     // Add each session to the list
-    chatSessions.forEach(session => {
-        const sessionItem = document.createElement('div');
+    chatSessions?.sort((a, b) => b.updatedAt - a.updatedAt).forEach(session => {
+        const sessionItem = document.createElement('li');
         sessionItem.classList.add('session-item');
         sessionItem.setAttribute('data-session-id', session.id);
         
-        const sessionTitle = document.createElement('div');
+        const sessionTitle = document.createElement('span');
         sessionTitle.classList.add('session-title');
-        sessionTitle.textContent = session.firstMessage;
+        sessionTitle.textContent = session.title;
         
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-session');
         deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
         
+        // sessionItem.append(sessionTitle, deleteButton);
         sessionItem.appendChild(sessionTitle);
         sessionItem.appendChild(deleteButton);
         
         // Add event listeners
-        sessionItem.addEventListener('click', () => loadSession(session.id));
-        deleteButton.addEventListener('click', (e) => deleteSession(session.id, e));
+        sessionItem.addEventListener('click', () => handleClickSessionEvent(session.id));
+        deleteButton.addEventListener('click', (e) => handleDeleteSessionEvent(session.id, e));
         
         sessionsList.appendChild(sessionItem);
     });
+    recentSessionsContainer.style.display = 'block';
 }
 
 function toggleSessionsDropdown(forceState) {
@@ -528,11 +459,6 @@ function toggleSessionsDropdown(forceState) {
     // Rotate chevron icon
     const chevronIcon = recentSessionsButton.querySelector('.chevron-icon');
     chevronIcon.classList.toggle('rotated', isOpen);
-    
-    // Update sessions list if opening
-    if (isOpen) {
-        updateSessionsList();
-    }
 }
 
 
@@ -630,8 +556,6 @@ function getFileTypeDisplay(mimeType) {
 // Initialize API key
 initializeApiKey();
 
-// Load saved chat sessions
-loadChatSessions();
 
 // File upload event listeners
 fileUploadButton.addEventListener('click', () => {
@@ -645,7 +569,7 @@ recentSessionsButton.addEventListener('click', () => {
     toggleSessionsDropdown();
 });
 
-clearAllSessionsButton.addEventListener('click', clearAllSessions);
+clearAllSessionsButton.addEventListener('click', handleClearAllSessionsEvent);
 
 // Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
@@ -1037,7 +961,7 @@ function toggleStopMessage(show) {
 function createMessage(role, content, messageId = null) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', `${role}-message`)
-    const id = messageId || `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const id = messageId || generateId();
     messageDiv.id = id;
 
     if (role === 'assistant') {
@@ -1276,17 +1200,14 @@ function clearMessages() {
     chatContainer.innerHTML = '';
     existingMessages = [];
     abortController?.abort();
+    isLoading = false;
+    toggleStopMessage(false);
     // Clear messages from localStorage
     localStorage.removeItem('chat_messages');
     // Clear uploaded files
     uploadedFiles = [];
     filePreviewContainer.innerHTML = '';
     updateEmptyState();
-    
-    // Close sessions dropdown if open
-    if (isSessionsDropdownOpen) {
-        toggleSessionsDropdown(false);
-    }
 }
 
 const makeAllLinksOpenInNewTab = () => {
@@ -1364,7 +1285,7 @@ async function sendMessage(redo = false) {
     }
 
     if (!redo) {
-        const userMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        const userMessageId = generateId();
         createMessage('user', messageContent, userMessageId);
         existingMessages.push({role: 'user', content: messageContent, id: userMessageId});
     }
@@ -1380,7 +1301,7 @@ async function sendMessage(redo = false) {
     // Save messages to localStorage
     saveChatMessages();
 
-    const assistantMessageId = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+    const assistantMessageId = generateId();
     const assistantMessageDiv = createMessage('assistant', '', assistantMessageId);
 
     let markdownContent = '';
@@ -1642,78 +1563,67 @@ async function sendMessage(redo = false) {
     }
 }
 
+function updateMessagesList() {
+    if (!existingMessages?.length) return;
+
+    // Display saved messages
+    existingMessages.forEach(message => {
+        if (!message.id) {
+            message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        }
+        const messageDiv = createMessage(message.role, message.content, message.id);
+
+        if (message.role === 'assistant') {
+            // Remove loading indicator
+            removeLoadingIndicator(messageDiv);
+
+            // Create markdown div
+            const markdownDiv = document.createElement('div');
+            markdownDiv.classList.add('markdown');
+            messageDiv.appendChild(markdownDiv);
+
+            // Render markdown content
+            const markdown = renderMarkdown(message.content, true);
+            markdownDiv.replaceChildren(markdown);
+
+            // Add copy button
+            const copyButton = createActionButton(message.content);
+            const referencesSection = markdownDiv.querySelector('.references-section');
+            if (referencesSection) {
+                referencesSection.insertAdjacentElement('beforebegin', copyButton);
+            } else {
+                markdownDiv.appendChild(copyButton);
+            }
+
+            // Check for think content
+            if (message.think) {
+                const thinkSectionElement = createThinkSection(messageDiv);
+                const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                thinkContentElement.textContent = message.think;
+
+                const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
+                if (thinkHeaderElement) {
+                    thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                }
+            }
+        }
+        // User messages are already handled in displayMessage
+    });
+
+    makeAllLinksOpenInNewTab();
+
+    // Scroll to bottom
+    messageInput.focus();
+    scrollToBottom();
+}
+
 // Load and display saved messages
 function loadAndDisplaySavedMessages() {
-    const messages = loadChatMessages();
-    
-    if (messages && messages.length > 0) {
-        existingMessages = messages;
-        
-        try {
-            // Display saved messages
-            existingMessages.forEach(message => {
-                if (!message.id) {
-                    message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-                }
-                
-                try {
-                    const messageDiv = createMessage(message.role, message.content, message.id);
-    
-                    if (message.role === 'assistant') {
-                        // Remove loading indicator
-                        removeLoadingIndicator(messageDiv);
-    
-                        // Create markdown div
-                        const markdownDiv = document.createElement('div');
-                        markdownDiv.classList.add('markdown');
-                        messageDiv.appendChild(markdownDiv);
-    
-                        try {
-                            // Render markdown content with error handling
-                            const markdown = renderMarkdown(message.content, true);
-                            markdownDiv.replaceChildren(markdown);
-    
-                            // Add copy button
-                            const copyButton = createActionButton(message.content);
-                            const referencesSection = markdownDiv.querySelector('.references-section');
-                            if (referencesSection) {
-                                referencesSection.insertAdjacentElement('beforebegin', copyButton);
-                            } else {
-                                markdownDiv.appendChild(copyButton);
-                            }
-    
-                            // Check for think content
-                            if (message.think) {
-                                const thinkSectionElement = createThinkSection(messageDiv);
-                                const thinkContentElement = thinkSectionElement.querySelector('.think-content');
-                                thinkContentElement.textContent = message.think;
-    
-                                const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
-                                if (thinkHeaderElement) {
-                                    thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
-                                }
-                            }
-                        } catch (e) {
-                            console.error('Error rendering message content:', e);
-                            markdownDiv.textContent = typeof message.content === 'string' 
-                                ? message.content 
-                                : JSON.stringify(message.content);
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error creating message:', e, message);
-                }
-            });
-            saveChatMessages();
-            makeAllLinksOpenInNewTab();
-    
-            // Scroll to bottom
-            messageInput.focus();
-            scrollToBottom();
-        } catch (e) {
-            console.error('Error displaying saved messages:', e);
-        }
-    }
+    chatSessions = loadChatSessions();
+    existingMessages = loadChatMessages();
+
+    updateMessagesList();
+    updateSessionsList();
 }
 
 
@@ -2194,10 +2104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         [fileUploadButton, stopMessageButton].forEach(button => {
             handleTooltipEvent(button, 'top');
         });
-        
-        // Initialize sessions list
-        loadChatSessions();
-        updateSessionsList();
 
         setupFileDrop();
 });

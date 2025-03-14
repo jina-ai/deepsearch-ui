@@ -8,7 +8,6 @@
       "upgrade": "Upgrade",
       "help": "Help",
       "send": "Deep Search",
-      "recent": "Recent",
       "clearAll": "Clear All",
       "addKey": "Upgrade",
       "updateKey": "Update Key",
@@ -16,6 +15,9 @@
       "saveKey": "Save",
       "purchase": "Purchase More Tokens",
       "contactUs": "Contact Us"
+    },
+    "labels": {
+      "recent": "Recent"
     },
     "tooltips": {
       "copy": "Copy",
@@ -79,7 +81,6 @@
       "upgrade": "升级",
       "help": "帮助",
       "send": "深度搜索",
-      "recent": "最近",
       "clearAll": "清除全部",
       "addKey": "升级",
       "updateKey": "更新密钥",
@@ -87,6 +88,9 @@
       "saveKey": "保存",
       "purchase": "购买更多词元",
       "contactUs": "联系我们"
+    },
+    "labels": {
+      "recent": "最近"
     },
     "tooltips": {
       "copy": "复制",
@@ -150,7 +154,6 @@
       "upgrade": "升級",
       "help": "說明一下",
       "send": "深度搜尋",
-      "recent": "最近",
       "clearAll": "清除全部",
       "addKey": "升級",
       "updateKey": "更新金鑰",
@@ -158,6 +161,9 @@
       "saveKey": "存起來",
       "purchase": "買更多詞元",
       "contactUs": "聯絡我們"
+    },
+    "labels": {
+      "recent": "最近"
     },
     "tooltips": {
       "copy": "複製",
@@ -221,7 +227,6 @@
       "upgrade": "アップグレード",
       "help": "ヘルプ",
       "send": "深度検索",
-      "recent": "最近",
       "clearAll": "すべて消去",
       "addKey": "アップグレード",
       "updateKey": "キーを更新",
@@ -229,6 +234,9 @@
       "saveKey": "保存",
       "purchase": "トークンを購入",
       "contactUs": "お問い合わせ"
+    },
+    "labels": {
+      "recent": "最近"
     },
     "tooltips": {
       "copy": "コピー",
@@ -292,7 +300,6 @@
       "upgrade": "Mettre à niveau",
       "help": "Aide",
       "send": "Recherche Approfondie",
-      "recent": "Récent",
       "clearAll": "Tout effacer",
       "addKey": "Mettre à niveau",
       "updateKey": "Mettre à jour la clé",
@@ -300,6 +307,9 @@
       "saveKey": "Enregistrer",
       "purchase": "Acheter plus de jetons",
       "contactUs": "Nous contacter"
+    },
+    "labels": {
+      "recent": "Récent"
     },
     "tooltips": {
       "copy": "Copier",
@@ -370,6 +380,9 @@
       "purchase": "Weitere Token kaufen",
       "contactUs": "Kontaktieren Sie uns"
     },
+    "labels": {
+      "recent": "Kürzlich"
+    },
     "tooltips": {
       "copy": "Kopieren",
       "redo": "Neu generieren",
@@ -378,7 +391,8 @@
       "new": "Löschen und neue Konversation starten",
       "upgrade": "Auf höhere Ratenbegrenzung aktualisieren",
       "upload": "Dateien hochladen (txt/pdf/png/jpeg/webp unterstützt)",
-      "stop": "Stop"
+      "stop": "Stop",
+      "recent": "Kürzlich angesehene Konversationen"
     },
     "think": {
       "initial": "Denke nach...",
@@ -436,6 +450,9 @@
       "purchase": "토큰 더 구매",
       "contactUs": "문의하기"
     },
+    "labels": {
+      "recent": "최근"
+    },
     "tooltips": {
       "copy": "복사",
       "redo": "재생성",
@@ -444,7 +461,8 @@
       "new": "지우고 새 대화 시작",
       "upgrade": "높은 요금제로 업그레이드",
       "upload": "파일 업로드 (txt/pdf/png/jpeg/webp 지원)",
-      "stop": "중지"
+      "stop": "중지",
+      "recent": "최근 대화 보기"
     },
     "think": {
       "initial": "생각 중...",

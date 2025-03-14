@@ -62,19 +62,21 @@
             </button>
             <div id="recent-sessions-container" class="tooltip-container">
                 <button id="recent-sessions-button" aria-label="Recent Sessions" class="icon-button">
-                    <svg class="action-icon chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <svg class="chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
-                    <span data-label="buttons.recent">Recent</span>
+                    <span class="tooltip" data-label="tooltips.recent">View recent conversations</span>
                 </button>
-                <span class="tooltip" data-label="tooltips.recent">View recent conversations</span>
-                <div id="sessions-dropdown" class="sessions-dropdown">
-                    <div class="sessions-list" id="sessions-list">
-                        <!-- Sessions will be dynamically added here -->
+                <div id="sessions-dropdown">
+                    <div id="sessions-header">
+                        <span data-label="labels.recent">Recent</span>
                     </div>
-                    <div class="sessions-footer">
-                        <button id="clear-all-sessions" class="clear-all-button">
+                    <ul id="sessions-list">
+                        <!-- Sessions will be dynamically added here -->
+                    </ul>
+                    <div id="sessions-footer">
+                        <button id="clear-all-sessions">
                             <span data-label="buttons.clearAll">Clear All</span>
                         </button>
                     </div>
