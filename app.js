@@ -1569,7 +1569,7 @@ function updateMessagesList() {
     // Display saved messages
     existingMessages.forEach(message => {
         if (!message.id) {
-            message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+            message.id = generateId();
         }
         const messageDiv = createMessage(message.role, message.content, message.id);
 
