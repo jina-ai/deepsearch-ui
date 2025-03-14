@@ -1167,8 +1167,11 @@ function renderMarkdown(content, returnElement = false, visitedURLs = [], role =
     tempDiv.innerHTML = content;
     if (md) {
         try {
-            const rendered = md.render(content);
-            tempDiv.innerHTML = rendered;
+            // Only try to render markdown if content is not empty
+            if (content.trim()) {
+                const rendered = md.render(content);
+                tempDiv.innerHTML = rendered;
+            }
         } catch (e) {
             console.error('Error rendering markdown:', e);
             tempDiv.innerHTML = content;
