@@ -189,6 +189,12 @@ const fileInput = document.getElementById('file-input');
 const filePreviewContainer = document.getElementById('file-preview-container');
 const inputErrorMessage = document.getElementById('input-error-message');
 const stopMessageButton = document.getElementById('stop-message-button');
+// Session management DOM elements
+const recentSessionsContainer = document.getElementById('recent-sessions-container');
+const recentSessionsButton = document.getElementById('recent-sessions-button');
+const sessionsDropdown = document.getElementById('sessions-dropdown');
+const sessionsList = document.getElementById('sessions-list');
+const clearAllSessionsButton = document.getElementById('clear-all-sessions');
 
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
@@ -219,6 +225,11 @@ let compositionEnded = false;
 // File upload state
 let uploadedFiles = [];
 
+// Session management variables
+let chatSessions = [];
+const MAX_SESSIONS = 10;
+let isSessionsDropdownOpen = false;
+
 // API Key Management
 function initializeApiKey() {
     const savedKey = localStorage.getItem('api_key') || '';
@@ -240,6 +251,11 @@ function saveChatMessages() {
     });
 
     localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
+    
+    // Save current session if there are messages
+    if (existingMessages.length > 0) {
+        saveCurrentSession();
+    }
 }
 
 function loadChatMessages() {
@@ -249,6 +265,167 @@ function loadChatMessages() {
     } catch (e) {
         console.error('Error parsing saved messages:', e);
         return [];
+    }
+}
+
+// Session Management Functions
+function loadChatSessions() {
+    try {
+        const savedSessions = localStorage.getItem('chat_sessions');
+        chatSessions = savedSessions ? JSON.parse(savedSessions) : [];
+    } catch (e) {
+        console.error('Error parsing saved sessions:', e);
+        chatSessions = [];
+    }
+}
+
+function saveChatSessions() {
+    try {
+        localStorage.setItem('chat_sessions', JSON.stringify(chatSessions));
+    } catch (e) {
+        console.error('Error saving sessions to localStorage:', e);
+        // Remove oldest sessions if we hit storage limit
+        if (e.name === 'QuotaExceededError' && chatSessions.length > 0) {
+            chatSessions.pop(); // Remove the oldest session
+            saveChatSessions(); // Try again
+        }
+    }
+}
+
+function saveCurrentSession() {
+    if (existingMessages.length === 0) return;
+    
+    // Get the first user message as the session title
+    const firstUserMessage = existingMessages.find(m => m.role === 'user');
+    if (!firstUserMessage) return;
+    
+    const sessionId = Date.now().toString();
+    const sessionTitle = typeof firstUserMessage.content === 'string' 
+        ? firstUserMessage.content 
+        : firstUserMessage.content.map(c => c.text).join(' ');
+    
+    // Check if this session already exists
+    const existingSessionIndex = chatSessions.findIndex(s => 
+        JSON.stringify(s.messages) === JSON.stringify(existingMessages));
+    
+    if (existingSessionIndex !== -1) {
+        // Update existing session timestamp
+        chatSessions[existingSessionIndex].timestamp = Date.now();
+        
+        // Move to the top of the list
+        const session = chatSessions.splice(existingSessionIndex, 1)[0];
+        chatSessions.unshift(session);
+    } else {
+        // Add new session
+        const newSession = {
+            id: sessionId,
+            firstMessage: sessionTitle,
+            timestamp: Date.now(),
+            messages: existingMessages
+        };
+        
+        // Add to beginning of array (newest first)
+        chatSessions.unshift(newSession);
+        
+        // Limit to MAX_SESSIONS
+        if (chatSessions.length > MAX_SESSIONS) {
+            chatSessions = chatSessions.slice(0, MAX_SESSIONS);
+        }
+    }
+    
+    saveChatSessions();
+    updateSessionsList();
+}
+
+function loadSession(sessionId) {
+    const session = chatSessions.find(s => s.id === sessionId);
+    if (!session) return;
+    
+    // Clear current messages
+    clearMessages();
+    
+    // Load session messages
+    existingMessages = session.messages;
+    
+    // Update UI
+    loadAndDisplaySavedMessages();
+    updateEmptyState();
+    
+    // Close dropdown
+    toggleSessionsDropdown(false);
+}
+
+function deleteSession(sessionId, event) {
+    // Prevent click from bubbling to parent (which would load the session)
+    if (event) {
+        event.stopPropagation();
+    }
+    
+    chatSessions = chatSessions.filter(s => s.id !== sessionId);
+    saveChatSessions();
+    updateSessionsList();
+}
+
+function clearAllSessions() {
+    chatSessions = [];
+    saveChatSessions();
+    updateSessionsList();
+    toggleSessionsDropdown(false);
+}
+
+function updateSessionsList() {
+    // Clear current list
+    sessionsList.innerHTML = '';
+    
+    if (chatSessions.length === 0) {
+        const emptyMessage = document.createElement('div');
+        emptyMessage.classList.add('session-empty');
+        emptyMessage.textContent = 'No recent sessions';
+        sessionsList.appendChild(emptyMessage);
+        return;
+    }
+    
+    // Add each session to the list
+    chatSessions.forEach(session => {
+        const sessionItem = document.createElement('div');
+        sessionItem.classList.add('session-item');
+        sessionItem.setAttribute('data-session-id', session.id);
+        
+        const sessionTitle = document.createElement('div');
+        sessionTitle.classList.add('session-title');
+        sessionTitle.textContent = session.firstMessage;
+        
+        const deleteButton = document.createElement('button');
+        deleteButton.classList.add('delete-session');
+        deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
+        
+        sessionItem.appendChild(sessionTitle);
+        sessionItem.appendChild(deleteButton);
+        
+        // Add event listeners
+        sessionItem.addEventListener('click', () => loadSession(session.id));
+        deleteButton.addEventListener('click', (e) => deleteSession(session.id, e));
+        
+        sessionsList.appendChild(sessionItem);
+    });
+}
+
+function toggleSessionsDropdown(forceState) {
+    const isOpen = forceState !== undefined ? forceState : !isSessionsDropdownOpen;
+    
+    // Update dropdown state
+    isSessionsDropdownOpen = isOpen;
+    
+    // Toggle dropdown visibility
+    sessionsDropdown.classList.toggle('show', isOpen);
+    
+    // Rotate chevron icon
+    const chevronIcon = recentSessionsButton.querySelector('.chevron-icon');
+    chevronIcon.classList.toggle('rotated', isOpen);
+    
+    // Update sessions list if opening
+    if (isOpen) {
+        updateSessionsList();
     }
 }
 
@@ -347,12 +524,30 @@ function getFileTypeDisplay(mimeType) {
 // Initialize API key
 initializeApiKey();
 
+// Load saved chat sessions
+loadChatSessions();
+
 // File upload event listeners
 fileUploadButton.addEventListener('click', () => {
     fileInput.click();
 });
 
 fileInput.addEventListener('change', e => handleFileUpload(e.target.files));
+
+// Session management event listeners
+recentSessionsButton.addEventListener('click', () => {
+    toggleSessionsDropdown();
+});
+
+clearAllSessionsButton.addEventListener('click', clearAllSessions);
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (isSessionsDropdownOpen && 
+        !recentSessionsContainer.contains(e.target)) {
+        toggleSessionsDropdown(false);
+    }
+});
 
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
@@ -1830,12 +2025,16 @@ document.addEventListener('DOMContentLoaded', () => {
             updateEmptyState();
         });
 
-        [settingsButton, newChatButton, helpButton, toggleApiKeyBtn].forEach(button => {
+        [settingsButton, newChatButton, helpButton, toggleApiKeyBtn, recentSessionsButton].forEach(button => {
             handleTooltipEvent(button, 'bottom');
         });
         [fileUploadButton, stopMessageButton].forEach(button => {
             handleTooltipEvent(button, 'top');
         });
+        
+        // Initialize sessions list
+        loadChatSessions();
+        updateSessionsList();
 
         setupFileDrop();
 });

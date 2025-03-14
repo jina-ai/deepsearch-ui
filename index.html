@@ -60,6 +60,26 @@
                 <span data-label="buttons.new">New</span>
                 <span class="tooltip" data-label="tooltips.new">Clear and start a new conversation</span>
             </button>
+            <div id="recent-sessions-container" class="tooltip-container">
+                <button id="recent-sessions-button" aria-label="Recent Sessions" class="icon-button">
+                    <svg class="action-icon chevron-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    <span data-label="buttons.recent">Recent</span>
+                </button>
+                <span class="tooltip" data-label="tooltips.recent">View recent conversations</span>
+                <div id="sessions-dropdown" class="sessions-dropdown">
+                    <div class="sessions-list" id="sessions-list">
+                        <!-- Sessions will be dynamically added here -->
+                    </div>
+                    <div class="sessions-footer">
+                        <button id="clear-all-sessions" class="clear-all-button">
+                            <span data-label="buttons.clearAll">Clear All</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="buttons-group">
             <button id="toggle-api-key" class="icon-button tooltip-container" aria-label="Upgrade to higher rate limit">
