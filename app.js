@@ -241,20 +241,43 @@ function initializeApiKey() {
 
 // Chat Message Persistence
 function saveChatMessages() {
-    const thinMessage = existingMessages.map(m => {
-        return {
-            role: m.role,
-            content: typeof m.content === 'string' ? m.content : m.content.map(c => ({ type: c.type, text: c.text, mimeType: c.mimeType, fileName: c.fileName })),
-            id: m.id,
-            think: m.think,
-        };
-    });
+    try {
+        const thinMessage = existingMessages.map(m => {
+            try {
+                return {
+                    role: m.role,
+                    content: typeof m.content === 'string' 
+                        ? m.content 
+                        : Array.isArray(m.content) 
+                            ? m.content.map(c => ({ 
+                                type: c.type, 
+                                text: c.text, 
+                                mimeType: c.mimeType, 
+                                fileName: c.fileName 
+                            }))
+                            : JSON.stringify(m.content),
+                    id: m.id,
+                    think: m.think,
+                };
+            } catch (e) {
+                console.error('Error processing message for saving:', e, m);
+                return {
+                    role: m.role,
+                    content: typeof m.content === 'string' ? m.content : 'Error processing content',
+                    id: m.id,
+                    think: m.think,
+                };
+            }
+        });
 
-    localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
-    
-    // Save current session if there are messages
-    if (existingMessages.length > 0) {
-        saveCurrentSession();
+        localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
+        
+        // Save current session if there are messages
+        if (existingMessages.length > 0) {
+            saveCurrentSession();
+        }
+    } catch (e) {
+        console.error('Error saving chat messages:', e);
     }
 }
 
@@ -300,9 +323,30 @@ function saveCurrentSession() {
     if (!firstUserMessage) return;
     
     const sessionId = Date.now().toString();
-    const sessionTitle = typeof firstUserMessage.content === 'string' 
-        ? firstUserMessage.content 
-        : firstUserMessage.content.map(c => c.text).join(' ');
+    let sessionTitle = '';
+    
+    try {
+        if (typeof firstUserMessage.content === 'string') {
+            sessionTitle = firstUserMessage.content;
+        } else if (Array.isArray(firstUserMessage.content)) {
+            // Extract text from array content
+            sessionTitle = firstUserMessage.content
+                .filter(c => c && (c.text || c.type === 'text'))
+                .map(c => c.text || '')
+                .join(' ');
+        } else if (firstUserMessage.content) {
+            // Try to convert other content types to string
+            sessionTitle = JSON.stringify(firstUserMessage.content);
+        }
+    } catch (e) {
+        console.error('Error extracting session title:', e);
+        sessionTitle = 'Chat session';
+    }
+    
+    // Fallback if we couldn't extract a title
+    if (!sessionTitle.trim()) {
+        sessionTitle = 'Chat session';
+    }
     
     // Check if this session already exists
     const existingSessionIndex = chatSessions.findIndex(s => 
@@ -353,49 +397,53 @@ function loadSession(sessionId) {
             message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         }
         
-        // Create message element
-        const messageDiv = createMessage(message.role, message.content, message.id);
-        
-        if (message.role === 'assistant') {
-            // Remove loading indicator
-            removeLoadingIndicator(messageDiv);
+        try {
+            // Create message element
+            const messageDiv = createMessage(message.role, message.content, message.id);
             
-            // Create markdown div
-            const markdownDiv = document.createElement('div');
-            markdownDiv.classList.add('markdown');
-            messageDiv.appendChild(markdownDiv);
-            
-            try {
-                // Render markdown content with error handling
-                const markdown = renderMarkdown(message.content, true);
-                markdownDiv.replaceChildren(markdown);
+            if (message.role === 'assistant') {
+                // Remove loading indicator
+                removeLoadingIndicator(messageDiv);
                 
-                // Add copy button
-                const copyButton = createActionButton(message.content);
-                const referencesSection = markdownDiv.querySelector('.references-section');
-                if (referencesSection) {
-                    referencesSection.insertAdjacentElement('beforebegin', copyButton);
-                } else {
-                    markdownDiv.appendChild(copyButton);
-                }
+                // Create markdown div
+                const markdownDiv = document.createElement('div');
+                markdownDiv.classList.add('markdown');
+                messageDiv.appendChild(markdownDiv);
                 
-                // Check for think content
-                if (message.think) {
-                    const thinkSectionElement = createThinkSection(messageDiv);
-                    const thinkContentElement = thinkSectionElement.querySelector('.think-content');
-                    thinkContentElement.textContent = message.think;
+                try {
+                    // Render markdown content with error handling
+                    const markdown = renderMarkdown(message.content, true);
+                    markdownDiv.replaceChildren(markdown);
                     
-                    const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
-                    if (thinkHeaderElement) {
-                        thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                    // Add copy button
+                    const copyButton = createActionButton(message.content);
+                    const referencesSection = markdownDiv.querySelector('.references-section');
+                    if (referencesSection) {
+                        referencesSection.insertAdjacentElement('beforebegin', copyButton);
+                    } else {
+                        markdownDiv.appendChild(copyButton);
                     }
+                    
+                    // Check for think content
+                    if (message.think) {
+                        const thinkSectionElement = createThinkSection(messageDiv);
+                        const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                        thinkContentElement.textContent = message.think;
+                        
+                        const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
+                        if (thinkHeaderElement) {
+                            thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error rendering message content:', e);
+                    markdownDiv.textContent = typeof message.content === 'string' 
+                        ? message.content 
+                        : JSON.stringify(message.content);
                 }
-            } catch (e) {
-                console.error('Error rendering message content:', e);
-                markdownDiv.textContent = typeof message.content === 'string' 
-                    ? message.content 
-                    : JSON.stringify(message.content);
             }
+        } catch (e) {
+            console.error('Error creating message:', e, message);
         }
     });
     
@@ -1601,62 +1649,70 @@ function loadAndDisplaySavedMessages() {
     if (messages && messages.length > 0) {
         existingMessages = messages;
         
-        // Display saved messages
-        existingMessages.forEach(message => {
-            if (!message.id) {
-                message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-            }
-            const messageDiv = createMessage(message.role, message.content, message.id);
-
-            if (message.role === 'assistant') {
-                // Remove loading indicator
-                removeLoadingIndicator(messageDiv);
-
-                // Create markdown div
-                const markdownDiv = document.createElement('div');
-                markdownDiv.classList.add('markdown');
-                messageDiv.appendChild(markdownDiv);
-
+        try {
+            // Display saved messages
+            existingMessages.forEach(message => {
+                if (!message.id) {
+                    message.id = `message-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+                }
+                
                 try {
-                    // Render markdown content with error handling
-                    const markdown = renderMarkdown(message.content, true);
-                    markdownDiv.replaceChildren(markdown);
-
-                    // Add copy button
-                    const copyButton = createActionButton(message.content);
-                    const referencesSection = markdownDiv.querySelector('.references-section');
-                    if (referencesSection) {
-                        referencesSection.insertAdjacentElement('beforebegin', copyButton);
-                    } else {
-                        markdownDiv.appendChild(copyButton);
-                    }
-
-                    // Check for think content
-                    if (message.think) {
-                        const thinkSectionElement = createThinkSection(messageDiv);
-                        const thinkContentElement = thinkSectionElement.querySelector('.think-content');
-                        thinkContentElement.textContent = message.think;
-
-                        const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
-                        if (thinkHeaderElement) {
-                            thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                    const messageDiv = createMessage(message.role, message.content, message.id);
+    
+                    if (message.role === 'assistant') {
+                        // Remove loading indicator
+                        removeLoadingIndicator(messageDiv);
+    
+                        // Create markdown div
+                        const markdownDiv = document.createElement('div');
+                        markdownDiv.classList.add('markdown');
+                        messageDiv.appendChild(markdownDiv);
+    
+                        try {
+                            // Render markdown content with error handling
+                            const markdown = renderMarkdown(message.content, true);
+                            markdownDiv.replaceChildren(markdown);
+    
+                            // Add copy button
+                            const copyButton = createActionButton(message.content);
+                            const referencesSection = markdownDiv.querySelector('.references-section');
+                            if (referencesSection) {
+                                referencesSection.insertAdjacentElement('beforebegin', copyButton);
+                            } else {
+                                markdownDiv.appendChild(copyButton);
+                            }
+    
+                            // Check for think content
+                            if (message.think) {
+                                const thinkSectionElement = createThinkSection(messageDiv);
+                                const thinkContentElement = thinkSectionElement.querySelector('.think-content');
+                                thinkContentElement.textContent = message.think;
+    
+                                const thinkHeaderElement = thinkSectionElement.querySelector('.think-header');
+                                if (thinkHeaderElement) {
+                                    thinkHeaderElement.textContent = UI_STRINGS.think.toggle();
+                                }
+                            }
+                        } catch (e) {
+                            console.error('Error rendering message content:', e);
+                            markdownDiv.textContent = typeof message.content === 'string' 
+                                ? message.content 
+                                : JSON.stringify(message.content);
                         }
                     }
                 } catch (e) {
-                    console.error('Error rendering message content:', e);
-                    markdownDiv.textContent = typeof message.content === 'string' 
-                        ? message.content 
-                        : JSON.stringify(message.content);
+                    console.error('Error creating message:', e, message);
                 }
-            }
-            // User messages are already handled in displayMessage
-        });
-        saveChatMessages();
-        makeAllLinksOpenInNewTab();
-
-        // Scroll to bottom
-        messageInput.focus();
-        scrollToBottom();
+            });
+            saveChatMessages();
+            makeAllLinksOpenInNewTab();
+    
+            // Scroll to bottom
+            messageInput.focus();
+            scrollToBottom();
+        } catch (e) {
+            console.error('Error displaying saved messages:', e);
+        }
     }
 }
 
