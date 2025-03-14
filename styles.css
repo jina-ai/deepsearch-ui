@@ -1120,6 +1120,10 @@ input:checked + .toggle-slider:before {
     #main-container {
         padding-inline-start: 0;
     }
+
+    .delete-session {
+        visibility: visible;
+    }
 }
 
 .footnote-ref a {
