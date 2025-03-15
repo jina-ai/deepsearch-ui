@@ -687,6 +687,24 @@ function handleStopEvent () {
     }
 }
 
+// Create a copy button for code blocks
+function createCodeCopyButton(codeElement) {
+    const copyButton = document.createElement('button');
+    copyButton.classList.add('code-copy-button', 'tooltip-container');
+    copyButton.setAttribute('data-tooltip', 'tooltips.copy');
+    
+    const copyIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+    copyButton.innerHTML = copyIcon;
+    
+    copyButton.addEventListener('click', () => {
+        handleCopyEvent(copyButton, copyIcon, codeElement.textContent);
+    });
+    
+    handleTooltipEvent(copyButton);
+    
+    return copyButton;
+}
+
 function createActionButton(content) {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('action-buttons-container');
@@ -917,7 +935,30 @@ function renderMarkdown(content, returnElement = false, visitedURLs = [], role =
             });
         }
     }
+    
+    // Add copy buttons to code blocks if returning the element
+    if (returnElement) {
+        addCodeCopyButtons(tempDiv);
+    }
+    
     return returnElement ? tempDiv : tempDiv.innerHTML;
+}
+
+// Add copy buttons to all code blocks
+function addCodeCopyButtons(markdownElement) {
+    const codeBlocks = markdownElement.querySelectorAll('pre code');
+    codeBlocks.forEach(codeBlock => {
+        const preElement = codeBlock.parentElement;
+        
+        // Make the pre element relative positioned for absolute positioning of the button
+        preElement.style.position = 'relative';
+        
+        // Create the copy button
+        const copyButton = createCodeCopyButton(codeBlock);
+        
+        // Add the button to the pre element
+        preElement.appendChild(copyButton);
+    });
 }
 
 // Message handling functions
