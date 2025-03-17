@@ -462,6 +462,10 @@ a {
     margin-top: 20px;
 }
 
+.dialog-footer .delete {
+    margin-left: auto;
+}
+
 
 .icon-button .action-icon {
     margin-right: 8px;
@@ -540,26 +544,16 @@ a {
 
 .delete-session {
     visibility: hidden;
-    background: none;
-    border: none;
-    padding: 4px;
-    cursor: pointer;
-    height: auto;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .session-item:hover .delete-session {
     visibility: visible;
 }
 
-.delete-session:hover {
+.delete-session:hover,
+#clear-all-sessions:hover,
+.delete:hover {
     color: var(--negative);
-    background-color: transparent;
-    box-shadow: none;
-    border-color: transparent;
 }
 
 #sessions-header {
@@ -576,10 +570,6 @@ a {
     border-top: 1px solid var(--bg-color-200);
     display: flex;
     justify-content: flex-end;
-}
-
-#clear-all-sessions:hover {
-    color: var(--negative);
 }
 
 .help-list {

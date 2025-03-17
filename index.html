@@ -256,6 +256,36 @@
         </div>
     </div>
 </div>
+<!-- Delete session dialog -->
+<div class="dialog-overlay" id="delete-session-dialog" role="dialog" aria-labelledby="delete-session-dialog-title" aria-modal="true">
+    <div class="dialog">
+        <div class="dialog-header">
+            <span class="dialog-title" id="delete-session-dialog-title" data-label="dialogs.deleteSession.title">Delete session?</span>
+            <button class="dialog-close" aria-label="Close dialog">&times;</button>
+        </div>
+        <div class="dialog-content">
+            <p id="free-user-rpm" data-html="dialogs.deleteSession.description">Are you sure to delete the session?</p>
+        </div>
+        <div class="dialog-footer">
+            <button class="delete" aria-label="Delete" data-label="buttons.delete">Delete</button>
+        </div>
+    </div>
+</div>
+<!-- Delete all sessions dialog -->
+<div class="dialog-overlay" id="delete-all-sessions-dialog" role="dialog" aria-labelledby="delete-all-dialog-title" aria-modal="true">
+    <div class="dialog">
+        <div class="dialog-header">
+            <span class="dialog-title" id="delete-all-dialog-title" data-label="dialogs.deleteAllSessions.title">Delete all sessions?</span>
+            <button class="dialog-close" aria-label="Close dialog">&times;</button>
+        </div>
+        <div class="dialog-content">
+            <p id="free-user-rpm" data-html="dialogs.deleteAllSessions.description">Are you sure to delete all the sessions?</p>
+        </div>
+        <div class="dialog-footer">
+            <button class="delete" aria-label="Delete" data-label="buttons.delete">Delete</button>
+        </div>
+    </div>
+</div>
 
 <script async src="preload.js"></script>
 <script defer src="hljs.js"></script>
