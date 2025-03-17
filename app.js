@@ -389,7 +389,7 @@ function handleClickSessionEvent(sessionId) {
     clearMessages();
 
     // Load session messages
-    existingMessages = session.messages;
+    existingMessages = session.messages?.concat() || [];
     updateMessagesList();
     saveChatMessages();
     
