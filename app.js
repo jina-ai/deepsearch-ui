@@ -765,7 +765,7 @@ function createThinkSection(messageDiv, showUrl = true) {
         thinkUrl = document.createElement('a');
         thinkUrl.classList.add('think-url', 'hidden');
         thinkUrl.target = '_blank';
-        const urlIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
+        const urlIcon = `<svg class="think-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
         const urlText = document.createElement('span');
         urlText.classList.add('think-url-text');
         thinkUrl.innerHTML = urlIcon;
@@ -1482,11 +1482,11 @@ async function sendMessage(redo = false) {
                     
                                     if (url) {
                                         clearTimeout(hideUrlTimeout);
-                                        thinkUrl.classList.toggle('hidden', false);
+                                        thinkUrl.classList.remove('hidden');
                                         thinkUrl.href = url;
                                         thinkUrlText.textContent = url;
                                     } else {
-                                        hideUrlTimeout = setTimeout(() => thinkUrl.classList.toggle('hidden', true), 1000);
+                                        hideUrlTimeout = setTimeout(() => thinkUrl.classList.add('hidden'), 1000);
                                     }
                                 }
                                 removeLoadingIndicator(assistantMessageDiv);

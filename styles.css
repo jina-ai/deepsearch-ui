@@ -749,6 +749,10 @@ a {
     opacity: 0;
     pointer-events: none;
 }
+.think-icon {
+    width: 16px;
+    height: 16px;
+}
 
 .think-url-text {
     text-overflow: ellipsis;
