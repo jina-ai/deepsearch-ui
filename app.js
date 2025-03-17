@@ -745,7 +745,7 @@ const renderFaviconList = async (visitedURLs, numURLs) => {
     return faviconList;
 };
 
-function createThinkSection(messageDiv) {
+function createThinkSection(messageDiv, showUrl = true) {
     const thinkSection = document.createElement('div');
     thinkSection.classList.add('think-section');
 
@@ -759,6 +759,18 @@ function createThinkSection(messageDiv) {
 
     const thinkContent = document.createElement('div');
     thinkContent.classList.add('think-content');
+
+    let thinkUrl;
+    if (showUrl) {
+        thinkUrl = document.createElement('a');
+        thinkUrl.classList.add('think-url', 'hidden');
+        thinkUrl.target = '_blank';
+        const urlIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
+        const urlText = document.createElement('span');
+        urlText.classList.add('think-url-text');
+        thinkUrl.innerHTML = urlIcon;
+        thinkUrl.appendChild(urlText);
+    }
 
     const expanded = localStorage.getItem('think_section_expanded') === 'true';
     if (expanded) {
@@ -777,9 +789,11 @@ function createThinkSection(messageDiv) {
         localStorage.setItem('think_section_expanded', thinkContent.classList.contains('expanded'));
     });
 
-    // thinkSection.appendChild(thinkHeader);
     thinkSection.appendChild(thinkContent);
     messageDiv.prepend(thinkSection);
+    if (thinkUrl) {
+        thinkSection.insertAdjacentElement('afterend', thinkUrl);
+    }
     return thinkSection;
 }
 
@@ -1433,6 +1447,7 @@ async function sendMessage(redo = false) {
             let partialBrokenData = '';
             let visitedURLs = [];
             let numURLs = 0;
+            let hideUrlTimeout = 0;
 
             while (true) {
                 const {done, value} = await reader.read();
@@ -1459,6 +1474,21 @@ async function sendMessage(redo = false) {
                                 if (json.numURLs) {
                                     numURLs = json.numURLs;
                                 }
+                                const thinkUrl = assistantMessageDiv.querySelector('.think-url');
+                                
+                                if (thinkUrl) {
+                                    const url = json.choices[0]?.delta?.url;
+                                    const thinkUrlText = thinkUrl.querySelector('.think-url-text');
+                    
+                                    if (url) {
+                                        clearTimeout(hideUrlTimeout);
+                                        thinkUrl.classList.toggle('hidden', false);
+                                        thinkUrl.href = url;
+                                        thinkUrlText.textContent = url;
+                                    } else {
+                                        hideUrlTimeout = setTimeout(() => thinkUrl.classList.toggle('hidden', true), 1000);
+                                    }
+                                }
                                 removeLoadingIndicator(assistantMessageDiv);
 
                                 let tempContent = content;
@@ -1469,6 +1499,7 @@ async function sendMessage(redo = false) {
                                     if (inThinkSection) {
                                         const thinkEndIndex = tempContent.indexOf("</think>");
                                         if (thinkEndIndex !== -1) {
+                                            thinkUrl?.remove();
                                             thinkContent += tempContent.substring(0, thinkEndIndex);
                                             if (thinkSectionElement) {
                                                 const thinkContentElement = thinkSectionElement.querySelector('.think-content');
@@ -1528,6 +1559,7 @@ async function sendMessage(redo = false) {
                                                 thinkContentElement.appendChild(thinkingAnimation);
                                             }
                                         } else {
+                                            thinkUrl?.remove();
                                             markdownContent += tempContent;
                                             markdownDiv.innerHTML = renderMarkdown(markdownContent);
                                             tempContent = "";
@@ -1652,7 +1684,7 @@ function updateMessagesList() {
 
             // Check for think content
             if (message.think) {
-                const thinkSectionElement = createThinkSection(messageDiv);
+                const thinkSectionElement = createThinkSection(messageDiv, false);
                 const thinkContentElement = thinkSectionElement.querySelector('.think-content');
                 thinkContentElement.textContent = message.think;
 
