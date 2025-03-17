@@ -741,12 +741,14 @@ a {
     display: flex;
     align-items: center;
     color: var(--text-color);
-    transition: opacity 0.3s ease-in-out;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
     opacity: 1;
+    transform: translateY(0);
 }
 .think-url.hidden {
     opacity: 0;
     pointer-events: none;
+    transform: translateY(-8px);
 }
 .think-icon {
     width: 16px;

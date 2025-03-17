@@ -1449,10 +1449,11 @@ async function sendMessage(redo = false) {
             let partialBrokenData = '';
             let visitedURLs = [];
             let numURLs = 0;
-            let hideUrlTimeout = 0;
-            let processTimeout = 0;
+            let hideUrlTimer = 0;
             const urlQueue = [];
-            let isProcessing = false;
+            let isAnimating = false;
+            let minDisplayTime = 300;
+            let index = 0;
 
             while (true) {
                 const {done, value} = await reader.read();
@@ -1479,44 +1480,59 @@ async function sendMessage(redo = false) {
                                 if (json.numURLs) {
                                     numURLs = json.numURLs;
                                 }
+                                
                                 const thinkUrl = assistantMessageDiv.querySelector('.think-url');
-
-                                function processUrlQueue() {
-                                    if (urlQueue.length === 0) {
-                                        isProcessing = false;
-                                        return;
-                                    }
-                            
-                                    isProcessing = true;
-                                    const url = urlQueue.shift();
+                                
+                                const animateUrlChange = (url) => {
+                                    isAnimating = true;
                                     const thinkUrlText = thinkUrl.querySelector('.think-url-text');
-                            
-                                    thinkUrl.href = url;
-                                    thinkUrlText.textContent = url;
-                                    if (thinkUrl.classList.contains('hidden')) {
-                                        thinkUrl.classList.remove('hidden')
+                                    thinkUrlText.textContent = index + ': ' + url;
+                                
+                                    // Trigger the CSS transition to hide the current URL
+                                    if (!thinkUrl.classList.contains('hidden')) {
+                                        thinkUrl.classList.add('hidden');
                                     }
-                            
-                                    processTimeout = setTimeout(() => {
-                                        processUrlQueue();
-                                    }, 300);
-                                }
+                                
+                                    setTimeout(() => {
+                                        // Reset the element to prepare for the new URL's animation
+                                        if (thinkUrl.classList.contains('hidden')) {
+                                            thinkUrl.classList.remove('hidden');
+                                        }
+                                
+                                        setTimeout(() => {
+                                            isAnimating = false;
+                                            processNextUrl();
+                                        }, minDisplayTime);
+                                    }, 300); // Match CSS transition duration
+                                };
+                                
+                                const processNextUrl = () => {
+                                    if (urlQueue.length === 0) return;
+                                
+                                    const url = urlQueue.shift();
+                                    animateUrlChange(url);
+                                };
+                                
+                                const updateUrl = (url) => {
+                                    urlQueue.push(url);
+                                    if (!isAnimating) {
+                                        processNextUrl();
+                                    }
+                                };
                                 
                                 if (thinkUrl) {
                                     const url = json.choices[0]?.delta?.url;
-                                    const thinkUrlText = thinkUrl.querySelector('.think-url-text');
                     
                                     if (url) {
-                                        clearTimeout(hideUrlTimeout);
-                                        urlQueue.push(url);
-                                        if (!isProcessing) {
-                                            clearTimeout(processTimeout);
-                                            processUrlQueue();
-                                        }
-                                    } else if (!thinkUrl.classList.contains('hidden')) {
-                                        hideUrlTimeout = setTimeout(() => {
-                                            thinkUrl.classList.add('hidden')
-                                        }, 3000);
+                                        index++;
+                                        console.log('URL:', index, url);
+
+                                        clearTimeout(hideUrlTimer);
+                                        updateUrl(url);
+                                    } else if (!isAnimating && !thinkUrl.classList.contains('hidden')) {
+                                        hideUrlTimer = setTimeout(() => {
+                                            thinkUrl.classList.add('hidden');
+                                        }, 5000);
                                     }
                                 }
                                 removeLoadingIndicator(assistantMessageDiv);
@@ -1598,7 +1614,7 @@ async function sendMessage(redo = false) {
                             }
                         } catch (e) {
                             console.error('Error parsing JSON:', e);
-                            clearTimeout(hideUrlTimeout);
+                            clearTimeout(hideUrlTimer);
                         }
                     }
                 }
