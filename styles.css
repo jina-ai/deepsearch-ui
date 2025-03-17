@@ -740,7 +740,6 @@ a {
     gap: 8px;
     display: flex;
     align-items: center;
-    padding: 0 24px;
     color: var(--text-color);
     transition: opacity 0.3s ease-in-out;
     opacity: 1;

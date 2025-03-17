@@ -765,11 +765,13 @@ function createThinkSection(messageDiv, showUrl = true) {
         thinkUrl = document.createElement('a');
         thinkUrl.classList.add('think-url', 'hidden');
         thinkUrl.target = '_blank';
-        const urlIcon = `<svg class="think-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
+        const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
+        const urlIcon = document.createElement('span')
+        urlIcon.classList.add('think-icon')
+        urlIcon.innerHTML = icon;
         const urlText = document.createElement('span');
         urlText.classList.add('think-url-text');
-        thinkUrl.innerHTML = urlIcon;
-        thinkUrl.appendChild(urlText);
+        thinkUrl.append(urlIcon, urlText);
     }
 
     const expanded = localStorage.getItem('think_section_expanded') === 'true';
@@ -1482,11 +1484,16 @@ async function sendMessage(redo = false) {
                     
                                     if (url) {
                                         clearTimeout(hideUrlTimeout);
-                                        thinkUrl.classList.remove('hidden');
+                                        if (thinkUrl.classList.contains('hidden')) {
+                                            thinkUrl.classList.remove('hidden')
+                                        }
+                                        console.log(url)
                                         thinkUrl.href = url;
                                         thinkUrlText.textContent = url;
-                                    } else {
-                                        hideUrlTimeout = setTimeout(() => thinkUrl.classList.add('hidden'), 1000);
+                                    } else if (!thinkUrl.classList.contains('hidden')) {
+                                        hideUrlTimeout = setTimeout(() => {
+                                            thinkUrl.classList.add('hidden')
+                                        }, 3000);
                                     }
                                 }
                                 removeLoadingIndicator(assistantMessageDiv);
@@ -1559,7 +1566,6 @@ async function sendMessage(redo = false) {
                                                 thinkContentElement.appendChild(thinkingAnimation);
                                             }
                                         } else {
-                                            thinkUrl?.remove();
                                             markdownContent += tempContent;
                                             markdownDiv.innerHTML = renderMarkdown(markdownContent);
                                             tempContent = "";
@@ -1569,6 +1575,7 @@ async function sendMessage(redo = false) {
                             }
                         } catch (e) {
                             console.error('Error parsing JSON:', e);
+                            clearTimeout(hideUrlTimeout);
                         }
                     }
                 }
