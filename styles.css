@@ -193,6 +193,7 @@ a {
 
 
 #settings-container button,
+.code-copy-button,
 .action-buttons-container button {
     background-color: unset;
     backdrop-filter: blur(20px);
@@ -205,6 +206,7 @@ a {
     align-items: center;
 }
 
+.code-copy-button:hover,
 .action-buttons-container button:hover,
 #settings-container button:hover {
     background-color: var(--bg-color-100);
@@ -747,10 +749,6 @@ table {
     width: 100%;
 }
 
-table, th, td {
-    border: 1px solid var(--bg-color-100);
-    border-collapse: collapse;
-}
 
 .markdown-inner .footnotes-sep {
     display: none;
@@ -817,12 +815,6 @@ ol.footnotes-list {
     margin: 0;
 }
 
-.markdown-inner pre code {
-    border-radius: 8px;
-    white-space: pre;
-    max-width: 100%;
-    overflow: auto;
-}
 
 .markdown-inner table {
     background-color: var(--bg-color-100);
@@ -1223,6 +1215,7 @@ input:checked + .toggle-slider:before {
     align-items: center;
 }
 
+#stop-message-button:hover,
 #file-upload-button:hover {
     background-color: var(--bg-color-100);
 }
@@ -1360,4 +1353,115 @@ input:checked + .toggle-slider:before {
 
 #stop-icon {
     color: var(--negative);
+}
+
+/* Override the existing table border styles */
+table, th, td {
+    border: none; /* Remove default borders first */
+    font-size: 0.9em;
+}
+
+table th .footnote-ref a,
+table td .footnote-ref a {
+  background-color: var(--bg-color-200);
+}
+
+/* Rounded table corners */
+.markdown-inner table {
+    border-radius: 8px;
+    overflow: hidden; /* This is important to keep the border-radius visible */
+    border-collapse: separate; /* Required for border-radius to work */
+    border-spacing: 0; /* Ensures no gaps between cells */
+    border: 1px solid var(--bg-color-200); /* Single border around the entire table */
+}
+
+/* Add subtle borders between cells */
+.markdown-inner table td,
+.markdown-inner table th {
+    border-right: 1px solid var(--bg-color-200);
+    border-bottom: 1px solid var(--bg-color-200);
+    padding: 8px; /* Add some padding for better readability */
+    text-align: left; /* Left-align all table content by default */
+}
+
+/* Remove right border from last column */
+.markdown-inner table td:last-child,
+.markdown-inner table th:last-child {
+    border-right: none;
+}
+
+/* Remove bottom border from last row */
+.markdown-inner table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Optional: Adjust the table header cell corners */
+.markdown-inner table thead th:first-child {
+    border-top-left-radius: 8px;
+}
+
+.markdown-inner table thead th:last-child {
+    border-top-right-radius: 8px;
+}
+
+/* Optional: Adjust the table bottom row cell corners */
+.markdown-inner table tr:last-child td:first-child {
+    border-bottom-left-radius: 8px;
+}
+
+.markdown-inner table tr:last-child td:last-child {
+    border-bottom-right-radius: 8px;
+}
+
+
+/* Code block styling to match table styling */
+
+/* Style for code blocks */
+.markdown-inner pre {
+    margin: 16px 0;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--bg-color-200);
+    background: none; /* Remove any default background */
+}
+
+.markdown-inner pre code {
+    display: block;
+    padding: 16px;
+    border-radius: 0; /* Remove default border radius from code inside pre */
+    border: none; /* Remove default borders */
+    background-color: var(--bg-color-100);
+    font-family: 'Roboto Mono', 'Courier New', monospace;
+    font-size: var(--body-size);
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Style for inline code to distinguish from code blocks */
+.markdown-inner code:not(pre code) {
+    background-color: var(--bg-color-100);
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-family: 'Roboto Mono', 'Courier New', monospace;
+    color: var(--text-color);
+}
+
+/* For dark mode */
+[data-theme="dark"] .markdown-inner pre code {
+    background-color: var(--bg-color-100);
+}
+
+/* Code copy button styling */
+.code-copy-button {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: none;
+}
+
+.markdown-inner pre:hover .code-copy-button {
+    display: flex;
 }

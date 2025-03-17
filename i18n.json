@@ -22,7 +22,7 @@
     },
     "tooltips": {
       "copy": "Copy",
-      "redo": "Regenerate",
+      "redo": "Redo",
       "settings": "Settings",
       "help": "Support",
       "new": "Clear and start a new conversation",

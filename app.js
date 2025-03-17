@@ -592,7 +592,7 @@ document.addEventListener('click', (e) => {
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
 // Message display functions
-function createReferencesSection(content, visitedURLs = []) {
+function createReferencesSection(content, visitedURLs = [], numURLs=0) {
     // Don't create section if no content and no URLs
     if (!content && (!visitedURLs || visitedURLs.length === 0)) {
         return null;
@@ -626,7 +626,7 @@ function createReferencesSection(content, visitedURLs = []) {
         const faviconContainer = document.createElement('div');
         faviconContainer.classList.add('references-favicons');
 
-        renderFaviconList(visitedURLs).then(faviconList => {
+        renderFaviconList(visitedURLs, numURLs).then(faviconList => {
             faviconContainer.appendChild(faviconList);
             section.appendChild(faviconContainer);
         });
@@ -636,7 +636,7 @@ function createReferencesSection(content, visitedURLs = []) {
     return section;
 }
 
-const renderFaviconList = async (visitedURLs) => {
+const renderFaviconList = async (visitedURLs, numURLs) => {
     // Create DOM elements and data structures
     const faviconList = document.createElement('div');
     faviconList.classList.add('favicon-list');
@@ -689,7 +689,7 @@ const renderFaviconList = async (visitedURLs) => {
     // Add sources count
     const sourceCount = document.createElement('div');
     sourceCount.classList.add('sources-count');
-    sourceCount.textContent = `${visitedURLs.length} `;
+    sourceCount.textContent = `${visitedURLs.length}${numURLs > visitedURLs.length?'+':''} `;
 
     const label = document.createElement('span');
     label.setAttribute('data-label', 'references.sources');
@@ -922,6 +922,24 @@ function handleStopEvent () {
     }
 }
 
+// Create a copy button for code blocks
+function createCodeCopyButton(codeElement) {
+    const copyButton = document.createElement('button');
+    copyButton.classList.add('code-copy-button', 'tooltip-container');
+    copyButton.setAttribute('data-tooltip', 'tooltips.copy');
+    
+    const copyIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
+    copyButton.innerHTML = copyIcon;
+    
+    copyButton.addEventListener('click', () => {
+        handleCopyEvent(copyButton, copyIcon, codeElement.textContent);
+    });
+    
+    handleTooltipEvent(copyButton);
+    
+    return copyButton;
+}
+
 function createActionButton(content) {
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('action-buttons-container');
@@ -1113,7 +1131,7 @@ function markdownItTableWrapper(md) {
     };
 }
 
-function renderMarkdown(content, returnElement = false, visitedURLs = [], role = 'assistant') {
+function renderMarkdown(content, returnElement = false, visitedURLs = [], role = 'assistant', numURLs = 0) {
     if (!md) {
         initializeMarkdown();
     }
@@ -1170,7 +1188,7 @@ function renderMarkdown(content, returnElement = false, visitedURLs = [], role =
             const footnoteContent = footnotes ? footnotes.innerHTML : '';
 
             // Create references section if there are footnotes or visitedURLs
-            const referencesSection = createReferencesSection(footnoteContent, visitedURLs);
+            const referencesSection = createReferencesSection(footnoteContent, visitedURLs, numURLs);
             if (referencesSection) {
                 if (footnotes) {
                     footnotes.replaceWith(referencesSection);
@@ -1187,7 +1205,30 @@ function renderMarkdown(content, returnElement = false, visitedURLs = [], role =
             });
         }
     }
+    
+    // Add copy buttons to code blocks if returning the element
+    if (returnElement) {
+        addCodeCopyButtons(tempDiv);
+    }
+    
     return returnElement ? tempDiv : tempDiv.innerHTML;
+}
+
+// Add copy buttons to all code blocks
+function addCodeCopyButtons(markdownElement) {
+    const codeBlocks = markdownElement.querySelectorAll('pre code');
+    codeBlocks.forEach(codeBlock => {
+        const preElement = codeBlock.parentElement;
+        
+        // Make the pre element relative positioned for absolute positioning of the button
+        preElement.style.position = 'relative';
+        
+        // Create the copy button
+        const copyButton = createCodeCopyButton(codeBlock);
+        
+        // Add the button to the pre element
+        preElement.appendChild(copyButton);
+    });
 }
 
 // Message handling functions
@@ -1391,6 +1432,7 @@ async function sendMessage(redo = false) {
             const decoder = new TextDecoder();
             let partialBrokenData = '';
             let visitedURLs = [];
+            let numURLs = 0;
 
             while (true) {
                 const {done, value} = await reader.read();
@@ -1413,6 +1455,9 @@ async function sendMessage(redo = false) {
                                 // Store visitedURLs from the final chunk if provided
                                 if (json.visitedURLs) {
                                     visitedURLs = json.visitedURLs;
+                                }
+                                if (json.numURLs) {
+                                    numURLs = json.numURLs;
                                 }
                                 removeLoadingIndicator(assistantMessageDiv);
 
@@ -1500,7 +1545,7 @@ async function sendMessage(redo = false) {
             toggleStopMessage(false);
 
             if (markdownContent) {
-                const markdown = renderMarkdown(markdownContent, true, visitedURLs);
+                const markdown = renderMarkdown(markdownContent, true, visitedURLs, 'assistant', numURLs);
                 markdownDiv.replaceChildren(markdown);
 
                 const copyButton = createActionButton(markdownContent);
