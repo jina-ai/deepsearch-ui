@@ -1450,6 +1450,9 @@ async function sendMessage(redo = false) {
             let visitedURLs = [];
             let numURLs = 0;
             let hideUrlTimeout = 0;
+            let processTimeout = 0;
+            const urlQueue = [];
+            let isProcessing = false;
 
             while (true) {
                 const {done, value} = await reader.read();
@@ -1477,6 +1480,27 @@ async function sendMessage(redo = false) {
                                     numURLs = json.numURLs;
                                 }
                                 const thinkUrl = assistantMessageDiv.querySelector('.think-url');
+
+                                function processUrlQueue() {
+                                    if (urlQueue.length === 0) {
+                                        isProcessing = false;
+                                        return;
+                                    }
+                            
+                                    isProcessing = true;
+                                    const url = urlQueue.shift();
+                                    const thinkUrlText = thinkUrl.querySelector('.think-url-text');
+                            
+                                    thinkUrl.href = url;
+                                    thinkUrlText.textContent = url;
+                                    if (thinkUrl.classList.contains('hidden')) {
+                                        thinkUrl.classList.remove('hidden')
+                                    }
+                            
+                                    processTimeout = setTimeout(() => {
+                                        processUrlQueue();
+                                    }, 300);
+                                }
                                 
                                 if (thinkUrl) {
                                     const url = json.choices[0]?.delta?.url;
@@ -1484,12 +1508,11 @@ async function sendMessage(redo = false) {
                     
                                     if (url) {
                                         clearTimeout(hideUrlTimeout);
-                                        if (thinkUrl.classList.contains('hidden')) {
-                                            thinkUrl.classList.remove('hidden')
+                                        urlQueue.push(url);
+                                        if (!isProcessing) {
+                                            clearTimeout(processTimeout);
+                                            processUrlQueue();
                                         }
-                                        console.log(url)
-                                        thinkUrl.href = url;
-                                        thinkUrlText.textContent = url;
                                     } else if (!thinkUrl.classList.contains('hidden')) {
                                         hideUrlTimeout = setTimeout(() => {
                                             thinkUrl.classList.add('hidden')
