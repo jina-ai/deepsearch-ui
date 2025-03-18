@@ -12,6 +12,7 @@ let UI_STRINGS = {
     think: {
         initial: () => 'Thinking...',
         toggle: () => 'Thoughts',
+        navigation: () => 'Navigating',
     },
     references: {
         title: () => 'References',
@@ -151,6 +152,7 @@ function applyTranslations() {
         think: {
           initial: () => t('think.initial'),
           toggle: () => t('think.toggle'),
+          navigation: () => t('think.navigation'),
         },
         references: {
           title: () => t('references.title'),
@@ -636,10 +638,15 @@ function createReferencesSection(content, visitedURLs = [], numURLs=0) {
     return section;
 }
 
-const renderFaviconList = async (visitedURLs, numURLs) => {
-    // Create DOM elements and data structures
-    const faviconList = document.createElement('div');
-    faviconList.classList.add('favicon-list');
+const renderFaviconList = async (visitedURLs, numURLs, faviconContainer) => {
+    let faviconList;
+    if (faviconContainer) {
+        faviconList = faviconContainer;;
+    } else {
+        // Create DOM elements and data structures
+        faviconList = document.createElement('div');
+        faviconList.classList.add('favicon-list');
+    }
 
     // Process URLs and create Map of domain -> {urls, element data}
     const domainMap = visitedURLs.reduce((map, url) => {
@@ -686,17 +693,19 @@ const renderFaviconList = async (visitedURLs, numURLs) => {
         return map;
     }, new Map());
 
-    // Add sources count
-    const sourceCount = document.createElement('div');
-    sourceCount.classList.add('sources-count');
-    sourceCount.textContent = `${visitedURLs.length}${numURLs > visitedURLs.length?'+':''} `;
+    if (numURLs) {
+        // Add sources count
+        const sourceCount = document.createElement('div');
+        sourceCount.classList.add('sources-count');
+        sourceCount.textContent = `${visitedURLs.length}${numURLs > visitedURLs.length?'+':''} `;
 
-    const label = document.createElement('span');
-    label.setAttribute('data-label', 'references.sources');
-    label.textContent = UI_STRINGS.references.sources();
+        const label = document.createElement('span');
+        label.setAttribute('data-label', 'references.sources');
+        label.textContent = UI_STRINGS.references.sources();
 
-    sourceCount.appendChild(label);
-    faviconList.appendChild(sourceCount);
+        sourceCount.appendChild(label);
+        faviconList.appendChild(sourceCount);
+    }
 
     // Favicon fetching function with retry support
     const fetchFavicons = async (domains) => {
@@ -745,7 +754,7 @@ const renderFaviconList = async (visitedURLs, numURLs) => {
     return faviconList;
 };
 
-function createThinkSection(messageDiv, showUrl = true) {
+function createThinkSection(messageDiv) {
     const thinkSection = document.createElement('div');
     thinkSection.classList.add('think-section');
 
@@ -759,20 +768,6 @@ function createThinkSection(messageDiv, showUrl = true) {
 
     const thinkContent = document.createElement('div');
     thinkContent.classList.add('think-content');
-
-    let thinkUrl;
-    if (showUrl) {
-        thinkUrl = document.createElement('a');
-        thinkUrl.classList.add('think-url', 'hidden');
-        thinkUrl.target = '_blank';
-        const icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
-        const urlIcon = document.createElement('span')
-        urlIcon.classList.add('think-icon')
-        urlIcon.innerHTML = icon;
-        const urlText = document.createElement('span');
-        urlText.classList.add('think-url-text');
-        thinkUrl.append(urlIcon, urlText);
-    }
 
     const expanded = localStorage.getItem('think_section_expanded') === 'true';
     if (expanded) {
@@ -793,9 +788,6 @@ function createThinkSection(messageDiv, showUrl = true) {
 
     thinkSection.appendChild(thinkContent);
     messageDiv.prepend(thinkSection);
-    if (thinkUrl) {
-        thinkSection.insertAdjacentElement('afterend', thinkUrl);
-    }
     return thinkSection;
 }
 
@@ -1290,6 +1282,76 @@ const makeAllLinksOpenInNewTab = () => {
     });
 };
 
+function createThinkUrl(assistantMessageDiv) {
+    const thinkSection = assistantMessageDiv.querySelector('.think-section');
+    if (!thinkSection) return;
+
+    let thinkUrlElement = thinkSection.querySelector('.think-url');
+    if (thinkUrlElement) return thinkUrlElement;
+
+
+    thinkUrlElement = document.createElement('div');
+    thinkUrlElement.classList.add('think-url', 'hidden', 'action-buttons-container');
+
+    // navigation icon
+    const icon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
+    const navigationButton = document.createElement('button')
+    navigationButton.id = 'think-navigation-button';
+    navigationButton.classList.add('icon-button', 'tooltip-container');
+    navigationButton.setAttribute('data-tooltip', 'tooltips.navigation');
+    navigationButton.innerHTML = icon + UI_STRINGS.think.navigation();
+    // favicon container
+    const faviconContainer = document.createElement('div');
+    faviconContainer.classList.add('favicon-container');   
+    // text
+    const urlLink = document.createElement('a');
+    thinkUrlElement.target = '_blank';
+    urlLink.classList.add('think-url-link');
+
+
+    thinkUrlElement.append(navigationButton, faviconContainer, urlLink);
+    thinkSection?.insertAdjacentElement('afterend', thinkUrlElement);
+    return thinkUrlElement;
+};
+
+async function updateThinkUrl(thinkUrlElement, url, urlQueue, isProcessing) {                               
+    const animateUrlChange = async (url) => {
+        isProcessing = true;
+
+        // Add favicon
+        const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
+        await renderFaviconList([url], 0, faviconContainer);
+
+        // Update URL
+        const thinkUrlLink = thinkUrlElement.querySelector('.think-url-link');
+        thinkUrlLink.textContent = url.replace(/^(https?:\/\/)/, '');
+        thinkUrlLink.href = url;
+    
+        setTimeout(() => {
+            isProcessing = false;
+            processNextUrl();
+        }, 1000);
+    };
+    
+    const processNextUrl = async () => {
+        if (urlQueue.length === 0) return;
+    
+        const url = urlQueue.shift();
+        await animateUrlChange(url);
+    };
+    
+    const updateUrl = async (url) => {
+        urlQueue.push(url);
+        if (!isProcessing) {
+            await processNextUrl();
+        }
+    };
+
+    if (thinkUrlElement && url) {
+        await updateUrl(url);
+    }
+};
+
 async function sendMessage(redo = false) {
     inputErrorMessage.style.display = 'none';
     const queryText = messageInput.value.trim();
@@ -1451,9 +1513,7 @@ async function sendMessage(redo = false) {
             let numURLs = 0;
             let hideUrlTimer = 0;
             const urlQueue = [];
-            let isAnimating = false;
-            let minDisplayTime = 300;
-            let index = 0;
+            let isProcessing = false;
 
             while (true) {
                 const {done, value} = await reader.read();
@@ -1481,59 +1541,15 @@ async function sendMessage(redo = false) {
                                     numURLs = json.numURLs;
                                 }
                                 
-                                const thinkUrl = assistantMessageDiv.querySelector('.think-url');
-                                
-                                const animateUrlChange = (url) => {
-                                    isAnimating = true;
-                                    const thinkUrlText = thinkUrl.querySelector('.think-url-text');
-                                    thinkUrlText.textContent = index + ': ' + url;
-                                
-                                    // Trigger the CSS transition to hide the current URL
-                                    if (!thinkUrl.classList.contains('hidden')) {
-                                        thinkUrl.classList.add('hidden');
-                                    }
-                                
-                                    setTimeout(() => {
-                                        // Reset the element to prepare for the new URL's animation
-                                        if (thinkUrl.classList.contains('hidden')) {
-                                            thinkUrl.classList.remove('hidden');
-                                        }
-                                
-                                        setTimeout(() => {
-                                            isAnimating = false;
-                                            processNextUrl();
-                                        }, minDisplayTime);
-                                    }, 300); // Match CSS transition duration
-                                };
-                                
-                                const processNextUrl = () => {
-                                    if (urlQueue.length === 0) return;
-                                
-                                    const url = urlQueue.shift();
-                                    animateUrlChange(url);
-                                };
-                                
-                                const updateUrl = (url) => {
-                                    urlQueue.push(url);
-                                    if (!isAnimating) {
-                                        processNextUrl();
-                                    }
-                                };
-                                
-                                if (thinkUrl) {
-                                    const url = json.choices[0]?.delta?.url;
-                    
-                                    if (url) {
-                                        index++;
-                                        console.log('URL:', index, url);
-
-                                        clearTimeout(hideUrlTimer);
-                                        updateUrl(url);
-                                    } else if (!isAnimating && !thinkUrl.classList.contains('hidden')) {
-                                        hideUrlTimer = setTimeout(() => {
-                                            thinkUrl.classList.add('hidden');
-                                        }, 5000);
-                                    }
+                                const url = json.choices[0]?.delta?.url;
+                                let thinkUrlElement = assistantMessageDiv.querySelector('.think-url');
+                                if (!thinkUrlElement) {
+                                    thinkUrlElement = createThinkUrl(assistantMessageDiv);
+                                }
+                
+                                if (url) {  
+                                    thinkUrlElement.classList.toggle('hidden', false);
+                                    await updateThinkUrl(thinkUrlElement, url, urlQueue, isProcessing);
                                 }
                                 removeLoadingIndicator(assistantMessageDiv);
 
@@ -1545,7 +1561,7 @@ async function sendMessage(redo = false) {
                                     if (inThinkSection) {
                                         const thinkEndIndex = tempContent.indexOf("</think>");
                                         if (thinkEndIndex !== -1) {
-                                            thinkUrl?.remove();
+                                            thinkUrlElement?.remove();
                                             thinkContent += tempContent.substring(0, thinkEndIndex);
                                             if (thinkSectionElement) {
                                                 const thinkContentElement = thinkSectionElement.querySelector('.think-content');
@@ -1730,7 +1746,7 @@ function updateMessagesList() {
 
             // Check for think content
             if (message.think) {
-                const thinkSectionElement = createThinkSection(messageDiv, false);
+                const thinkSectionElement = createThinkSection(messageDiv);
                 const thinkContentElement = thinkSectionElement.querySelector('.think-content');
                 thinkContentElement.textContent = message.think;
 

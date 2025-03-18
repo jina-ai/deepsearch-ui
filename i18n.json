@@ -29,11 +29,13 @@
       "recent": "View recent conversations",
       "upgrade": "Upgrade to higher rate limit",
       "upload": "Upload files (txt/pdf/png/jpeg/webp supported)",
-      "stop": "Stop"
+      "stop": "Stop",
+      "navigation": "Navigating url"
     },
     "think": {
       "initial": "Thinking...",
-      "toggle": "Thoughts"
+      "toggle": "Thoughts",
+      "navigation": "Navigating"
     },
     "references": {
       "title": "References",

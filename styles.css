@@ -727,7 +727,7 @@ a {
     position: relative;
 }
 
-.think-content {
+.think-content, .think-url-link {
     font-family: 'Roboto Mono', 'Courier New', monospace;
 }
 
@@ -740,8 +740,7 @@ a {
     gap: 8px;
     display: flex;
     align-items: center;
-    color: var(--text-color);
-    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     opacity: 1;
     transform: translateY(0);
 }
@@ -750,15 +749,42 @@ a {
     pointer-events: none;
     transform: translateY(-8px);
 }
-.think-icon {
-    width: 16px;
+
+.think-url .favicon-container {
+    width: fit-content;
     height: 16px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.think-url-text {
+.think-url-link {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    flex-grow: 1;
+    color: var(--text-secondary);
+    font-size: var(--secondary-size);
+    opacity: 1;
+    transform: translateY(0);
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, black 50%, rgba(0, 0, 0, 0) 100%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: fadeText 4s infinite linear;
+}
+
+@keyframes fadeText {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: -200% 0;
+    }
 }
 
 
