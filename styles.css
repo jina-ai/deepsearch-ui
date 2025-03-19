@@ -448,6 +448,8 @@ a {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    max-height: 70vh;
+    overflow-y: auto;
 }
 
 .dialog-description {
@@ -785,6 +787,27 @@ a {
     to {
         background-position: -200% 0;
     }
+}
+#navigation-urls {
+    padding-bottom: 20px;
+}
+.navigation-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    width: 100%;
+}
+.navigation-icon {
+    height: 16px;
+    width: 16px;
+    margin-right: 8px;
+    display: inline-block;
+}
+.navigation-link {
+    color: var(--text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 

@@ -199,6 +199,7 @@ const sessionsList = document.getElementById('sessions-list');
 const clearAllSessionsButton = document.getElementById('clear-all-sessions');
 const deleteSessionDialog = document.getElementById('delete-session-dialog');
 const deleteAllSessionsDialog = document.getElementById('delete-all-sessions-dialog');
+const navigationDialog = document.getElementById('navigation-dialog');
 
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
 const BASE_ORIGIN = 'https://deepsearch.jina.ai';
@@ -233,6 +234,7 @@ let uploadedFiles = [];
 let chatSessions = [];
 const MAX_SESSIONS = 10;
 let isSessionsDropdownOpen = false;
+let renderNavigationListTimer = null;
 
 // API Key Management
 function initializeApiKey() {
@@ -1293,13 +1295,14 @@ function createThinkUrl(assistantMessageDiv) {
     thinkUrlElement = document.createElement('div');
     thinkUrlElement.classList.add('think-url', 'hidden', 'action-buttons-container');
 
-    // navigation icon
+    // navigation button
     const icon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>`
-    const navigationButton = document.createElement('button')
+    const navigationButton = document.createElement('button');
     navigationButton.id = 'think-navigation-button';
     navigationButton.classList.add('icon-button', 'tooltip-container');
     navigationButton.setAttribute('data-tooltip', 'tooltips.navigation');
     navigationButton.innerHTML = icon + UI_STRINGS.think.navigation();
+    navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));
     // favicon container
     const faviconContainer = document.createElement('div');
     faviconContainer.classList.add('favicon-container');   
@@ -1308,11 +1311,62 @@ function createThinkUrl(assistantMessageDiv) {
     thinkUrlElement.target = '_blank';
     urlLink.classList.add('think-url-link');
 
+    handleTooltipEvent(navigationButton);
 
     thinkUrlElement.append(navigationButton, faviconContainer, urlLink);
     thinkSection?.insertAdjacentElement('afterend', thinkUrlElement);
     return thinkUrlElement;
 };
+
+function handleClickNavigationEvent(e) {
+    clearInterval(renderNavigationListTimer);
+    const shownUrls = [];
+    const thinkUrlElement = e.target.closest('.think-url');
+    const list = document.getElementById('navigation-urls');
+    list.innerHTML = '';
+
+    const renderUrlList = () => {
+        if (!thinkUrlElement) {
+            return;
+        };
+        const faviconItems = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).slice(shownUrls.length);
+
+        faviconItems.forEach((item) => {
+            const img = item.querySelector('img');
+            const url = item.getAttribute('data-tooltip');
+
+            const itemContainer = document.createElement('a');
+            itemContainer.classList.add('action-buttons-container');
+            itemContainer.href = url;
+            itemContainer.target = '_blank';
+            const itemButton = document.createElement('button');
+            itemButton.classList.add('navigation-item');
+            const itemIcon = document.createElement('img');
+            itemIcon.classList.add('navigation-icon');
+            itemIcon.src = img.src;
+            itemIcon.alt = img.alt;
+            const itemLink = document.createElement('span');
+            itemLink.classList.add('navigation-link');
+            itemLink.textContent = url;
+            itemButton.append(itemIcon, itemLink);
+            itemContainer.appendChild(itemButton);
+            list.appendChild(itemContainer);
+            shownUrls.push(url);
+        });
+    };
+
+    renderUrlList();
+
+    // update list every 2 seconds
+    renderNavigationListTimer = setInterval(() => {
+        if (!thinkUrlElement) {
+            clearInterval(renderNavigationListTimer);
+            return;
+        }
+        renderUrlList();
+    }, 2000);
+    navigationDialog.classList.add('visible');
+}
 
 async function updateThinkUrl(thinkUrlElement, url, urlQueue, isProcessing) {                               
     const animateUrlChange = async (url) => {
@@ -1807,6 +1861,7 @@ dialogCloseBtns.forEach(btn => {
         e.stopPropagation();
         const dialog = btn.closest('.dialog-overlay');
         dialog.classList.remove('visible');
+        clearInterval(renderNavigationListTimer);
     });
 });
 
@@ -1897,7 +1952,7 @@ messageInput.addEventListener('input', () => {
 });
 
 // Close dialogs when clicking outside
-[apiKeyDialog, helpDialog].forEach(dialog => {
+[apiKeyDialog, helpDialog, navigationDialog].forEach(dialog => {
     dialog.addEventListener('click', (e) => {
         if (e.target === dialog) {
             dialog.classList.remove('visible');

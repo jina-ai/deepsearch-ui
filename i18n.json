@@ -30,12 +30,12 @@
       "upgrade": "Upgrade to higher rate limit",
       "upload": "Upload files (txt/pdf/png/jpeg/webp supported)",
       "stop": "Stop",
-      "navigation": "Navigating url"
+      "navigation": "Navigating to URLs"
     },
     "think": {
       "initial": "Thinking...",
       "toggle": "Thoughts",
-      "navigation": "Navigating"
+      "navigation": "Navigating..."
     },
     "references": {
       "title": "References",
@@ -80,6 +80,9 @@
       "deleteAllSessions": {
         "title": "Delete All Sessions?",
         "description": "Are you sure you want to delete all sessions? This action cannot be undone."
+      },
+      "navigation" : {
+        "title": "Navigated URLs"
       }
     }
   },
@@ -99,7 +102,8 @@
       "saveKey": "保存",
       "purchase": "购买更多词元",
       "contactUs": "联系我们",
-      "delete": "删除"
+      "delete": "删除",
+      "navigation": "浏览中..."
     },
     "labels": {
       "recent": "最近"
@@ -113,7 +117,8 @@
       "recent": "查看最近对话",
       "upgrade": "升级到更高的速率限制",
       "upload": "上传文件，支持txt/pdf/png/jpeg/webp格式",
-      "stop": "停止"
+      "stop": "停止",
+      "navigation": "浏览中的 URLs"
     },
     "think": {
       "initial": "思考中...",
@@ -162,6 +167,9 @@
       "deleteAllSessions": {
         "title": "删除所有会话？",
         "description": "您确定要删除所有会话吗？此操作无法撤消。"
+      },
+      "navigation" : {
+        "title": "浏览过的 URLs"
       }
     }
   },
@@ -181,7 +189,8 @@
       "saveKey": "存起來",
       "purchase": "買更多詞元",
       "contactUs": "聯絡我們",
-      "delete": "刪除"
+      "delete": "刪除",
+      "navigation": "瀏覽中..."
     },
     "labels": {
       "recent": "最近"
@@ -195,7 +204,8 @@
       "recent": "查看最近對話",
       "upgrade": "升級到更高的速度限制",
       "upload": "上傳檔案 (支援 txt/pdf/png/jpeg/webp 格式)",
-      "stop": "停止"
+      "stop": "停止",
+      "navigation": "瀏覽中的 URLs"
     },
     "think": {
       "initial": "思考中...",
@@ -244,6 +254,9 @@
       "deleteAllSessions": {
         "title": "刪除所有對話？",
         "description": "你確定要刪除所有對話嗎？這個動作無法復原。"
+      },
+      "navigation" : {
+        "title": "已瀏覽 URLs"
       }
     }
   },
@@ -263,7 +276,8 @@
       "saveKey": "保存",
       "purchase": "トークンを購入",
       "contactUs": "お問い合わせ",
-      "delete": "削除"
+      "delete": "削除",
+      "navigation": "ナビゲーション中..."
     },
     "labels": {
       "recent": "最近"
@@ -277,7 +291,8 @@
       "recent": "最近の会話を表示",
       "upgrade": "上限を引き上げる",
       "upload": "ファイルをアップロード (txt/pdf/png/jpeg/webp形式)",
-      "stop": "停止"
+      "stop": "停止",
+      "navigation": "ナビゲーション中 URLs"
     },
     "think": {
       "initial": "思考中...",
@@ -326,6 +341,9 @@
       "deleteAllSessions": {
         "title": "すべてのセッションを削除しますか？",
         "description": "すべてのセッションを削除してもよろしいですか？この操作は元に戻すことができません。"
+      },
+      "navigation" : {
+        "title": "ナビゲーション中のURL"
       }
     }
   },
@@ -345,7 +363,8 @@
       "saveKey": "Enregistrer",
       "purchase": "Acheter plus de jetons",
       "contactUs": "Nous contacter",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "navigation": "Navigation en cours..."
     },
     "labels": {
       "recent": "Récent"
@@ -359,7 +378,8 @@
       "recent": "Voir les conversations récentes",
       "upgrade": "Passer à une limite de taux supérieure",
       "upload": "Télécharger des fichiers (formats txt/pdf/png/jpeg/webp pris en charge)",
-      "stop": "Arrêter"
+      "stop": "Arrêter",
+      "navigation": "URL en cours de navigation"
     },
     "think": {
       "initial": "Réflexion en cours...",
@@ -408,6 +428,9 @@
       "deleteAllSessions": {
         "title": "Supprimer toutes les sessions ?",
         "description": "Êtes-vous sûr de vouloir supprimer toutes les sessions ? Cette action est irréversible."
+      },
+      "navigation" : {
+        "title": "URL naviguées"
       }
     }
   },
@@ -426,7 +449,8 @@
       "saveKey": "Speichern",
       "purchase": "Weitere Token kaufen",
       "contactUs": "Kontaktieren Sie uns",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "navigation": "Navigation läuft..."
     },
     "labels": {
       "recent": "Kürzlich"
@@ -440,7 +464,8 @@
       "upgrade": "Auf höhere Ratenbegrenzung aktualisieren",
       "upload": "Dateien hochladen (txt/pdf/png/jpeg/webp unterstützt)",
       "stop": "Stop",
-      "recent": "Kürzlich angesehene Konversationen"
+      "recent": "Kürzlich angesehene Konversationen",
+      "navigation": "Navigierte URLs"
     },
     "think": {
       "initial": "Denke nach...",
@@ -487,6 +512,9 @@
       "deleteAllSessions": {
         "title": "Alle Sitzungen löschen?",
         "description": "Möchten Sie wirklich alle Sitzungen löschen? Dieser Vorgang kann nicht rückgängig gemacht werden."
+      },
+      "navigation" : {
+        "title": "Navigierte URLs"
       }
     }
   },
@@ -505,7 +533,8 @@
       "saveKey": "저장",
       "purchase": "토큰 더 구매",
       "contactUs": "문의하기",
-      "delete": "삭제"
+      "delete": "삭제",
+      "navigation": "탐색 중..."
     },
     "labels": {
       "recent": "최근"
@@ -519,7 +548,8 @@
       "upgrade": "높은 요금제로 업그레이드",
       "upload": "파일 업로드 (txt/pdf/png/jpeg/webp 지원)",
       "stop": "중지",
-      "recent": "최근 대화 보기"
+      "recent": "최근 대화 보기",
+      "navigation": "탐색 중인 URL"
     },
     "think": {
       "initial": "생각 중...",
@@ -566,6 +596,9 @@
       "deleteAllSessions": {
         "title": "모든 세션 삭제?",
         "description": "모든 세션을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다."
+      },
+      "navigation" : {
+        "title": "탐색한 URL"
       }
     }
   }
