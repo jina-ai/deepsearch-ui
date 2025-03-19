@@ -770,7 +770,6 @@ a {
     white-space: nowrap;
     overflow: hidden;
     flex-grow: 1;
-    color: var(--text-secondary);
     font-size: var(--secondary-size);
     opacity: 1;
     transform: translateY(0);
@@ -780,6 +779,12 @@ a {
     -webkit-background-clip: text;
     color: transparent;
     animation: fadeText 4s infinite linear;
+}
+[data-theme="dark"] .think-url-link {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, white 50%, rgba(255, 255, 255, 0) 100%);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
 }
 
 @keyframes fadeText {
