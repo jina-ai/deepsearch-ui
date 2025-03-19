@@ -12,7 +12,7 @@ let UI_STRINGS = {
     think: {
         initial: () => 'Thinking...',
         toggle: () => 'Thoughts',
-        navigation: () => 'Navigating',
+        navigation: () => 'Navigating...',
     },
     references: {
         title: () => 'References',
@@ -1300,6 +1300,7 @@ function createThinkUrl(assistantMessageDiv) {
     const navigationButton = document.createElement('button');
     navigationButton.id = 'think-navigation-button';
     navigationButton.classList.add('icon-button', 'tooltip-container');
+    navigationButton.setAttribute('data-label', 'think.navigation');
     navigationButton.setAttribute('data-tooltip', 'tooltips.navigation');
     navigationButton.innerHTML = icon + UI_STRINGS.think.navigation();
     navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));

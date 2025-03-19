@@ -102,8 +102,7 @@
       "saveKey": "保存",
       "purchase": "购买更多词元",
       "contactUs": "联系我们",
-      "delete": "删除",
-      "navigation": "浏览中..."
+      "delete": "删除"
     },
     "labels": {
       "recent": "最近"
@@ -122,7 +121,8 @@
     },
     "think": {
       "initial": "思考中...",
-      "toggle": "思考过程"
+      "toggle": "思考过程",
+      "navigation": "浏览中..."
     },
     "references": {
       "title": "参考资料",
@@ -189,8 +189,7 @@
       "saveKey": "存起來",
       "purchase": "買更多詞元",
       "contactUs": "聯絡我們",
-      "delete": "刪除",
-      "navigation": "瀏覽中..."
+      "delete": "刪除"
     },
     "labels": {
       "recent": "最近"
@@ -209,7 +208,8 @@
     },
     "think": {
       "initial": "思考中...",
-      "toggle": "思考過程"
+      "toggle": "思考過程",
+      "navigation": "瀏覽中..."
     },
     "references": {
       "title": "參考資料",
@@ -276,8 +276,7 @@
       "saveKey": "保存",
       "purchase": "トークンを購入",
       "contactUs": "お問い合わせ",
-      "delete": "削除",
-      "navigation": "ナビゲーション中..."
+      "delete": "削除"
     },
     "labels": {
       "recent": "最近"
@@ -296,7 +295,8 @@
     },
     "think": {
       "initial": "思考中...",
-      "toggle": "思考プロセス"
+      "toggle": "思考プロセス",
+      "navigation": "ナビゲーション中..."
     },
     "references": {
       "title": "参考資料",
@@ -363,8 +363,7 @@
       "saveKey": "Enregistrer",
       "purchase": "Acheter plus de jetons",
       "contactUs": "Nous contacter",
-      "delete": "Supprimer",
-      "navigation": "Navigation en cours..."
+      "delete": "Supprimer"
     },
     "labels": {
       "recent": "Récent"
@@ -383,7 +382,8 @@
     },
     "think": {
       "initial": "Réflexion en cours...",
-      "toggle": "Processus de réflexion"
+      "toggle": "Processus de réflexion",
+      "navigation": "Navigation en cours..."
     },
     "references": {
       "title": "Références",
@@ -449,8 +449,7 @@
       "saveKey": "Speichern",
       "purchase": "Weitere Token kaufen",
       "contactUs": "Kontaktieren Sie uns",
-      "delete": "Löschen",
-      "navigation": "Navigation läuft..."
+      "delete": "Löschen"
     },
     "labels": {
       "recent": "Kürzlich"
@@ -469,7 +468,8 @@
     },
     "think": {
       "initial": "Denke nach...",
-      "toggle": "Denkprozess"
+      "toggle": "Denkprozess",
+      "navigation": "Navigiere..."
     },
     "references": {
       "title": "Referenzen",
@@ -533,8 +533,7 @@
       "saveKey": "저장",
       "purchase": "토큰 더 구매",
       "contactUs": "문의하기",
-      "delete": "삭제",
-      "navigation": "탐색 중..."
+      "delete": "삭제"
     },
     "labels": {
       "recent": "최근"
@@ -553,7 +552,8 @@
     },
     "think": {
       "initial": "생각 중...",
-      "toggle": "사고 과정"
+      "toggle": "사고 과정",
+      "navigation": "탐색 중..."
     },
     "references": {
       "title": "참조",
