@@ -771,8 +771,6 @@ a {
     overflow: hidden;
     flex-grow: 1;
     font-size: var(--secondary-size);
-    opacity: 1;
-    transform: translateY(0);
     background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, black 50%, rgba(0, 0, 0, 0) 100%);
     background-size: 200% 100%;
     background-clip: text;
