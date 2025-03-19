@@ -1300,9 +1300,12 @@ function createThinkUrl(assistantMessageDiv) {
     const navigationButton = document.createElement('button');
     navigationButton.id = 'think-navigation-button';
     navigationButton.classList.add('icon-button', 'tooltip-container');
-    navigationButton.setAttribute('data-label', 'think.navigation');
     navigationButton.setAttribute('data-tooltip', 'tooltips.navigation');
-    navigationButton.innerHTML = icon + UI_STRINGS.think.navigation();
+    const text = document.createElement('span');
+    text.setAttribute('data-label', 'think.navigation');
+    text.textContent = UI_STRINGS.think.navigation();
+    navigationButton.innerHTML = icon;
+    navigationButton.appendChild(text);
     navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));
     // favicon container
     const faviconContainer = document.createElement('div');

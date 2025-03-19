@@ -788,6 +788,12 @@ a {
         background-position: -200% 0;
     }
 }
+#think-navigation-button {
+    display: flex;
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+}
+
 #navigation-urls {
     padding-bottom: 20px;
 }
