@@ -950,11 +950,9 @@ function handleDownloadEvent (downloadButton) {
         const backgroundColor = theme === 'dark' ? computedStyle.getPropertyValue('--bg-color') : computedStyle.getPropertyValue('--bg-color');
         assistantMessageDiv.style.transition = 'none';
         assistantMessageDiv.style.animation = 'none';
-        const scale = window.devicePixelRatio ? window.devicePixelRatio * 2 : 2;
 
         html2canvas(assistantMessageDiv, { 
             ignoreElements: filter,
-            scale: scale,
             backgroundColor: backgroundColor,
          }).then((canvas) => {
             const dataUrl = canvas.toDataURL('image/png');
