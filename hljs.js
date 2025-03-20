@@ -3,7 +3,7 @@ const theme = localStorage.getItem('theme') || (window.matchMedia && window.matc
 const hlTheme = theme === 'light' ? 'vs' : 'vs2015';
 const scripts = [
   { type: 'style', url: `third-party/${hlTheme}.min.css` },
-  { type: 'script', url: 'third-party/highlight.min.js' }
+  { type: 'script', url: 'third-party/highlight.min.js' },
 ];
 
 async function loadResource(resource) {

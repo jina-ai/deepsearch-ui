@@ -30,7 +30,8 @@
       "upgrade": "Upgrade to higher rate limit",
       "upload": "Upload files (txt/pdf/png/jpeg/webp supported)",
       "stop": "Stop",
-      "navigation": "Reading URLs"
+      "navigation": "Reading URLs",
+      "download": "Download"
     },
     "think": {
       "initial": "Thinking...",
@@ -118,7 +119,8 @@
       "upgrade": "升级到更高的速率限制",
       "upload": "上传文件，支持txt/pdf/png/jpeg/webp格式",
       "stop": "停止",
-      "navigation": "阅读中的 URLs"
+      "navigation": "阅读中的 URLs",
+      "download": "下载"
     },
     "think": {
       "initial": "思考中...",
@@ -206,7 +208,8 @@
       "upgrade": "升級到更高的速度限制",
       "upload": "上傳檔案 (支援 txt/pdf/png/jpeg/webp 格式)",
       "stop": "停止",
-      "navigation": "讀取 URLs 中"
+      "navigation": "讀取 URLs 中",
+      "download": "下載"
     },
     "think": {
       "initial": "思考中...",
@@ -294,7 +297,8 @@
       "upgrade": "上限を引き上げる",
       "upload": "ファイルをアップロード (txt/pdf/png/jpeg/webp形式)",
       "stop": "停止",
-      "navigation": "URLを読み込み中"
+      "navigation": "URLを読み込み中",
+      "download": "ダウンロード"
     },
     "think": {
       "initial": "思考中...",
@@ -382,7 +386,8 @@
       "upgrade": "Passer à une limite de taux supérieure",
       "upload": "Télécharger des fichiers (formats txt/pdf/png/jpeg/webp pris en charge)",
       "stop": "Arrêter",
-      "navigation": "Lecture des URL"
+      "navigation": "Lecture des URL",
+      "download": "Télécharger"
     },
     "think": {
       "initial": "Réflexion en cours...",
@@ -469,7 +474,8 @@
       "upload": "Dateien hochladen (txt/pdf/png/jpeg/webp unterstützt)",
       "stop": "Stop",
       "recent": "Kürzlich angesehene Konversationen",
-      "navigation": "URLs werden gelesen"
+      "navigation": "URLs werden gelesen",
+      "download": "Herunterladen"
     },
     "think": {
       "initial": "Denke nach...",
@@ -554,7 +560,8 @@
       "upload": "파일 업로드 (txt/pdf/png/jpeg/webp 지원)",
       "stop": "중지",
       "recent": "최근 대화 보기",
-      "navigation": "URL 읽는 중"
+      "navigation": "URL 읽는 중",
+      "download": "다운로드"
     },
     "think": {
       "initial": "생각 중...",

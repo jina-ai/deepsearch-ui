@@ -933,6 +933,51 @@ function handleStopEvent () {
     }
 }
 
+function handleDownloadEvent (downloadButton) {
+    if (window.html2canvas) {
+        const assistantMessageDiv = downloadButton.closest('.message');
+        const filter = function (element) {
+            if (element.classList.contains('think-section') || element.classList.contains('references-section')) {
+                return true;
+            }
+            if (element.classList.contains('action-buttons-container')) {
+                return true;
+            }
+            return false;
+        }
+        const theme = document.documentElement.getAttribute('data-theme');
+        const computedStyle = window.getComputedStyle(document.documentElement);
+        const backgroundColor = theme === 'dark' ? computedStyle.getPropertyValue('--bg-color') : computedStyle.getPropertyValue('--bg-color');
+        const nodeComputedStyle = window.getComputedStyle(assistantMessageDiv);
+        const transition = nodeComputedStyle.getPropertyValue('transition');
+        const animation = nodeComputedStyle.getPropertyValue('animation');
+        assistantMessageDiv.style.transition = 'none';
+        assistantMessageDiv.style.animation = 'none';
+        const scale = window.devicePixelRatio ? window.devicePixelRatio * 2 : 2;
+
+        html2canvas(assistantMessageDiv, { 
+            ignoreElements: filter,
+            scale: scale,
+            backgroundColor: backgroundColor,
+         }).then((canvas) => {
+            const dataUrl = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = 'captured_image.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }).catch((error) => {
+            console.error('Error capturing image:', error);
+        }).finally(() => {
+            assistantMessageDiv.style.transition = transition;
+            assistantMessageDiv.style.animation = animation;
+        });
+    } else {
+        console.error('html2canvas not available');
+    }
+}
+
 // Create a copy button for code blocks
 function createCodeCopyButton(codeElement) {
     const copyButton = document.createElement('button');
@@ -970,8 +1015,16 @@ function createActionButton(content) {
     const copyIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     copyButton.innerHTML = copyIcon;
 
+    // download button
+    const downloadButton = document.createElement('button');
+    downloadButton.classList.add('download-button', 'tooltip-container');
+    downloadButton.setAttribute('data-tooltip', 'tooltips.download');
+    const downloadIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>`;
+    downloadButton.innerHTML = downloadIcon;
+
     buttonContainer.appendChild(redoButton);
     buttonContainer.appendChild(copyButton);
+    buttonContainer.appendChild(downloadButton);
 
     redoButton.addEventListener('click', () => {
         handleReDoEvent(redoButton);
@@ -981,7 +1034,11 @@ function createActionButton(content) {
         handleCopyEvent(copyButton, copyIcon, content);
     });
 
-    [redoButton, copyButton].forEach(button => {
+    downloadButton.addEventListener('click', () => {
+        handleDownloadEvent(downloadButton);
+    });
+
+    [redoButton, copyButton, downloadButton].forEach(button => {
         handleTooltipEvent(button);
     });
 
@@ -2258,7 +2315,6 @@ function ensureHljsLoaded() {
         }, 2500);
     });
 }
-
 
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize appearance first
