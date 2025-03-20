@@ -948,9 +948,6 @@ function handleDownloadEvent (downloadButton) {
         const theme = document.documentElement.getAttribute('data-theme');
         const computedStyle = window.getComputedStyle(document.documentElement);
         const backgroundColor = theme === 'dark' ? computedStyle.getPropertyValue('--bg-color') : computedStyle.getPropertyValue('--bg-color');
-        const nodeComputedStyle = window.getComputedStyle(assistantMessageDiv);
-        const transition = nodeComputedStyle.getPropertyValue('transition');
-        const animation = nodeComputedStyle.getPropertyValue('animation');
         assistantMessageDiv.style.transition = 'none';
         assistantMessageDiv.style.animation = 'none';
         const scale = window.devicePixelRatio ? window.devicePixelRatio * 2 : 2;
@@ -969,10 +966,7 @@ function handleDownloadEvent (downloadButton) {
             document.body.removeChild(link);
         }).catch((error) => {
             console.error('Error capturing image:', error);
-        }).finally(() => {
-            assistantMessageDiv.style.transition = transition;
-            assistantMessageDiv.style.animation = animation;
-        });
+        })
     } else {
         console.error('html2canvas not available');
     }
