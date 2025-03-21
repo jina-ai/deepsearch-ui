@@ -222,7 +222,7 @@ a {
     position: relative;
     min-height: 50px; /* Ensure container has height even when empty */
     padding: 20px;
-    max-width: 868px;
+    max-width: 760px;
     margin: 0 auto;
 }
 
@@ -749,7 +749,7 @@ a {
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
     opacity: 1;
     transform: translateY(0);
-    max-width: 100%;
+    max-width: 90%;
     overflow-x: auto;
     overflow-y: hidden;
 }
