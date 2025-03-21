@@ -922,7 +922,7 @@ ol.footnotes-list {
     padding: 4px;
 }
 
-#table-container {
+.table-container {
     overflow-x: auto;
 }
 

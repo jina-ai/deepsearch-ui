@@ -1180,7 +1180,7 @@ function markdownItTableWrapper(md) {
     };
 
     md.renderer.rules.table_open = function (tokens, idx, options, env, self) {
-        return '<div id="table-container">\n' + defaultTableRenderer(tokens, idx, options, env, self);
+        return '<div class="table-container">\n' + defaultTableRenderer(tokens, idx, options, env, self);
     };
 
     const defaultTableCloseRenderer = md.renderer.rules.table_close || function (tokens, idx, options, env, self) {
