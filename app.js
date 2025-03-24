@@ -1008,13 +1008,15 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
             onclone: clone,
             windowWidth: maxWidth + PADDING,
          }).then((canvas) => {
-            const dataUrl = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = dataUrl;
-            link.download = `jinaai_deepsearch_${Date.now()}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            canvas.toBlob((blob) => {
+                const dataUrl = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = dataUrl;
+                link.download = `jinaai_deepsearch_${Date.now()}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
         }).catch((error) => {
             console.error('Error capturing image:', error);
         }).finally(() => {
