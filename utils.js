@@ -1,5 +1,6 @@
 const utilScripts = [
   { type: 'script', url: 'third-party/html2canvas.min.js' },
+  { type: 'script', url: 'third-party/purify.min.js' },
 ];
 
 async function loadResource(resource) {

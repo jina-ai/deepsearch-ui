@@ -257,6 +257,23 @@ function generateId(type = 'message') {
     return `${type}-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
+function sanitizeHtml(content) {
+    try {
+        if (window.DOMPurify) {
+            const options = {
+                IN_PLACE: true,
+                FORBID_TAGS: ['style', 'script', 'iframe'],
+                FORBID_ATTR: ['style', 'onerror', 'onload'],
+            };
+            return DOMPurify.sanitize(content, options);
+        }
+        return content;
+    } catch(error) {
+        console.error('Sanitizing error:', error)
+        return content;
+    }
+}
+
 // Chat Message Persistence
 function saveChatMessages() {
     try {
@@ -462,7 +479,7 @@ function updateSessionsList() {
         
         const sessionTitle = document.createElement('span');
         sessionTitle.classList.add('session-title');
-        sessionTitle.textContent = session.title;
+        sessionTitle.innerText = session.title;
         
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-session');
@@ -1259,13 +1276,15 @@ function renderMarkdown(content, returnElement = false, visitedURLs = [], role =
         content = '';
     }
     
-    tempDiv.innerHTML = content;
     if (md) {
         try {
             // Only try to render markdown if content is not empty
             if (content.trim()) {
-                const rendered = md.render(content);
-                tempDiv.innerHTML = rendered;
+                if (role === 'user') {
+                    tempDiv.innerText = md.renderInline(content, {html: false});
+                } else {
+                    tempDiv.innerHTML = sanitizeHtml(md.render(content));
+                }
             }
         } catch (e) {
             console.error('Error rendering markdown:', e);
@@ -1299,6 +1318,8 @@ function renderMarkdown(content, returnElement = false, visitedURLs = [], role =
                 el.innerHTML = el.innerHTML.replace(/\n/g, '<br>');
             });
         }
+    } else {
+        tempDiv.innerHTML = sanitizeHtml(content);
     }
     
     // Add copy buttons to code blocks if returning the element
