@@ -972,6 +972,7 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
     if (window.html2canvas) {
         downloadButton.innerHTML = downloadingSvg;
         const assistantMessageDiv = downloadButton.closest('.message');
+        const id = assistantMessageDiv.getAttribute('id');
         const theme = document.documentElement.getAttribute('data-theme');
         const computedStyle = window.getComputedStyle(document.documentElement);
         const backgroundColor = theme === 'dark' ? computedStyle.getPropertyValue('--bg-color') : computedStyle.getPropertyValue('--bg-color');
@@ -982,7 +983,7 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
         const tables = Array.from(assistantMessageDiv.querySelectorAll('.table-container'));
         const codeBlocks = Array.from(assistantMessageDiv.querySelectorAll('.markdown-inner pre code'));
         const scrollWidths = tables.concat(codeBlocks).map(ele => ele.scrollWidth);
-        const maxWidth = Math.max(assistantMessageDiv.scrollWidth, ...scrollWidths) + 90;
+        const maxWidth = Math.max(assistantMessageDiv.scrollWidth, ...scrollWidths) + 138;
         const PADDING = 52;
 
         const filter = function (element) {
@@ -997,6 +998,8 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
         const clone = function (clonedDocument) {
             const clonedElement = clonedDocument.getElementById('chat-container');
             clonedElement.style.maxWidth = `${maxWidth}px`;
+            const cloneMessage = clonedDocument.getElementById(id);
+            cloneMessage.style.padding = '16px 40px';
         };
 
         html2canvas(assistantMessageDiv, { 
