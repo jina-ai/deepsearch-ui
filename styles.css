@@ -1558,3 +1558,17 @@ table td .footnote-ref a {
 .markdown-inner pre:hover .code-copy-button {
     display: flex;
 }
+
+.assistant-image-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    flex-wrap: wrap;
+}
+
+.assistant-image {
+    max-height: 128px;
+    max-width: 128px;
+    object-fit: cover;
+}
