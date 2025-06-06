@@ -1936,7 +1936,7 @@ function updateMessagesList() {
                 imageContainer.classList.add('assistant-image-container');
                 message.images.forEach(image => {
                     const imageElement = document.createElement('img');
-                    imageElement.src = image.data;
+                    imageElement.src = image.url;
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
                 });
