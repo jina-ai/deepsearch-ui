@@ -1520,7 +1520,7 @@ async function updateThinkUrl(thinkUrlElement, url) {
         }
 
         const thinkUrlLink = thinkUrlElement.querySelector('.think-url-link');
-        thinkUrlLink.textContent = url.replace(/^(https?:\/\/)/, '');
+        thinkUrlLink.textContent = url?.replace(/^(https?:\/\/)/, '');
     };
 };
 
@@ -1629,6 +1629,7 @@ async function sendMessage(redo = false) {
                 messages: existingMessages.filter(({content}) => content).map(({role, content}) => ({role, content: typeof content === 'string' ? content : content.filter(c => c.text || c.image || c.data)})),
                 stream: true,
                 reasoning_effort: 'medium',
+                with_images: true,
             }),
             signal: abortController.signal,
         });
@@ -1716,8 +1717,8 @@ async function sendMessage(redo = false) {
                                 if (json.numURLs) {
                                     numURLs = json.numURLs;
                                 }
-                                if (json.images) {
-                                    images = json.images;
+                                if (json.imageReferences) {
+                                    images = json.imageReferences;
                                 }
                                 
                                 const url = json.choices[0]?.delta?.url;
@@ -1818,7 +1819,7 @@ async function sendMessage(redo = false) {
                 imageContainer.classList.add('assistant-image-container');
                 images.forEach(image => {
                     const imageElement = document.createElement('img');
-                    imageElement.src = image.data;
+                    imageElement.src = image.url;
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
                 });
