@@ -293,7 +293,18 @@
         </div>
     </div>
 </div>
-
+<!-- Image references dialog -->
+<div class="dialog-overlay" id="image-references-dialog" role="dialog" aria-labelledby="image-references-dialog-title" aria-modal="true">
+    <div class="dialog">
+        <div class="dialog-header">
+            <span class="dialog-title" id="image-references-title" data-label="dialogs.image.references.title">Image preview</span>
+            <button class="dialog-close" aria-label="Close image references dialog">&times;</button>
+        </div>
+        <div class="dialog-content">
+            <img id="selected-image-reference" src="" alt="Image reference" />
+        </div>
+    </div>
+</div>
 <script async src="preload.js"></script>
 <script defer src="hljs.js"></script>
 <script defer src="utils.js"></script>

@@ -1572,3 +1572,28 @@ table td .footnote-ref a {
     max-width: 128px;
     object-fit: cover;
 }
+
+.assistant-image {
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+}
+
+.assistant-image:hover {
+    box-shadow: 0 1px 15px rgba(0, 0, 0, 0.2);
+}
+
+#selected-image-reference {
+    max-width: calc(100% - 16px);
+    transition: all 0.2s;
+    margin: 20px auto;
+}
+
+#selected-image-reference:hover {
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+}
+
+#image-references-dialog .dialog {
+    max-width: 600px;
+    width: 100%;
+}

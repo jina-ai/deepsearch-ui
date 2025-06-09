@@ -203,8 +203,12 @@ const clearAllSessionsButton = document.getElementById('clear-all-sessions');
 const deleteSessionDialog = document.getElementById('delete-session-dialog');
 const deleteAllSessionsDialog = document.getElementById('delete-all-sessions-dialog');
 const navigationDialog = document.getElementById('navigation-dialog');
+// image references dialog
+const imageReferencesDialog = document.getElementById('image-references-dialog');
+const selectedImageReference = document.getElementById('selected-image-reference');
 
 const BASE_ORIGIN = 'http://localhost:3000'//'https://deepsearch.jina.ai';
+const FAVICON_BASE_URL = `${BASE_ORIGIN}/favicons`;
 
 // SVG icons
 const loadingSvg = `<svg id="thinking-animation-icon" width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><style>.spinner_mHwL{animation:spinner_OeFQ .75s cubic-bezier(0.56,.52,.17,.98) infinite; fill:currentColor}.spinner_ote2{animation:spinner_ZEPt .75s cubic-bezier(0.56,.52,.17,.98) infinite;fill:currentColor}@keyframes spinner_OeFQ{0%{cx:4px;r:3px}50%{cx:9px;r:8px}}@keyframes spinner_ZEPt{0%{cx:15px;r:8px}50%{cx:20px;r:3px}}</style><defs><filter id="spinner-gF00"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="y"/><feColorMatrix in="y" mode="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 18 -7" result="z"/><feBlend in="SourceGraphic" in2="z"/></filter></defs><g filter="url(#spinner-gF00)"><circle class="spinner_mHwL" cx="4" cy="12" r="3"/><circle class="spinner_ote2" cx="15" cy="12" r="8"/></g></svg>`;
@@ -751,7 +755,7 @@ const renderFaviconList = async (visitedURLs, numURLs, faviconContainer) => {
         const failedDomains = [];
         try {
             const response = await fetch(
-                `https://favicon-fetcher.jina.ai/?domains=${domains.join(',')}&timeout=3000`
+                `${FAVICON_BASE_URL}/?domains=${domains.join(',')}&timeout=3000`
             );
             if (!response.ok) throw new Error('Favicon fetch failed');
 
@@ -1817,6 +1821,7 @@ async function sendMessage(redo = false) {
             if (images.length > 0) {
                 const imageContainer = document.createElement('div');
                 imageContainer.classList.add('assistant-image-container');
+                imageContainer.addEventListener('click', handleImageReferenceClick);
                 images.forEach(image => {
                     const imageElement = document.createElement('img');
                     imageElement.src = image.url;
@@ -1934,6 +1939,7 @@ function updateMessagesList() {
             if (message.images?.length > 0) {
                 const imageContainer = document.createElement('div');
                 imageContainer.classList.add('assistant-image-container');
+                imageContainer.addEventListener('click', handleImageReferenceClick);
                 message.images.forEach(image => {
                     const imageElement = document.createElement('img');
                     imageElement.src = image.url;
@@ -2125,6 +2131,20 @@ async function handleURLParams (queryParam) {
         await sendMessage();
     }
 };
+
+function handleImageReferenceClick(event) {
+  const target = event.target;
+  
+  if (target.tagName !== 'IMG') {
+    return; // Only handle clicks on images
+  }
+
+  const url = target.src;
+  // open image reference dialog
+  imageReferencesDialog.classList.add('visible');
+  // set the selected image reference
+  selectedImageReference.src = url;
+}
 
 let autoScrollEnabled = true; // Flag to track auto-scroll state
 // Auto-scroll setup
