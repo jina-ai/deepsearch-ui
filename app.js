@@ -1723,8 +1723,8 @@ async function sendMessage(redo = false) {
                                 if (json.numURLs) {
                                     numURLs = json.numURLs;
                                 }
-                                if (json.imageReferences) {
-                                    images = json.imageReferences;
+                                if (json.relatedImages) {
+                                    images = json.relatedImages;
                                 }
                                 
                                 const url = json.choices[0]?.delta?.url;
@@ -1826,7 +1826,7 @@ async function sendMessage(redo = false) {
                 imageContainer.addEventListener('click', handleImageReferenceClick);
                 images.forEach(image => {
                     const imageElement = document.createElement('img');
-                    imageElement.src = image.url;
+                    imageElement.src = image;
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
                 });
@@ -1944,7 +1944,7 @@ function updateMessagesList() {
                 imageContainer.addEventListener('click', handleImageReferenceClick);
                 message.images.forEach(image => {
                     const imageElement = document.createElement('img');
-                    imageElement.src = image.url;
+                    imageElement.src = image;
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
                 });
