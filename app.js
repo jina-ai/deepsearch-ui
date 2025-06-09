@@ -1015,6 +1015,8 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
             onclone: clone,
             windowWidth: maxWidth + PADDING,
             scale: isMobile ? 2 : window.devicePixelRatio,
+            useCORS: true,
+            allowTaint: false,
          }).then((canvas) => {
             return new Promise((resolve, reject) => {
                 let finalCanvas = canvas;
