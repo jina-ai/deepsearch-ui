@@ -75,7 +75,8 @@
         "chirpOnDone": "Chirp on done",
         "arxivResearch": "arXiv Research",
         "alwaysSearch": "Force thinking before answering",
-        "reasoningEffort": "Reasoning effort"
+        "reasoningEffort": "Reasoning effort",
+        "includeImages": "Include images in result"
       },
       "deleteSession": {
         "title": "Delete Session?",
@@ -166,7 +167,8 @@
         "chirpOnDone": "完成后蜂鸣提醒",
         "arxivResearch": "arXiv 研究模式",
         "alwaysSearch": "强制思考后再回答",
-        "reasoningEffort": "推理深度"
+        "reasoningEffort": "推理深度",
+        "includeImages": "在结果中包含图片"
       },
       "deleteSession": {
         "title": "删除会话？",
@@ -257,7 +259,8 @@
         "chirpOnDone": "完成時發出提示音",
         "arxivResearch": "arXiv 研究模式",
         "alwaysSearch": "強制思考後再回答",
-        "reasoningEffort": "推理深度"
+        "reasoningEffort": "推理深度",
+        "includeImages": "在結果中包含圖片"
       },
       "deleteSession": {
         "title": "刪除對話？",
@@ -348,7 +351,8 @@
         "chirpOnDone": "完了時に通知音を鳴らす",
         "arxivResearch": "arXiv 研究模式",
         "alwaysSearch": "必ず思考してから回答",
-        "reasoningEffort": "推論の深さ"
+        "reasoningEffort": "推論の深さ",
+        "includeImages": "結果に画像を含める"
       },
       "deleteSession": {
         "title": "セッションを削除しますか？",
@@ -439,7 +443,8 @@
         "chirpOnDone": "Bip à la fin",
         "arxivResearch": "Recherche sur arXiv",
         "alwaysSearch": "Forcer la réflexion avant de répondre",
-        "reasoningEffort": "Profondeur de raisonnement"
+        "reasoningEffort": "Profondeur de raisonnement",
+        "includeImages": "Inclure les images dans le résultat"
       },
       "deleteSession": {
         "title": "Supprimer la session ?",
@@ -527,7 +532,8 @@
         "chirpOnDone": "Piepton bei Fertigstellung",
         "arxivResearch": "arXiv-Suchmodus",
         "alwaysSearch": "Vor Antwort nachdenken erzwingen",
-        "reasoningEffort": "Argumentationstiefe"
+        "reasoningEffort": "Argumentationstiefe",
+        "includeImages": "Bilder im Ergebnis einbeziehen"
       },
       "deleteSession": {
         "title": "Sitzung löschen?",
@@ -616,7 +622,8 @@
         "chirpOnDone": "완료 시 알림음",
         "arxivResearch": "arXiv 연구 모드",
         "alwaysSearch": "강제 사고 후 답변",
-        "reasoningEffort": "추론 깊이"
+        "reasoningEffort": "추론 깊이",
+        "includeImages": "결과에 이미지 포함"
       },
       "deleteSession": {
         "title": "세션 삭제?",

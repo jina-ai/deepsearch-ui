@@ -1657,7 +1657,7 @@ async function sendMessage(redo = false) {
                 reasoning_effort: localStorage.getItem('reasoning_effort') || 'medium',
                 no_direct_answer: localStorage.getItem('always_search') === 'true',
                 search_provider: localStorage.getItem('arxiv_research') === 'true' ? 'arxiv' : undefined,
-                with_images: true,
+                with_images: localStorage.getItem('include_images') !== 'false' ? true : undefined,
             }),
             signal: abortController.signal,
         });
@@ -2056,6 +2056,13 @@ function initializeSettings() {
     if (reasoningEffortSelect) {
         reasoningEffortSelect.value = reasoningEffort;
     }
+
+    // Initialize Include Images setting (default to true)
+    const includeImages = localStorage.getItem('include_images') !== 'false';
+    const includeImagesToggleInput = document.getElementById('include-images-toggle-input');
+    if (includeImagesToggleInput) {
+        includeImagesToggleInput.checked = includeImages;
+    }
 }
 
 settingsButton.addEventListener('click', () => {
@@ -2112,6 +2119,11 @@ alwaysSearchToggleInput?.addEventListener('change', (e) => {
 const reasoningEffortSelect = document.getElementById('reasoning-effort-select');
 reasoningEffortSelect?.addEventListener('change', (e) => {
     localStorage.setItem('reasoning_effort', e.target.value);
+});
+
+const includeImagesToggleInput = document.getElementById('include-images-toggle-input');
+includeImagesToggleInput?.addEventListener('change', (e) => {
+    localStorage.setItem('include_images', e.target.checked);
 });
 
 // Initialize settings on load
