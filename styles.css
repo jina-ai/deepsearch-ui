@@ -545,6 +545,9 @@ a {
     text-overflow: ellipsis;
     color: var(--text-color);
     font-size: var(--body-size);
+    height: 20px;
+    line-height: 20px;
+    display: block;
 }
 
 .delete-session {

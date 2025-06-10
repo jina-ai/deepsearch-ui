@@ -27,13 +27,13 @@ let UI_STRINGS = {
 
 // Function to load i18n translations
 async function loadTranslations() {
-  try {
-    const response = await fetch('i18n.json');
-    i18n = await response.json();
-    applyTranslations();
-  } catch (error) {
-    console.error('Error loading translations:', error);
-  }
+    try {
+        const response = await fetch('i18n.json');
+        i18n = await response.json();
+        applyTranslations();
+    } catch (error) {
+        console.error('Error loading translations:', error);
+    }
 }
 
 // Function to get translation for a key
@@ -42,39 +42,39 @@ function t(key, replacements = {}, fallbackLanguage = 'en') {
     let value = i18n[currentLanguage];
 
     for (const k of keys) {
-      if (value && typeof value === 'object' && value !== null && k in value) {
-        value = value[k];
-      } else if (value && Array.isArray(value) && !isNaN(parseInt(k)) && parseInt(k) >= 0 && parseInt(k) < value.length) {
-        value = value[parseInt(k)];
-      } else {
-        let fallback = i18n[fallbackLanguage];
-        if (!fallback) {
-          fallback = i18n['en']; //ultimate fallback to English
+        if (value && typeof value === 'object' && value !== null && k in value) {
+            value = value[k];
+        } else if (value && Array.isArray(value) && !isNaN(parseInt(k)) && parseInt(k) >= 0 && parseInt(k) < value.length) {
+            value = value[parseInt(k)];
+        } else {
+            let fallback = i18n[fallbackLanguage];
+            if (!fallback) {
+                fallback = i18n['en']; //ultimate fallback to English
+            }
+            let fallbackValue = fallback;
+            for (const fk of keys) {
+                if (fallbackValue && typeof fallbackValue === 'object' && fallbackValue !== null && fk in fallbackValue) {
+                    fallbackValue = fallbackValue[fk];
+                } else if (fallbackValue && Array.isArray(fallbackValue) && !isNaN(parseInt(fk)) && parseInt(fk) >= 0 && parseInt(fk) < fallbackValue.length) {
+                    fallbackValue = fallbackValue[parseInt(fk)];
+                } else {
+                    return key; // Return the key if no translation found in either language
+                }
+            }
+            value = fallbackValue;
+            break;
         }
-        let fallbackValue = fallback;
-        for (const fk of keys) {
-          if (fallbackValue && typeof fallbackValue === 'object' && fallbackValue !== null && fk in fallbackValue) {
-            fallbackValue = fallbackValue[fk];
-          } else if (fallbackValue && Array.isArray(fallbackValue) && !isNaN(parseInt(fk)) && parseInt(fk) >= 0 && parseInt(fk) < fallbackValue.length) {
-            fallbackValue = fallbackValue[parseInt(fk)];
-          } else {
-            return key; // Return the key if no translation found in either language
-          }
-        }
-        value = fallbackValue;
-        break;
-      }
     }
 
     // Apply replacements if provided
     if (typeof value === 'string' && replacements) {
-      for (const replacementKey in replacements) {
-        if (replacements.hasOwnProperty(replacementKey)) {
-          const replacementValue = replacements[replacementKey];
-          const regex = new RegExp(`{{${replacementKey}}}`, 'g');
-          value = value.replace(regex, replacementValue);
+        for (const replacementKey in replacements) {
+            if (replacements.hasOwnProperty(replacementKey)) {
+                const replacementValue = replacements[replacementKey];
+                const regex = new RegExp(`{{${replacementKey}}}`, 'g');
+                value = value.replace(regex, replacementValue);
+            }
         }
-      }
     }
 
     return value;
@@ -143,25 +143,25 @@ function applyTranslations() {
     // Update UI_STRINGS with translations
     UI_STRINGS = {
         buttons: {
-          send: () => t('buttons.send'),
-          addKey: () => t('buttons.addKey'),
-          updateKey: () => t('buttons.updateKey'),
-          getKey: () => t('buttons.getKey'),
-          purchase: () => t('buttons.purchase'),
+            send: () => t('buttons.send'),
+            addKey: () => t('buttons.addKey'),
+            updateKey: () => t('buttons.updateKey'),
+            getKey: () => t('buttons.getKey'),
+            purchase: () => t('buttons.purchase'),
         },
         think: {
-          initial: () => t('think.initial'),
-          toggle: () => t('think.toggle'),
-          navigation: () => t('think.navigation'),
+            initial: () => t('think.initial'),
+            toggle: () => t('think.toggle'),
+            navigation: () => t('think.navigation'),
         },
         references: {
-          title: () => t('references.title'),
-          sources: () => t('references.sources')
+            title: () => t('references.title'),
+            sources: () => t('references.sources')
         },
         errors: {
-          invalidKey: () => t('errors.invalidKey'),
-          insufficientTokens: () => t('errors.insufficientTokens'),
-          rateLimit: () => t('errors.rateLimit')
+            invalidKey: () => t('errors.invalidKey'),
+            insufficientTokens: () => t('errors.insufficientTokens'),
+            rateLimit: () => t('errors.rateLimit')
         }
     };
 }
@@ -272,7 +272,7 @@ function sanitizeHtml(content) {
             return DOMPurify.sanitize(content, options);
         }
         return content;
-    } catch(error) {
+    } catch (error) {
         console.error('Sanitizing error:', error)
         return content;
     }
@@ -285,14 +285,14 @@ function saveChatMessages() {
             try {
                 return {
                     role: m.role,
-                    content: typeof m.content === 'string' 
-                        ? m.content 
-                        : Array.isArray(m.content) 
-                            ? m.content.map(c => ({ 
-                                type: c.type, 
-                                text: c.text, 
-                                mimeType: c.mimeType, 
-                                fileName: c.fileName 
+                    content: typeof m.content === 'string'
+                        ? m.content
+                        : Array.isArray(m.content)
+                            ? m.content.map(c => ({
+                                type: c.type,
+                                text: c.text,
+                                mimeType: c.mimeType,
+                                fileName: c.fileName
                             }))
                             : JSON.stringify(m.content),
                     id: m.id,
@@ -311,10 +311,10 @@ function saveChatMessages() {
         });
 
         localStorage.setItem('chat_messages', JSON.stringify(thinMessage));
-        
+
         // Save current session if there are messages
         saveCurrentSession(thinMessage);
-  
+
     } catch (e) {
         console.error('Error saving chat messages:', e);
     }
@@ -356,14 +356,14 @@ function saveChatSessions() {
 
 function saveCurrentSession(messages) {
     if (messages.length === 0) return;
-    
+
     const firstUserMessage = messages[0];
     const currentSessionIndex = chatSessions?.findIndex(s => s.messages[0].id === firstUserMessage.id);
-    
+
     if (currentSessionIndex !== -1) {
         // Check if the messages are the same
         if (JSON.stringify(chatSessions[currentSessionIndex].messages) === JSON.stringify(messages)) return;
-        
+
         // Move to the top of the list
         const session = chatSessions.splice(currentSessionIndex, 1)[0];
         session.messages = messages;
@@ -371,7 +371,7 @@ function saveCurrentSession(messages) {
         chatSessions.unshift(session);
     } else {
         let sessionTitle = '';
-    
+
         try {
             if (typeof firstUserMessage.content === 'string') {
                 sessionTitle = firstUserMessage.content;
@@ -389,12 +389,12 @@ function saveCurrentSession(messages) {
             console.error('Error extracting session title:', e);
             sessionTitle = 'Chat session';
         }
-        
+
         // Fallback if we couldn't extract a title
         if (!sessionTitle.trim()) {
             sessionTitle = 'Chat session';
         }
-        
+
         // Add new session
         const newSession = {
             id: generateId('session'),
@@ -402,10 +402,10 @@ function saveCurrentSession(messages) {
             updatedAt: Date.now(),
             messages: existingMessages
         };
-        
+
         // Add to beginning of array (newest first)
         chatSessions.unshift(newSession);
-        
+
         // Limit to MAX_SESSIONS
         if (chatSessions.length > MAX_SESSIONS) {
             chatSessions = chatSessions.slice(0, MAX_SESSIONS);
@@ -426,7 +426,7 @@ function handleClickSessionEvent(sessionId) {
     existingMessages = session.messages?.concat() || [];
     updateMessagesList();
     saveChatMessages();
-    
+
     // Close dropdown
     toggleSessionsDropdown(false);
 }
@@ -475,28 +475,28 @@ function updateSessionsList() {
         recentSessionsContainer.style.display = 'none';
         return;
     };
-    
+
     // Add each session to the list
     chatSessions?.sort((a, b) => b.updatedAt - a.updatedAt).forEach(session => {
         const sessionItem = document.createElement('li');
         sessionItem.classList.add('session-item');
         sessionItem.setAttribute('data-session-id', session.id);
-        
+
         const sessionTitle = document.createElement('span');
         sessionTitle.classList.add('session-title');
         sessionTitle.innerText = session.title;
-        
+
         const deleteButton = document.createElement('button');
         deleteButton.classList.add('delete-session');
         deleteButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
-        
+
         sessionItem.appendChild(sessionTitle);
         sessionItem.appendChild(deleteButton);
-        
+
         // Add event listeners
         sessionItem.addEventListener('click', () => handleClickSessionEvent(session.id));
         deleteButton.addEventListener('click', (e) => handleDeleteSessionEvent(session.id, e));
-        
+
         sessionsList.appendChild(sessionItem);
     });
     recentSessionsContainer.style.display = 'block';
@@ -504,13 +504,13 @@ function updateSessionsList() {
 
 function toggleSessionsDropdown(forceState) {
     const isOpen = forceState !== undefined ? forceState : !isSessionsDropdownOpen;
-    
+
     // Update dropdown state
     isSessionsDropdownOpen = isOpen;
-    
+
     // Toggle dropdown visibility
     sessionsDropdown.classList.toggle('show', isOpen);
-    
+
     // Rotate chevron icon
     const chevronIcon = recentSessionsButton.querySelector('.chevron-icon');
     chevronIcon.classList.toggle('rotated', isOpen);
@@ -628,7 +628,7 @@ clearAllSessionsButton.addEventListener('click', handleClearAllSessionsEvent);
 
 // Close dropdown when clicking outside
 document.addEventListener('click', (e) => {
-    if (isSessionsDropdownOpen && 
+    if (isSessionsDropdownOpen &&
         !recentSessionsContainer.contains(e.target)) {
         toggleSessionsDropdown(false);
     }
@@ -637,9 +637,9 @@ document.addEventListener('click', (e) => {
 saveApiKeyBtn.addEventListener('click', handleApiKeySave);
 
 // Message display functions
-function createReferencesSection(content, visitedURLs = [], numURLs=0) {
+function createReferencesSection(content, visitedURLs = [], numURLs = 0) {
     // Don't create section if no content and no URLs
-    if (!content && (!visitedURLs || visitedURLs.length === 0)) {
+    if (!content || !visitedURLs || visitedURLs.length === 0) {
         return null;
     }
 
@@ -684,28 +684,49 @@ function createReferencesSection(content, visitedURLs = [], numURLs=0) {
 const renderFaviconList = async (visitedURLs, numURLs, faviconContainer) => {
     let faviconList;
     if (faviconContainer) {
-        faviconList = faviconContainer;;
+        faviconList = faviconContainer;
     } else {
         // Create DOM elements and data structures
         faviconList = document.createElement('div');
         faviconList.classList.add('favicon-list');
     }
 
-    // Process URLs and create Map of domain -> {urls, element data}
+    // First pass: Create domainMap to store favicon data
     const domainMap = visitedURLs.reduce((map, url) => {
         try {
             const domain = new URL(url).hostname;
             if (!map.has(domain)) {
                 const img = document.createElement('img');
-                const item = document.createElement('div');
-
                 img.src = 'favicon.ico';
                 img.width = img.height = 16;
                 img.alt = domain;
 
+                map.set(domain, {
+                    img,
+                    urls: [url]
+                });
+            } else {
+                map.get(domain).urls.push(url);
+            }
+        } catch (e) {
+            console.error('Invalid URL:', url);
+        }
+        return map;
+    }, new Map());
+
+    // Second pass: Create favicon items for each URL
+    visitedURLs.forEach(url => {
+        try {
+            const domain = new URL(url).hostname;
+            const domainData = domainMap.get(domain);
+            if (domainData) {
+                const item = document.createElement('div');
                 item.classList.add('favicon-item', 'tooltip-container');
                 item.setAttribute('data-tooltip', url);
-                item.appendChild(img);
+
+                // Clone the img element to avoid DOM node reuse issues
+                const imgClone = domainData.img.cloneNode(true);
+                item.appendChild(imgClone);
 
                 // Add click handler for favicon
                 item.addEventListener('click', () => {
@@ -717,30 +738,17 @@ const renderFaviconList = async (visitedURLs, numURLs, faviconContainer) => {
                 item.style.cursor = 'pointer';
 
                 faviconList.appendChild(item);
-
-                map.set(domain, {
-                    urls: [url],
-                    img,
-                    item
-                });
-            } else {
-                map.get(domain).urls.push(url);
             }
-
-            // Update tooltip with URL count
-            const data = map.get(domain);
-            data.item.setAttribute('title', `${domain}\n${data.urls.length} URLs`);
         } catch (e) {
             console.error('Invalid URL:', url);
         }
-        return map;
-    }, new Map());
+    });
 
     if (numURLs) {
         // Add sources count
         const sourceCount = document.createElement('div');
         sourceCount.classList.add('sources-count');
-        sourceCount.textContent = `${visitedURLs.length}${numURLs > visitedURLs.length?'+':''} `;
+        sourceCount.textContent = `${visitedURLs.length}${numURLs > visitedURLs.length ? '+' : ''} `;
 
         const label = document.createElement('span');
         label.setAttribute('data-label', 'references.sources');
@@ -760,9 +768,17 @@ const renderFaviconList = async (visitedURLs, numURLs, faviconContainer) => {
             if (!response.ok) throw new Error('Favicon fetch failed');
 
             const favicons = await response.json();
-            favicons.forEach(({domain, favicon, type}) => {
+            favicons.forEach(({ domain, favicon, type }) => {
                 if (domainMap.has(domain) && favicon) {
-                    domainMap.get(domain).img.src = `data:${type};base64,${favicon}`;
+                    const domainData = domainMap.get(domain);
+                    domainData.img.src = `data:${type};base64,${favicon}`;
+                    // Update all cloned images for this domain
+                    const items = faviconList.querySelectorAll(`.favicon-item[data-tooltip^="http"]`);
+                    items.forEach(item => {
+                        if (new URL(item.getAttribute('data-tooltip')).hostname === domain) {
+                            item.querySelector('img').src = domainData.img.src;
+                        }
+                    });
                 } else {
                     failedDomains.push(domain);
                 }
@@ -838,7 +854,7 @@ function scrollToBottom() {
     mainContainer.scrollTop = mainContainer.scrollHeight;
 }
 
-function handleTooltipEvent (triggerElement, orientation = 'bottom' | 'top' | 'left' | 'right') {
+function handleTooltipEvent(triggerElement, orientation = 'bottom' | 'top' | 'left' | 'right') {
     let tooltip = triggerElement.querySelector('.tooltip');
     if (!tooltip) {
         tooltip = document.createElement('div');
@@ -879,7 +895,7 @@ function handleTooltipEvent (triggerElement, orientation = 'bottom' | 'top' | 'l
         }
     });
 
-    const adjustHorizontalPosition = (triggerElement,  tooltip) => {
+    const adjustHorizontalPosition = (triggerElement, tooltip) => {
         const rect = triggerElement.getBoundingClientRect();
         const tooltipRect = tooltip.getBoundingClientRect();
         if (rect.left < tooltipRect.width / 2) {
@@ -902,7 +918,7 @@ function handleTooltipEvent (triggerElement, orientation = 'bottom' | 'top' | 'l
     });
 }
 
-function handleReDoEvent (redoButton) {
+function handleReDoEvent(redoButton) {
     if (isLoading) return;
 
     // Find the current message element
@@ -945,7 +961,7 @@ function handleReDoEvent (redoButton) {
     sendMessage(true);
 }
 
-function handleCopyEvent (copyButton, copyIcon, content) {
+function handleCopyEvent(copyButton, copyIcon, content) {
     const checkIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
     if (!navigator.clipboard) {
         console.error('Clipboard API not available');
@@ -953,15 +969,15 @@ function handleCopyEvent (copyButton, copyIcon, content) {
     }
 
     navigator.clipboard.writeText(content.trim())
-    .then(() => {
-        copyButton.innerHTML = checkIcon;
-        setTimeout(() => {
-            copyButton.innerHTML = copyIcon;
-        }, 2000);
-    });
+        .then(() => {
+            copyButton.innerHTML = checkIcon;
+            setTimeout(() => {
+                copyButton.innerHTML = copyIcon;
+            }, 2000);
+        });
 }
 
-function handleStopEvent () {
+function handleStopEvent() {
     if (abortController) {
         abortController.abort();
         isLoading = false;
@@ -973,7 +989,7 @@ function handleStopEvent () {
     }
 }
 
-function handleDownloadEvent (downloadButton, downloadIcon) {
+function handleDownloadEvent(downloadButton, downloadIcon) {
     if (window.html2canvas) {
         downloadButton.innerHTML = downloadingSvg;
         const assistantMessageDiv = downloadButton.closest('.message');
@@ -1009,7 +1025,7 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
         };
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-        html2canvas(assistantMessageDiv, { 
+        html2canvas(assistantMessageDiv, {
             ignoreElements: filter,
             backgroundColor: backgroundColor,
             onclone: clone,
@@ -1034,7 +1050,7 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
                     finalCanvas = scaledCanvas;
                 }
                 setTimeout(() => {
-                    finalCanvas.toBlob(function(blob) {
+                    finalCanvas.toBlob(function (blob) {
                         if (!blob) {
                             reject('Blob creation failed.');
                             return;
@@ -1050,7 +1066,7 @@ function handleDownloadEvent (downloadButton, downloadIcon) {
                     }, 'image/png');
                 }, 500);
             });
-            
+
         }).catch((error) => {
             console.error('Error capturing image:', error);
         }).finally(() => {
@@ -1066,17 +1082,17 @@ function createCodeCopyButton(codeElement) {
     const copyButton = document.createElement('button');
     copyButton.classList.add('code-copy-button', 'tooltip-container');
     copyButton.setAttribute('data-tooltip', 'tooltips.copy');
-    
+
     const copyIcon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
     copyButton.innerHTML = copyIcon;
-    
+
     copyButton.addEventListener('click', (e) => {
         e.stopPropagation();
         handleCopyEvent(copyButton, copyIcon, codeElement.textContent);
     });
-    
+
     handleTooltipEvent(copyButton);
-    
+
     return copyButton;
 }
 
@@ -1248,7 +1264,7 @@ function initializeMarkdown() {
                 if (lang && hljs.getLanguage(lang)) {
                     try {
                         return '<pre><code class="hljs">' +
-                            hljs.highlight(str, {language: lang, ignoreIllegals: true}).value +
+                            hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
                             '</code></pre>';
                     } catch (__) {
                     }
@@ -1290,7 +1306,7 @@ function renderMarkdown(contentStr, returnElement = false, visitedURLs = [], rol
     const content = contentStr.replace(/\u00A0/g, ' ');
     const tempDiv = document.createElement('div');
     tempDiv.classList.add('markdown-inner');
-    
+
     // Handle null, undefined, or non-string content
     if (content === null || content === undefined) {
         content = '';
@@ -1311,18 +1327,18 @@ function renderMarkdown(contentStr, returnElement = false, visitedURLs = [], rol
             console.error('Error processing non-string content:', e);
         }
     }
-    
+
     // Ensure content is a string before rendering
     if (typeof content !== 'string') {
         content = '';
     }
-    
+
     if (md) {
         try {
             // Only try to render markdown if content is not empty
             if (content.trim()) {
                 if (role === 'user') {
-                    tempDiv.innerText = md.renderInline(content, {html: false});
+                    tempDiv.innerText = md.renderInline(content, { html: false });
                 } else {
                     tempDiv.innerHTML = sanitizeHtml(md.render(content));
                 }
@@ -1362,12 +1378,12 @@ function renderMarkdown(contentStr, returnElement = false, visitedURLs = [], rol
     } else {
         tempDiv.innerHTML = sanitizeHtml(content);
     }
-    
+
     // Add copy buttons to code blocks if returning the element
     if (returnElement) {
         addCodeCopyButtons(tempDiv);
     }
-    
+
     return returnElement ? tempDiv : tempDiv.innerHTML;
 }
 
@@ -1376,13 +1392,13 @@ function addCodeCopyButtons(markdownElement) {
     const codeBlocks = markdownElement.querySelectorAll('pre code');
     codeBlocks.forEach(codeBlock => {
         const preElement = codeBlock.parentElement;
-        
+
         // Make the pre element relative positioned for absolute positioning of the button
         preElement.style.position = 'relative';
-        
+
         // Create the copy button
         const copyButton = createCodeCopyButton(codeBlock);
-        
+
         // Add the button to the pre element
         preElement.appendChild(copyButton);
     });
@@ -1455,7 +1471,7 @@ function createThinkUrl(assistantMessageDiv) {
     navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));
     // favicon container
     const faviconContainer = document.createElement('div');
-    faviconContainer.classList.add('favicon-container');   
+    faviconContainer.classList.add('favicon-container');
     // text
     const urlLink = document.createElement('span');
     urlLink.classList.add('think-url-link');
@@ -1516,17 +1532,21 @@ function handleClickNavigationEvent(e) {
     navigationDialog.classList.add('visible');
 }
 
-async function updateThinkUrl(thinkUrlElement, url) {      
+async function updateThinkUrl(thinkUrlElement, url) {
     if (thinkUrlElement && url) {
-        // Add favicon
-        const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
-        const existingUrls = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).map(item => item.getAttribute('data-tooltip'));
-        if (!existingUrls.includes(url)) {
-            await renderFaviconList([url], 0, faviconContainer);
-        }
+        try {
+            // Add favicon
+            const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
+            const existingUrls = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).map(item => item.getAttribute('data-tooltip'));
+            if (!existingUrls.includes(url)) {
+                await renderFaviconList([url], 0, faviconContainer);
+            }
 
-        const thinkUrlLink = thinkUrlElement.querySelector('.think-url-link');
-        thinkUrlLink.textContent = url?.replace(/^(https?:\/\/)/, '');
+            const thinkUrlLink = thinkUrlElement.querySelector('.think-url-link');
+            thinkUrlLink.textContent = url.replace(/^(https?:\/\/)/, '');
+        } catch (error) {
+            console.error('Error updating think URL:', error);
+        }
     };
 };
 
@@ -1594,7 +1614,7 @@ async function sendMessage(redo = false) {
     if (!redo) {
         const userMessageId = generateId();
         createMessage('user', messageContent, userMessageId);
-        existingMessages.push({role: 'user', content: messageContent, id: userMessageId});
+        existingMessages.push({ role: 'user', content: messageContent, id: userMessageId });
     }
 
     // Clear input and files
@@ -1632,9 +1652,11 @@ async function sendMessage(redo = false) {
             method: 'POST',
             headers,
             body: JSON.stringify({
-                messages: existingMessages.filter(({content}) => content).map(({role, content}) => ({role, content: typeof content === 'string' ? content : content.filter(c => c.text || c.image || c.data)})),
+                messages: existingMessages.filter(({ content }) => content).map(({ role, content }) => ({ role, content: typeof content === 'string' ? content : content.filter(c => c.text || c.image || c.data) })),
                 stream: true,
-                reasoning_effort: 'medium',
+                reasoning_effort: localStorage.getItem('reasoning_effort') || 'medium',
+                no_direct_answer: localStorage.getItem('always_search') === 'true',
+                search_provider: localStorage.getItem('arxiv_research') === 'true' ? 'arxiv' : undefined,
                 with_images: true,
             }),
             signal: abortController.signal,
@@ -1687,7 +1709,7 @@ async function sendMessage(redo = false) {
             const reader = res.body?.getReader();
             if (!reader) throw new Error('No readable stream available');
 
-            const decoder = new TextDecoder();
+            const decoder = new TextDecoder('utf-8', { stream: true }); // Specify UTF-8 and enable streaming mode
             let partialBrokenData = '';
             let visitedURLs = [];
             let numURLs = 0;
@@ -1695,12 +1717,12 @@ async function sendMessage(redo = false) {
             let images = [];
 
             while (true) {
-                const {done, value} = await reader.read();
+                const { done, value } = await reader.read();
 
                 if (done) break;
 
                 if (value) {
-                    const streamData = decoder.decode(value);
+                    const streamData = decoder.decode(value, { stream: true });
                     const events = streamData.split('\n\ndata:').filter(Boolean);
 
                     for (const event of events) {
@@ -1732,7 +1754,7 @@ async function sendMessage(redo = false) {
                                 if (!thinkUrlElement) {
                                     thinkUrlElement = createThinkUrl(assistantMessageDiv);
                                 }
-                
+
                                 if (url) {
                                     hideThinkUrlTimer = Date.now();
                                     clearTimeout(hideThinkUrlTimer);
@@ -1781,7 +1803,7 @@ async function sendMessage(redo = false) {
                                             setTimeout(() => thinkContentElement.classList.remove('auto-scrolling'), 1000);
                                         }
                                         tempContent = "";
-                                        
+
                                     } else {
                                         if (thinkSectionElement && inThinkSection) {
                                             // Finalize think section
@@ -1811,7 +1833,7 @@ async function sendMessage(redo = false) {
                     }
                 }
             }
-            
+
             toggleStopMessage(false);
 
             if (markdownContent) {
@@ -2013,6 +2035,27 @@ function initializeSettings() {
     if (chirpOnDoneToggleInput) {
         chirpOnDoneToggleInput.checked = chirpOnDone;
     }
+
+    // Initialize arXiv Research setting (default to false)
+    const arxivResearch = localStorage.getItem('arxiv_research') === 'true';
+    const arxivResearchToggleInput = document.getElementById('arxiv-research-toggle-input');
+    if (arxivResearchToggleInput) {
+        arxivResearchToggleInput.checked = arxivResearch;
+    }
+
+    // Initialize Always Search setting (default to false)
+    const alwaysSearch = localStorage.getItem('always_search') === 'true';
+    const alwaysSearchToggleInput = document.getElementById('always-search-toggle-input');
+    if (alwaysSearchToggleInput) {
+        alwaysSearchToggleInput.checked = alwaysSearch;
+    }
+
+    // Initialize Reasoning Effort setting (default to medium)
+    const reasoningEffort = localStorage.getItem('reasoning_effort') || 'medium';
+    const reasoningEffortSelect = document.getElementById('reasoning-effort-select');
+    if (reasoningEffortSelect) {
+        reasoningEffortSelect.value = reasoningEffort;
+    }
 }
 
 settingsButton.addEventListener('click', () => {
@@ -2056,6 +2099,21 @@ chirpOnDoneToggleInput?.addEventListener('change', (e) => {
     localStorage.setItem('chirp_on_done', chirpOnDone);
 });
 
+const arxivResearchToggleInput = document.getElementById('arxiv-research-toggle-input');
+arxivResearchToggleInput?.addEventListener('change', (e) => {
+    localStorage.setItem('arxiv_research', e.target.checked);
+});
+
+const alwaysSearchToggleInput = document.getElementById('always-search-toggle-input');
+alwaysSearchToggleInput?.addEventListener('change', (e) => {
+    localStorage.setItem('always_search', e.target.checked);
+});
+
+const reasoningEffortSelect = document.getElementById('reasoning-effort-select');
+reasoningEffortSelect?.addEventListener('change', (e) => {
+    localStorage.setItem('reasoning_effort', e.target.value);
+});
+
 // Initialize settings on load
 initializeSettings();
 
@@ -2064,17 +2122,17 @@ initializeSettings();
 newChatButton.addEventListener('click', clearMessages);
 
 messageInput.addEventListener('compositionstart', () => {
-  console.log('composition start');
+    console.log('composition start');
     isComposing = true;
     compositionEnded = false;
 });
 
 messageInput.addEventListener('compositionend', () => {
-  console.log('composition end');
+    console.log('composition end');
     isComposing = false;
     compositionEnded = true;
     setTimeout(() => {
-      compositionEnded = false;
+        compositionEnded = false;
     }, 50);
 });
 
@@ -2126,7 +2184,7 @@ messageInput.addEventListener('input', () => {
 
 
 // URL Parameter handling
-async function handleURLParams (queryParam) {
+async function handleURLParams(queryParam) {
     if (queryParam && messageInput) {
         messageInput.value = decodeURIComponent(queryParam);
         clearMessages();
@@ -2159,7 +2217,7 @@ const observer = new MutationObserver((mutations) => {
     });
 });
 
-observer.observe(chatContainer, {childList: true, subtree: true});
+observer.observe(chatContainer, { childList: true, subtree: true });
 
 mainContainer.addEventListener('scroll', () => {
     // Check if the user has scrolled up from the bottom
@@ -2332,7 +2390,7 @@ function handleFootnoteClick(event) {
             targetFootnote.classList.add('footnote-highlight');
 
             // Scroll the footnote into view
-            targetFootnote.scrollIntoView({behavior: 'smooth', block: 'center'});
+            targetFootnote.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
 }
@@ -2362,7 +2420,7 @@ function setupFileDrop() {
             return;
         }
         if (e.x > rect.left + rect.width || e.x < rect.left ||
-          e.y > rect.top + rect.height || e.y < rect.top) {
+            e.y > rect.top + rect.height || e.y < rect.top) {
             hideDropArea();
         }
     });
@@ -2465,6 +2523,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (initPrompt) {
+                chatSessions = loadChatSessions();
                 return handleURLParams(initPrompt);
             } else {
                 return loadAndDisplaySavedMessages();
@@ -2480,12 +2539,12 @@ document.addEventListener('DOMContentLoaded', () => {
             updateEmptyState();
         });
 
-        [settingsButton, newChatButton, helpButton, toggleApiKeyBtn, recentSessionsButton].forEach(button => {
-            handleTooltipEvent(button, 'bottom');
-        });
-        [fileUploadButton, stopMessageButton].forEach(button => {
-            handleTooltipEvent(button, 'top');
-        });
+    [settingsButton, newChatButton, helpButton, toggleApiKeyBtn, recentSessionsButton].forEach(button => {
+        handleTooltipEvent(button, 'bottom');
+    });
+    [fileUploadButton, stopMessageButton].forEach(button => {
+        handleTooltipEvent(button, 'top');
+    });
 
-        setupFileDrop();
+    setupFileDrop();
 });
