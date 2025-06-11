@@ -71,7 +71,7 @@
       "settings": {
         "title": "Settings",
         "darkTheme": "Use dark theme",
-        "language": "UI Language",
+        "language": "UI language",
         "answerLanguage": "Answer & think language",
         "searchLanguage": "Search query language",
         "languageSettings": "Language settings",
@@ -88,12 +88,12 @@
         }
       },
       "deleteSession": {
-        "title": "Delete Session?",
-        "description": "Are you sure you want to delete this session? This action cannot be undone."
+        "title": "Delete session?",
+        "description": "Are you sure? This cannot be undone."
       },
       "deleteAllSessions": {
         "title": "Delete All Sessions?",
-        "description": "Are you sure you want to delete all sessions? This action cannot be undone."
+        "description": "Are you sure? This cannot be undone."
       },
       "navigation": {
         "title": "Reading URLs"
