@@ -207,7 +207,7 @@ const navigationDialog = document.getElementById('navigation-dialog');
 const imageReferencesDialog = document.getElementById('image-references-dialog');
 const selectedImageReference = document.getElementById('selected-image-reference');
 
-const BASE_ORIGIN = 'https://deepsearch.jina.ai';
+const BASE_ORIGIN = 'https://api.jina.ai/';
 const FAVICON_BASE_URL = 'https://favicon-fetcher.jina.ai';
 
 // SVG icons
@@ -1659,6 +1659,7 @@ async function sendMessage(redo = false) {
             reasoning_effort: localStorage.getItem('reasoning_effort') || 'medium',
             no_direct_answer: localStorage.getItem('always_search') === 'true',
             search_provider: localStorage.getItem('arxiv_research') === 'true' ? 'arxiv' : undefined,
+            team_size: parseInt(localStorage.getItem('team_size') || '1'),
             // with_images: localStorage.getItem('include_images') !== 'false' ? true : undefined,
         };
 
@@ -2082,6 +2083,13 @@ function initializeSettings() {
         reasoningEffortSelect.value = reasoningEffort;
     }
 
+    // Initialize Team Size setting (default to 1)
+    const teamSize = localStorage.getItem('team_size') || '1';
+    const teamSizeSelect = document.getElementById('team-size-select');
+    if (teamSizeSelect) {
+        teamSizeSelect.value = teamSize;
+    }
+
     // Initialize Include Images setting (default to true)
     const includeImages = localStorage.getItem('include_images') !== 'false';
     const includeImagesToggleInput = document.getElementById('include-images-toggle-input');
@@ -2144,6 +2152,11 @@ alwaysSearchToggleInput?.addEventListener('change', (e) => {
 const reasoningEffortSelect = document.getElementById('reasoning-effort-select');
 reasoningEffortSelect?.addEventListener('change', (e) => {
     localStorage.setItem('reasoning_effort', e.target.value);
+});
+
+const teamSizeSelect = document.getElementById('team-size-select');
+teamSizeSelect?.addEventListener('change', (e) => {
+    localStorage.setItem('team_size', e.target.value);
 });
 
 const includeImagesToggleInput = document.getElementById('include-images-toggle-input');
