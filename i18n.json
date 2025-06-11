@@ -80,7 +80,7 @@
         "alwaysSearch": "Force thinking before answering",
         "reasoningEffort": "Reasoning effort",
         "includeImages": "Include images in result",
-        "unset": "Unset",
+        "unset": "Auto",
         "reasoningLevels": {
           "low": "Low",
           "medium": "Medium",
@@ -181,7 +181,7 @@
         "alwaysSearch": "强制思考后再回答",
         "reasoningEffort": "推理深度",
         "includeImages": "在结果中包含图片",
-        "unset": "未设置",
+        "unset": "自动",
         "reasoningLevels": {
           "low": "低",
           "medium": "中",
@@ -282,7 +282,7 @@
         "alwaysSearch": "強制思考後再回答",
         "reasoningEffort": "推理深度",
         "includeImages": "在結果中包含圖片",
-        "unset": "未設定",
+        "unset": "自動",
         "reasoningLevels": {
           "low": "低",
           "medium": "中",
@@ -383,7 +383,7 @@
         "alwaysSearch": "必ず思考してから回答",
         "reasoningEffort": "推論の深さ",
         "includeImages": "結果に画像を含める",
-        "unset": "未設定",
+        "unset": "自動",
         "reasoningLevels": {
           "low": "低",
           "medium": "中",
@@ -484,7 +484,7 @@
         "alwaysSearch": "Forcer la réflexion avant de répondre",
         "reasoningEffort": "Profondeur de raisonnement",
         "includeImages": "Inclure les images dans le résultat",
-        "unset": "Non défini",
+        "unset": "Auto",
         "reasoningLevels": {
           "low": "Faible",
           "medium": "Moyen",
@@ -582,7 +582,7 @@
         "alwaysSearch": "Vor Antwort nachdenken erzwingen",
         "reasoningEffort": "Argumentationstiefe",
         "includeImages": "Bilder im Ergebnis einbeziehen",
-        "unset": "Nicht festgelegt",
+        "unset": "Auto",
         "reasoningLevels": {
           "low": "Niedrig",
           "medium": "Mittel",
@@ -681,7 +681,7 @@
         "alwaysSearch": "강제 사고 후 답변",
         "reasoningEffort": "추론 깊이",
         "includeImages": "결과에 이미지 포함",
-        "unset": "미설정",
+        "unset": "자동",
         "reasoningLevels": {
           "low": "낮음",
           "medium": "중간",
