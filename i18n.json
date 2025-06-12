@@ -99,6 +99,9 @@
       },
       "navigation": {
         "title": "Reading URLs"
+      },
+      "imageReferences": {
+        "title": "Image preview"
       }
     }
   },
@@ -202,6 +205,9 @@
       },
       "navigation": {
         "title": "已阅读的 URLs"
+      },
+      "imageReferences": {
+        "title": "图片预览"
       }
     }
   },
@@ -305,6 +311,9 @@
       },
       "navigation": {
         "title": "已讀取的 URLs"
+      },
+      "imageReferences": {
+        "title": "圖片預覽"
       }
     }
   },
@@ -408,6 +417,9 @@
       },
       "navigation": {
         "title": "URLを読み込みました"
+      },
+      "imageReferences": {
+        "title": "画像プレビュー"
       }
     }
   },
@@ -511,6 +523,9 @@
       },
       "navigation": {
         "title": "URL lues"
+      },
+      "imageReferences": {
+        "title": "Aperçu de l'image"
       }
     }
   },
@@ -611,6 +626,9 @@
       },
       "navigation": {
         "title": "URLs gelesen"
+      },
+      "imageReferences": {
+        "title": "Bildvorschau"
       }
     }
   },
@@ -712,6 +730,9 @@
       },
       "navigation": {
         "title": "URL 읽음"
+      },
+      "imageReferences": {
+        "title": "이미지 미리보기"
       }
     }
   }
