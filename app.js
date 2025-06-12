@@ -1660,7 +1660,7 @@ async function sendMessage(redo = false) {
             no_direct_answer: localStorage.getItem('always_search') === 'true',
             search_provider: localStorage.getItem('arxiv_research') === 'true' ? 'arxiv' : undefined,
             team_size: parseInt(localStorage.getItem('team_size') || '1'),
-            // with_images: localStorage.getItem('include_images') !== 'false' ? true : undefined,
+            with_images: localStorage.getItem('include_images') === 'true' ? true : undefined,
         };
 
         // Add language codes if set
@@ -1864,6 +1864,7 @@ async function sendMessage(redo = false) {
                 imageContainer.addEventListener('click', handleImageReferenceClick);
                 images.forEach(image => {
                     const imageElement = document.createElement('img');
+                    imageElement.referrerPolicy = 'no-referrer';
                     imageElement.src = image;
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
@@ -1982,6 +1983,7 @@ function updateMessagesList() {
                 imageContainer.addEventListener('click', handleImageReferenceClick);
                 message.images.forEach(image => {
                     const imageElement = document.createElement('img');
+                    imageElement.referrerPolicy = 'no-referrer';
                     imageElement.src = image;
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
@@ -2090,8 +2092,8 @@ function initializeSettings() {
         teamSizeSelect.value = teamSize;
     }
 
-    // Initialize Include Images setting (default to true)
-    const includeImages = localStorage.getItem('include_images') !== 'false';
+    // Initialize Include Images setting (default to false)
+    const includeImages = localStorage.getItem('include_images') === 'true';
     const includeImagesToggleInput = document.getElementById('include-images-toggle-input');
     if (includeImagesToggleInput) {
         includeImagesToggleInput.checked = includeImages;
