@@ -1869,11 +1869,7 @@ async function sendMessage(redo = false) {
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
                 });
-                if (referencesSection) {
-                    referencesSection.insertAdjacentElement('beforebegin', imageContainer);
-                } else {
-                    markdownDiv.appendChild(imageContainer);
-                }
+                markdownDiv.insertBefore(imageContainer, markdownDiv.firstChild);
             }
 
             const copyButton = createActionButton(markdownContent);
@@ -1988,11 +1984,7 @@ function updateMessagesList() {
                     imageElement.classList.add('assistant-image');
                     imageContainer.appendChild(imageElement);
                 });
-                if (referencesSection) {
-                    referencesSection.insertAdjacentElement('beforebegin', imageContainer);
-                } else {
-                    markdownDiv.appendChild(imageContainer);
-                }
+                markdownDiv.insertBefore(imageContainer, markdownDiv.firstChild);
             }
             if (referencesSection) {
                 referencesSection.insertAdjacentElement('beforebegin', copyButton);
