@@ -1316,7 +1316,7 @@ input:checked+.toggle-slider:before {
 
 #message-input-container {
     width: 100%;
-    max-width: 666px;
+    max-width: 600px;
     position: relative;
     display: flex;
 }
