@@ -96,19 +96,17 @@
                             d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4">
                         </path>
                     </svg>
-                    <span data-label="buttons.upgrade">Upgrade</span>
+                    <span data-label="buttons.addKey">Key</span>
                     <span class="tooltip" data-label="tooltips.upgrade">Upgrade to higher rate limit</span>
                 </button>
-                <button id="help-button" class="tooltip-container" aria-label="Help information">
-                    <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                <button id="theme-toggle-button" class="tooltip-container" aria-label="Toggle theme">
+                    <svg id="theme-icon" class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
                     </svg>
-                    <span class="sr-only" data-label="buttons.help">Help</span>
-                    <span class="tooltip" data-label="tooltips.help">Help</span>
+                    <span class="sr-only">Toggle theme</span>
+                    <span class="tooltip" data-label="tooltips.theme">Toggle theme</span>
                 </button>
             </div>
         </div>
@@ -190,32 +188,24 @@
                 </p>
                 <p class="dialog-description" data-label="dialogs.apiKey.description">Use your Jina API key to access a
                     higher rate limit. You can get a free API key and learn more about rate limits on our website.</p>
-                <input type="password" id="api-key-input" data-placeholder="placeholders.apiKeyInput"
-                    placeholder="Enter your API key" autocomplete="new-password" aria-label="API key input">
-            </div>
-            <div class="dialog-footer">
-                <a id="get-api-key" href="https://jina.ai/deepsearch" target="_blank">
-                    <button class="link-button" aria-label="Get API Key" data-label="buttons.getKey">Get API
-                        Key</button>
-                </a>
-                <button id="save-api-key" aria-label="Save API key" data-label="buttons.saveKey">Save</button>
-            </div>
-        </div>
-    </div>
-    <!-- Help dialog -->
-    <div class="dialog-overlay" id="help-dialog" role="dialog" aria-labelledby="help-dialog-title" aria-modal="true">
-        <div class="dialog">
-            <div class="dialog-header">
-                <span class="dialog-title" id="help-dialog-title" data-label="dialogs.help.title">Enjoy Pure &amp;
-                    Deep</span>
-                <button class="dialog-close" aria-label="Close help dialog">&times;</button>
-            </div>
-            <div class="dialog-content">
+                <div style="position: relative; display: flex; align-items: center; gap: 6px; margin-bottom: 12px;">
+
+                    <input type="password" id="api-key-input" data-placeholder="placeholders.apiKeyInput"
+                        placeholder="Enter your API key" autocomplete="new-password" aria-label="API key input"
+                        style="flex: 1 1 auto;">
+                    <button id="open-jina-site" type="button" aria-label="Open Jina.ai website"
+                        class="action-icon link-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-external-link">
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                    </button>
+                </div>
+
                 <ul class="help-list">
-                    <li data-label="dialogs.help.list.0">No ads, no login, no bullet points, no lengthy report, no
-                        nonsense design.</li>
-                    <li data-label="dialogs.help.list.1">Free users get 3 search requests per minute. Provide an API key
-                        to get a higher rate limit.</li>
                     <li data-html="dialogs.help.list.2">Add to your browser's search engines via
                         <code>https://search.jina.ai/?q={YOUR_QUERY}</code>
                     </li>
@@ -226,6 +216,10 @@
                 </ul>
             </div>
             <div class="dialog-footer">
+                <a id="get-api-key" href="https://jina.ai/deepsearch" target="_blank">
+                    <button class="link-button" aria-label="Get API Key" data-label="buttons.getKey">Get API
+                        Key</button>
+                </a>
                 <a href="https://jina.ai/contact-sales" target="_blank">
                     <button id="contact-us" class="icon-button link-button" aria-label="Contact Jina AI sales">
                         <svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -237,6 +231,7 @@
                         <span data-label="buttons.contactUs">Contact Us</span>
                     </button>
                 </a>
+                <button id="save-api-key" aria-label="Save API key" data-label="buttons.saveKey">Save</button>
             </div>
         </div>
     </div>
@@ -250,13 +245,6 @@
                 <button class="dialog-close" aria-label="Close settings dialog">&times;</button>
             </div>
             <div class="dialog-content">
-                <div class="settings-option">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="theme-toggle-input">
-                        <span class="toggle-slider"></span>
-                        <span class="toggle-label" data-label="dialogs.settings.darkTheme">Use dark theme</span>
-                    </label>
-                </div>
                 <div class="settings-option">
                     <label class="toggle-switch">
                         <input type="checkbox" id="chirp-on-done-toggle-input" checked>
@@ -283,6 +271,13 @@
                         <input type="checkbox" id="include-images-toggle-input">
                         <span class="toggle-slider"></span>
                         <span class="toggle-label" data-label="dialogs.settings.includeImages">Include images</span>
+                    </label>
+                </div>
+                <div class="settings-option" style="display: none;">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="theme-toggle-input">
+                        <span class="toggle-slider"></span>
+                        <span class="toggle-label" data-label="dialogs.settings.darkTheme">Use dark theme</span>
                     </label>
                 </div>
                 <div class="settings-section">

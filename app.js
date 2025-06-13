@@ -183,8 +183,6 @@ const getApiKeyBtn = document.getElementById('get-api-key');
 const freeUserRPMInfo = document.getElementById('free-user-rpm');
 const apiKeyDialog = document.getElementById('api-key-dialog');
 // settings & help dialog
-const helpButton = document.getElementById('help-button');
-const helpDialog = document.getElementById('help-dialog');
 const settingsButton = document.getElementById('settings-button');
 const settingsDialog = document.getElementById('settings-dialog');
 const dialogCloseBtns = document.querySelectorAll('.dialog-close');
@@ -2116,6 +2114,20 @@ themeToggleInput.addEventListener('change', (e) => {
     if (hlThemeElement) {
         hlThemeElement.href = `third-party/${hlTheme}.min.css`;
     }
+    // Update theme icon
+    const themeIcon = document.getElementById('theme-icon');
+    if (themeIcon) {
+        themeIcon.innerHTML = theme === 'dark' ?
+            '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>' :
+            '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+    }
+});
+
+// Add event listener for the theme toggle button
+const themeToggleButton = document.getElementById('theme-toggle-button');
+themeToggleButton?.addEventListener('click', () => {
+    themeToggleInput.checked = !themeToggleInput.checked;
+    themeToggleInput.dispatchEvent(new Event('change'));
 });
 
 const languageSelect = document.getElementById('language-select');
@@ -2231,7 +2243,7 @@ messageInput.addEventListener('input', () => {
 });
 
 // Close dialogs when clicking outside
-[apiKeyDialog, helpDialog, navigationDialog].forEach(dialog => {
+[apiKeyDialog, navigationDialog].forEach(dialog => {
     dialog.addEventListener('click', (e) => {
         if (e.target === dialog) {
             dialog.classList.remove('visible');
@@ -2306,10 +2318,6 @@ dialogCloseBtns.forEach(btn => {
 });
 
 
-// Update help button click handler
-helpButton.addEventListener('click', () => {
-    helpDialog.classList.add('visible');
-});
 
 // Update handleApiKeySave function
 function handleApiKeySave() {
@@ -2596,7 +2604,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateEmptyState();
         });
 
-    [settingsButton, newChatButton, helpButton, toggleApiKeyBtn, recentSessionsButton].forEach(button => {
+    [settingsButton, newChatButton, toggleApiKeyBtn, recentSessionsButton].forEach(button => {
         handleTooltipEvent(button, 'bottom');
     });
     [fileUploadButton, stopMessageButton].forEach(button => {
@@ -2604,4 +2612,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     setupFileDrop();
+
+    const openJinaSiteBtn = document.getElementById('open-jina-site');
+    if (openJinaSiteBtn) {
+        openJinaSiteBtn.addEventListener('click', () => {
+            window.open('https://jina.ai', '_blank');
+        });
+    }
 });

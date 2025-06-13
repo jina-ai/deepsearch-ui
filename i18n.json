@@ -9,7 +9,7 @@
       "help": "Help",
       "send": "Deep Search",
       "clearAll": "Clear All",
-      "addKey": "Upgrade",
+      "addKey": "Key",
       "updateKey": "Update Key",
       "getKey": "Get API Key",
       "saveKey": "Save",
@@ -55,8 +55,8 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "Upgrade to Higher Rate Limit",
-        "description": "Use your Jina API key to access a higher rate limit. You can get a free API key and learn more about rate limits on our website.",
+        "title": "Add Jina API Key",
+        "description": "You can get a free API key and learn more about rate limits on our website.",
         "freeUserRpm": "Due to server API abuse, we have disabled keyless access. Please visit the Jina AI website to get a free API key and return to continue using deep search."
       },
       "help": {
@@ -115,7 +115,7 @@
       "help": "帮助",
       "send": "深度搜索",
       "clearAll": "清除全部",
-      "addKey": "升级",
+      "addKey": "密钥",
       "updateKey": "更新密钥",
       "getKey": "获取API密钥",
       "saveKey": "保存",
@@ -161,7 +161,7 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "获得更高的速率限制",
+        "title": "添加 Jina API 密钥",
         "description": "使用您的Jina API密钥访问更高的速率限制。您可以在我们的网站上获取免费API密钥并了解有关速率限制的更多信息。",
         "freeUserRpm": "由于服务器的无密钥API端口被滥用，我们关闭了无密钥使用。请前往Jina AI官网获取免费密钥返回此站继续使用深度搜索。"
       },
@@ -221,7 +221,7 @@
       "help": "說明一下",
       "send": "深度搜尋",
       "clearAll": "清除全部",
-      "addKey": "升級",
+      "addKey": "金鑰",
       "updateKey": "更新金鑰",
       "getKey": "取得 API 金鑰",
       "saveKey": "存起來",
@@ -267,7 +267,7 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "提高速度限制",
+        "title": "新增 Jina API 金鑰",
         "description": "用你的 Jina API 金鑰來提高速度限制。在我們的網站上可以免費取得 API 金鑰，也可以了解更多關於速度限制的資訊。",
         "freeUserRpm": "由於伺服器的無金鑰 API 端口被濫用，我們關閉了無金鑰使用。請前往 Jina AI 官網獲取免費金鑰返回此站繼續使用深度搜索。"
       },
@@ -327,7 +327,7 @@
       "help": "ヘルプ",
       "send": "深度検索",
       "clearAll": "すべて消去",
-      "addKey": "アップグレード",
+      "addKey": "キー",
       "updateKey": "キーを更新",
       "getKey": "APIキーを取得",
       "saveKey": "保存",
@@ -373,7 +373,7 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "アクセス制限の解除",
+        "title": "Jina API キーを追加",
         "description": "Jina API キーを使用してアクセス制限を解除します。当社のウェブサイトで無料の API キーを取得し、アクセス制限について詳しく知ることができます。",
         "freeUserRpm": "サーバーの無キー API ポートが悪用されたため、無キーアクセスを無効にしました。Jina AI の公式サイトで無料の API キーを取得して、このサイトに戻りディープ検索を続けてください。"
       },
@@ -433,7 +433,7 @@
       "help": "Aide",
       "send": "Recherche Approfondie",
       "clearAll": "Tout effacer",
-      "addKey": "Mettre à niveau",
+      "addKey": "Clé",
       "updateKey": "Mettre à jour la clé",
       "getKey": "Obtenir la clé API",
       "saveKey": "Enregistrer",
@@ -479,7 +479,7 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "Améliorer la limite de taux",
+        "title": "Ajouter la clé API Jina",
         "description": "Utilisez votre clé API Jina pour accéder à une limite de taux plus élevée. Vous pouvez obtenir une clé API gratuite et en savoir plus sur les limites de taux sur notre site web.",
         "freeUserRpm": "En raison de l'abus de l'API du serveur, nous avons désactivé l'accès sans clé. Veuillez visiter le site web de Jina AI pour obtenir une clé API gratuite et revenir pour continuer à utiliser la recherche approfondie."
       },
@@ -538,7 +538,8 @@
       "upgrade": "Aktualisieren",
       "help": "Hilfe",
       "send": "Tiefensuche",
-      "addKey": "Aktualisieren",
+      "clearAll": "Tout löschen",
+      "addKey": "Schlüssel",
       "updateKey": "Schlüssel aktualisieren",
       "getKey": "API-Schlüssel abrufen",
       "saveKey": "Speichern",
@@ -582,7 +583,7 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "Höhere Ratenbegrenzung",
+        "title": "Jina API-Schlüssel hinzufügen",
         "description": "Verwenden Sie Ihren Jina API-Schlüssel für eine höhere Ratenbegrenzung. Sie können einen kostenlosen API-Schlüssel erhalten und mehr über Ratenbegrenzungen auf unserer Website erfahren.",
         "freeUserRpm": "Aufgrund von API-Missbrauch haben wir den schlüssellosen Zugriff deaktiviert. Bitte besuchen Sie die Jina AI-Website, um einen kostenlosen API-Schlüssel zu erhalten und zur Tiefensuche zurückzukehren."
       },
@@ -642,7 +643,7 @@
       "help": "도움말",
       "send": "심층 검색",
       "clearAll": "지우기",
-      "addKey": "업그레이드",
+      "addKey": "키",
       "updateKey": "키 업데이트",
       "getKey": "API 키 가져오기",
       "saveKey": "저장",
@@ -686,7 +687,7 @@
     },
     "dialogs": {
       "apiKey": {
-        "title": "속도 제한 업그레이드",
+        "title": "Jina API 키 추가",
         "description": "Jina API 키를 사용하여 더 높은 속도 제한에 액세스하세요. 당사 웹사이트에서 무료 API 키를 받고 속도 제한에 대해 자세히 알아볼 수 있습니다.",
         "freeUserRpm": "서버의 키 없는 API 포트가 악용되어 키 없는 액세스를 비활성화했습니다. Jina AI 웹사이트에서 무료 API 키를 받아 이 사이트로 돌아와 심층 검색을 계속하세요."
       },
