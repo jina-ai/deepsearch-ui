@@ -2776,13 +2776,10 @@ function initializeMarkdown() {
 // Process MathJax in a container
 function processMathJax(container) {
     if (window.MathJax && typeof window.MathJax.typesetPromise === 'function' && container) {
-        const mathElements = container.querySelectorAll('.math');
-        if (mathElements.length > 0) {
-            setTimeout(() => {
-                window.MathJax.typesetPromise([container]).catch((err) => {
-                    console.error('MathJax typesetting error:', err);
-                });
-            }, 100);
-        }
+        setTimeout(() => {
+            window.MathJax.typesetPromise([container]).catch((err) => {
+                console.error('MathJax typesetting error:', err);
+            });
+        }, 100);
     }
 }

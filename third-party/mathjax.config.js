@@ -6,5 +6,4 @@ window.MathJax = {
         processEnvironments: true,
         packages: ['base', 'ams', 'noerrors', 'noundefined']
     },
-
 }
