@@ -2002,7 +2002,6 @@ function updateMessagesList() {
             // Render markdown content
             const markdown = renderMarkdown(message.content, true);
             markdownDiv.replaceChildren(markdown);
-            forceMathJaxTypeset(markdownDiv);
 
             // Add copy button
             const copyButton = createActionButton(message.content);
@@ -2778,15 +2777,5 @@ function processMathJax(container) {
                 });
             }, 100);
         }
-    }
-}
-
-// Add this utility function near processMathJax
-function forceMathJaxTypeset(container = null) {
-    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
-        window.MathJax.typesetPromise(container ? [container] : undefined)
-            .catch((err) => {
-                console.error('MathJax typesetting error:', err);
-            });
     }
 }
