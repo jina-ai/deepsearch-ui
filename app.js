@@ -1447,7 +1447,7 @@ const makeAllLinksOpenInNewTab = () => {
     });
 };
 
-function createThinkUrl(assistantMessageDiv, isQuery = false) {
+function createThinkUrl(assistantMessageDiv) {
     const thinkSection = assistantMessageDiv.querySelector('.think-section');
     if (!thinkSection) return;
 
@@ -1459,30 +1459,24 @@ function createThinkUrl(assistantMessageDiv, isQuery = false) {
     thinkUrlElement.classList.add('think-url', 'hidden', 'action-buttons-container');
 
     // navigation button
-    let icon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
-    if (isQuery) {
-        icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
-    }
+    const icon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
     const navigationButton = document.createElement('button');
     navigationButton.id = 'think-navigation-button';
     navigationButton.classList.add('icon-button', 'tooltip-container');
     const text = document.createElement('span');
-    text.setAttribute('data-label', isQuery ? 'think.query' : 'think.navigation');
-    text.textContent = isQuery ? UI_STRINGS.think.query() : UI_STRINGS.think.navigation();
+    text.setAttribute('data-label', 'think.navigation');
+    text.textContent = UI_STRINGS.think.navigation();
     navigationButton.innerHTML = icon;
     navigationButton.appendChild(text);
+    navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));
+    // favicon container
+    const faviconContainer = document.createElement('div');
+    faviconContainer.classList.add('favicon-container');
     // text
     const urlLink = document.createElement('span');
     urlLink.classList.add('think-url-link');
-    if (!isQuery) {
-        navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));
-        // favicon container
-        const faviconContainer = document.createElement('div');
-        faviconContainer.classList.add('favicon-container');
-        thinkUrlElement.append(navigationButton, faviconContainer, urlLink);
-    } else {
-        thinkUrlElement.append(navigationButton, urlLink);
-    }
+
+    thinkUrlElement.append(navigationButton, faviconContainer, urlLink);
     thinkSection?.insertAdjacentElement('afterend', thinkUrlElement);
     return thinkUrlElement;
 };
@@ -1541,21 +1535,49 @@ function handleClickNavigationEvent(e) {
 async function updateThinkUrl(thinkUrlElement, url, isQuery = false) {
     if (thinkUrlElement && url) {
         try {
+            // Debug: log the url type and value
+            if (typeof url !== 'string') {
+                console.warn('updateThinkUrl: url is not a string:', typeof url, url);
+            }
+
+            // Update navigation button icon and text
+            const navigationButton = thinkUrlElement.querySelector('#think-navigation-button');
+            if (navigationButton) {
+                // Set icon based on isQuery
+                const icon = isQuery
+                    ? `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>`
+                    : `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+
+                // Update text
+                const text = document.createElement('span');
+                text.setAttribute('data-label', isQuery ? 'think.query' : 'think.navigation');
+                text.textContent = isQuery ? UI_STRINGS.think.query() : UI_STRINGS.think.navigation();
+
+                // Update button content
+                navigationButton.innerHTML = icon;
+                navigationButton.appendChild(text);
+            }
+
+            // Handle favicon for navigation (not queries)
             if (!isQuery) {
-                // Add favicon
                 const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
-                const existingUrls = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).map(item => item.getAttribute('data-tooltip'));
-                if (!existingUrls.includes(url)) {
-                    await renderFaviconList([url], 0, faviconContainer);
+                if (faviconContainer) {
+                    const existingUrls = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).map(item => item.getAttribute('data-tooltip'));
+                    if (!existingUrls.includes(url)) {
+                        await renderFaviconList([url], 0, faviconContainer);
+                    }
                 }
             }
 
+            // Update URL link
             const thinkUrlLink = thinkUrlElement.querySelector('.think-url-link');
-            thinkUrlLink.textContent = url.replace(/^(https?:\/\/)/, '');
+            if (thinkUrlLink && typeof url === 'string') {
+                thinkUrlLink.textContent = url.replace(/^(https?:\/\/)/, '');
+            }
         } catch (error) {
             console.error('Error updating think URL:', error);
         }
-    };
+    }
 };
 
 async function sendMessage(redo = false) {
@@ -1776,8 +1798,8 @@ async function sendMessage(redo = false) {
                                 const url = json.choices[0]?.delta?.url || json.choices[0]?.delta?.query;
                                 const isQuery = Boolean(json.choices[0]?.delta?.query);
                                 thinkUrlElement = assistantMessageDiv.querySelector('.think-url');
-                                if (!thinkUrlElement && url) {
-                                    thinkUrlElement = createThinkUrl(assistantMessageDiv, isQuery);
+                                if (!thinkUrlElement) {
+                                    thinkUrlElement = createThinkUrl(assistantMessageDiv);
                                 }
 
                                 if (url) {
