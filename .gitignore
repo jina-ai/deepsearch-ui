@@ -5,6 +5,8 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 yarn.lock
+test*.md
+test*.json
 
 # IDE - VSCode
 .vscode/*

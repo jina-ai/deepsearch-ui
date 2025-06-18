@@ -1558,12 +1558,20 @@ async function updateThinkUrl(thinkUrlElement, url, isQuery = false) {
                 // Update button content
                 navigationButton.innerHTML = icon;
                 navigationButton.appendChild(text);
+
+                // hide favicon container
+                const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
+                if (faviconContainer) {
+                    faviconContainer.classList.add('hidden');
+                }
             }
 
             // Handle favicon for navigation (not queries)
             if (!isQuery) {
                 const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
                 if (faviconContainer) {
+                    // show favicon container
+                    faviconContainer.classList.remove('hidden');
                     const existingUrls = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).map(item => item.getAttribute('data-tooltip'));
                     if (!existingUrls.includes(url)) {
                         await renderFaviconList([url], 0, faviconContainer);
@@ -2621,7 +2629,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.warn('Failed to initialize markdown rendering:', e);
                 // Continue without markdown rendering
             }
-
             if (initPrompt) {
                 chatSessions = loadChatSessions();
                 return handleURLParams(initPrompt);

@@ -2,7 +2,7 @@ The correct MathJax delimiters are essential for rendering mathematical equation
 
 The choice of delimiters for MathJax depends on whether you want to display the equation inline or on a separate line. Inline equations appear within the text, while display equations are centered on their own line. Each mode has its preferred delimiters, balancing compatibility and clarity.
 
-[{"role":"assistant","content":"e=mc^2"}]
+[{"role":"assistant","content":"\(e=mc^2\)"}]
 
 | Mode | Delimiters | Example | Explanation |
 | --- | --- | --- | --- |
