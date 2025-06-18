@@ -1668,6 +1668,39 @@ table td .footnote-ref a {
 }
 
 #image-references-dialog .dialog {
-    max-width: 600px;
-    width: 100%;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+/* MathJax styles */
+.math {
+    display: inline-block;
+}
+
+.math-display {
+    display: block;
+    text-align: center;
+    margin: 1em 0;
+}
+
+.math-inline {
+    display: inline;
+}
+
+/* Ensure MathJax elements inherit theme colors */
+.MathJax {
+    color: var(--text-color) !important;
+}
+
+.MathJax_Display {
+    color: var(--text-color) !important;
+}
+
+/* Dark theme adjustments for MathJax */
+[data-theme="dark"] .MathJax {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .MathJax_Display {
+    color: var(--text-color) !important;
 }

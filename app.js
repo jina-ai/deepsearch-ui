@@ -1275,7 +1275,8 @@ function initializeMarkdown() {
 
         md = window.markdownit(options)
             .use(window.markdownitFootnote)
-            .use(markdownItTableWrapper);
+            .use(markdownItTableWrapper)
+            .use(markdownItMathJax);
     }
 }
 
@@ -1382,6 +1383,8 @@ function renderMarkdown(contentStr, returnElement = false, visitedURLs = [], rol
     // Add copy buttons to code blocks if returning the element
     if (returnElement) {
         addCodeCopyButtons(tempDiv);
+        // Process MathJax after rendering
+        processMathJax(tempDiv);
     }
 
     return returnElement ? tempDiv : tempDiv.innerHTML;
@@ -2620,6 +2623,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Continue without markdown rendering
             }
 
+            // Initialize MathJax
+            try {
+                initializeMathJax();
+            } catch (e) {
+                console.warn('Failed to initialize MathJax:', e);
+                // Continue without MathJax
+            }
+
             if (initPrompt) {
                 chatSessions = loadChatSessions();
                 return handleURLParams(initPrompt);
@@ -2653,3 +2664,162 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// MathJax plugin for markdown-it
+function markdownItMathJax(md) {
+    // Handle inline math: $...$
+    const defaultInlineRule = md.renderer.rules.text || function (tokens, idx, options, env, self) {
+        return self.renderToken(tokens, idx, options, env, self);
+    };
+
+    md.renderer.rules.text = function (tokens, idx, options, env, self) {
+        const content = tokens[idx].content;
+
+        // Check for inline math
+        if (content.includes('$')) {
+            const parts = content.split(/(\$[^$\n]+\$)/g);
+            let result = '';
+
+            for (let i = 0; i < parts.length; i++) {
+                const part = parts[i];
+                if (part.startsWith('$') && part.endsWith('$') && part.length > 2) {
+                    // Inline math
+                    const math = part.slice(1, -1);
+                    result += `<span class="math math-inline">\\(${math}\\)</span>`;
+                } else {
+                    result += part;
+                }
+            }
+
+            return result;
+        }
+
+        return defaultInlineRule(tokens, idx, options, env, self);
+    };
+
+    // Handle block math: $$...$$
+    const defaultFenceRule = md.renderer.rules.fence || function (tokens, idx, options, env, self) {
+        return self.renderToken(tokens, idx, options, env, self);
+    };
+
+    md.renderer.rules.fence = function (tokens, idx, options, env, self) {
+        const token = tokens[idx];
+        const content = token.content.trim();
+
+        // Check for block math
+        if (content.startsWith('$$') && content.endsWith('$$')) {
+            const math = content.slice(2, -2);
+            return `<div class="math math-display">\\[${math}\\]</div>`;
+        }
+
+        return defaultFenceRule(tokens, idx, options, env, self);
+    };
+
+    // Also handle block math in paragraph blocks
+    const defaultParagraphRule = md.renderer.rules.paragraph_open || function (tokens, idx, options, env, self) {
+        return self.renderToken(tokens, idx, options, env, self);
+    };
+
+    md.renderer.rules.paragraph_open = function (tokens, idx, options, env, self) {
+        // Check if the next token contains block math
+        const nextToken = tokens[idx + 1];
+        if (nextToken && nextToken.content && nextToken.content.trim().startsWith('$$') && nextToken.content.trim().endsWith('$$')) {
+            return '<div class="math math-display">';
+        }
+        return defaultParagraphRule(tokens, idx, options, env, self);
+    };
+
+    const defaultParagraphCloseRule = md.renderer.rules.paragraph_close || function (tokens, idx, options, env, self) {
+        return self.renderToken(tokens, idx, options, env, self);
+    };
+
+    md.renderer.rules.paragraph_close = function (tokens, idx, options, env, self) {
+        // Check if the previous token contains block math
+        const prevToken = tokens[idx - 1];
+        if (prevToken && prevToken.content && prevToken.content.trim().startsWith('$$') && prevToken.content.trim().endsWith('$$')) {
+            const math = prevToken.content.trim().slice(2, -2);
+            return `\\[${math}\\]</div>`;
+        }
+        return defaultParagraphCloseRule(tokens, idx, options, env, self);
+    };
+}
+
+function initializeMarkdown() {
+    if (window.markdownit) {
+        const options = {
+            html: true,
+            linkify: true,
+            typographer: true
+        };
+
+        // Only add highlighting if hljs is available
+        if (window.hljs) {
+            options.highlight = function (str, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    try {
+                        return '<pre><code class="hljs">' +
+                            hljs.highlight(str, { language: lang, ignoreIllegals: true }).value +
+                            '</code></pre>';
+                    } catch (__) {
+                    }
+                }
+                return '<pre><code class="hljs">' + md.utils.escapeHtml(str) + '</code></pre>';
+            };
+        }
+
+        md = window.markdownit(options)
+            .use(window.markdownitFootnote)
+            .use(markdownItTableWrapper)
+            .use(markdownItMathJax);
+    }
+}
+
+// Initialize MathJax
+function initializeMathJax() {
+    // Only set config if MathJax is not loaded yet
+    if (!window.MathJax || typeof window.MathJax.typesetPromise !== 'function') {
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                packages: ['base', 'ams', 'noerrors', 'noundefined']
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process',
+                enableMenu: false,
+                menuOptions: {
+                    settings: {
+                        texHints: true,
+                        semantics: false,
+                        zoom: 'NoZoom',
+                        zoomFactor: '1'
+                    }
+                }
+            },
+            startup: {
+                pageReady: () => {
+                    return window.MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax is loaded and ready');
+                    });
+                }
+            }
+        };
+    }
+}
+
+// Process MathJax in a container
+function processMathJax(container) {
+    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function' && container) {
+        const mathElements = container.querySelectorAll('.math');
+        if (mathElements.length > 0) {
+            setTimeout(() => {
+                window.MathJax.typesetPromise([container]).catch((err) => {
+                    console.error('MathJax typesetting error:', err);
+                });
+            }, 100);
+        }
+    }
+}
