@@ -1276,7 +1276,6 @@ function initializeMarkdown() {
         md = window.markdownit(options)
             .use(window.markdownitFootnote)
             .use(markdownItTableWrapper)
-            .use(markdownItMathJax);
     }
 }
 
@@ -2003,6 +2002,7 @@ function updateMessagesList() {
             // Render markdown content
             const markdown = renderMarkdown(message.content, true);
             markdownDiv.replaceChildren(markdown);
+            forceMathJaxTypeset(markdownDiv);
 
             // Add copy button
             const copyButton = createActionButton(message.content);
@@ -2623,14 +2623,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Continue without markdown rendering
             }
 
-            // Initialize MathJax
-            try {
-                initializeMathJax();
-            } catch (e) {
-                console.warn('Failed to initialize MathJax:', e);
-                // Continue without MathJax
-            }
-
             if (initPrompt) {
                 chatSessions = loadChatSessions();
                 return handleURLParams(initPrompt);
@@ -2774,41 +2766,6 @@ function initializeMarkdown() {
     }
 }
 
-// Initialize MathJax
-function initializeMathJax() {
-    // Only set config if MathJax is not loaded yet
-    if (!window.MathJax || typeof window.MathJax.typesetPromise !== 'function') {
-        window.MathJax = {
-            tex: {
-                inlineMath: [['\\(', '\\)']],
-                displayMath: [['\\[', '\\]']],
-                processEscapes: true,
-                processEnvironments: true,
-                packages: ['base', 'ams', 'noerrors', 'noundefined']
-            },
-            options: {
-                ignoreHtmlClass: 'tex2jax_ignore',
-                processHtmlClass: 'tex2jax_process',
-                enableMenu: false,
-                menuOptions: {
-                    settings: {
-                        texHints: true,
-                        semantics: false,
-                        zoom: 'NoZoom',
-                        zoomFactor: '1'
-                    }
-                }
-            },
-            startup: {
-                pageReady: () => {
-                    return window.MathJax.startup.defaultPageReady().then(() => {
-                        console.log('MathJax is loaded and ready');
-                    });
-                }
-            }
-        };
-    }
-}
 
 // Process MathJax in a container
 function processMathJax(container) {
@@ -2821,5 +2778,15 @@ function processMathJax(container) {
                 });
             }, 100);
         }
+    }
+}
+
+// Add this utility function near processMathJax
+function forceMathJaxTypeset(container = null) {
+    if (window.MathJax && typeof window.MathJax.typesetPromise === 'function') {
+        window.MathJax.typesetPromise(container ? [container] : undefined)
+            .catch((err) => {
+                console.error('MathJax typesetting error:', err);
+            });
     }
 }
