@@ -13,6 +13,7 @@ let UI_STRINGS = {
         initial: () => 'Thinking...',
         toggle: () => 'Thoughts',
         navigation: () => 'Navigating...',
+        query: () => 'Searching...',
     },
     references: {
         title: () => 'References',
@@ -153,6 +154,7 @@ function applyTranslations() {
             initial: () => t('think.initial'),
             toggle: () => t('think.toggle'),
             navigation: () => t('think.navigation'),
+            query: () => t('think.query'),
         },
         references: {
             title: () => t('references.title'),
@@ -1445,7 +1447,7 @@ const makeAllLinksOpenInNewTab = () => {
     });
 };
 
-function createThinkUrl(assistantMessageDiv) {
+function createThinkUrl(assistantMessageDiv, isQuery = false) {
     const thinkSection = assistantMessageDiv.querySelector('.think-section');
     if (!thinkSection) return;
 
@@ -1457,24 +1459,30 @@ function createThinkUrl(assistantMessageDiv) {
     thinkUrlElement.classList.add('think-url', 'hidden', 'action-buttons-container');
 
     // navigation button
-    const icon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    let icon = `<svg class="action-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+    if (isQuery) {
+        icon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`;
+    }
     const navigationButton = document.createElement('button');
     navigationButton.id = 'think-navigation-button';
     navigationButton.classList.add('icon-button', 'tooltip-container');
     const text = document.createElement('span');
-    text.setAttribute('data-label', 'think.navigation');
-    text.textContent = UI_STRINGS.think.navigation();
+    text.setAttribute('data-label', isQuery ? 'think.query' : 'think.navigation');
+    text.textContent = isQuery ? UI_STRINGS.think.query() : UI_STRINGS.think.navigation();
     navigationButton.innerHTML = icon;
     navigationButton.appendChild(text);
-    navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));
-    // favicon container
-    const faviconContainer = document.createElement('div');
-    faviconContainer.classList.add('favicon-container');
     // text
     const urlLink = document.createElement('span');
     urlLink.classList.add('think-url-link');
-
-    thinkUrlElement.append(navigationButton, faviconContainer, urlLink);
+    if (!isQuery) {
+        navigationButton.addEventListener('click', e => handleClickNavigationEvent(e));
+        // favicon container
+        const faviconContainer = document.createElement('div');
+        faviconContainer.classList.add('favicon-container');
+        thinkUrlElement.append(navigationButton, faviconContainer, urlLink);
+    } else {
+        thinkUrlElement.append(navigationButton, urlLink);
+    }
     thinkSection?.insertAdjacentElement('afterend', thinkUrlElement);
     return thinkUrlElement;
 };
@@ -1530,14 +1538,16 @@ function handleClickNavigationEvent(e) {
     navigationDialog.classList.add('visible');
 }
 
-async function updateThinkUrl(thinkUrlElement, url) {
+async function updateThinkUrl(thinkUrlElement, url, isQuery = false) {
     if (thinkUrlElement && url) {
         try {
-            // Add favicon
-            const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
-            const existingUrls = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).map(item => item.getAttribute('data-tooltip'));
-            if (!existingUrls.includes(url)) {
-                await renderFaviconList([url], 0, faviconContainer);
+            if (!isQuery) {
+                // Add favicon
+                const faviconContainer = thinkUrlElement.querySelector('.favicon-container');
+                const existingUrls = Array.from(thinkUrlElement.querySelectorAll('.favicon-item')).map(item => item.getAttribute('data-tooltip'));
+                if (!existingUrls.includes(url)) {
+                    await renderFaviconList([url], 0, faviconContainer);
+                }
             }
 
             const thinkUrlLink = thinkUrlElement.querySelector('.think-url-link');
@@ -1763,17 +1773,18 @@ async function sendMessage(redo = false) {
                                     images = json.relatedImages;
                                 }
 
-                                const url = json.choices[0]?.delta?.url;
+                                const url = json.choices[0]?.delta?.url || json.choices[0]?.delta?.query;
+                                const isQuery = Boolean(json.choices[0]?.delta?.query);
                                 thinkUrlElement = assistantMessageDiv.querySelector('.think-url');
-                                if (!thinkUrlElement) {
-                                    thinkUrlElement = createThinkUrl(assistantMessageDiv);
+                                if (!thinkUrlElement && url) {
+                                    thinkUrlElement = createThinkUrl(assistantMessageDiv, isQuery);
                                 }
 
                                 if (url) {
                                     hideThinkUrlTimer = Date.now();
                                     clearTimeout(hideThinkUrlTimer);
                                     thinkUrlElement.classList.remove('hidden');
-                                    await updateThinkUrl(thinkUrlElement, url);
+                                    await updateThinkUrl(thinkUrlElement, url, isQuery);
                                 } else {
                                     if (Date.now() - hideThinkUrlTimer > NAVIGATION_TIME_OUT) {
                                         if (thinkUrlElement && !thinkUrlElement.classList.contains('hidden')) {

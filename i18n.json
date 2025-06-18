@@ -31,12 +31,14 @@
       "upload": "Upload files (txt/pdf/png/jpeg/webp supported)",
       "stop": "Stop",
       "navigation": "Reading URLs",
+      "query": "Searching on the web",
       "download": "Download"
     },
     "think": {
       "initial": "Thinking...",
       "toggle": "Thoughts",
-      "navigation": "Reading..."
+      "navigation": "Reading...",
+      "query": "Searching..."
     },
     "references": {
       "title": "References",
@@ -137,12 +139,14 @@
       "upload": "上传文件，支持txt/pdf/png/jpeg/webp格式",
       "stop": "停止",
       "navigation": "阅读中的 URLs",
+      "query": "在网络上搜索",
       "download": "下载"
     },
     "think": {
       "initial": "思考中...",
       "toggle": "思考过程",
-      "navigation": "阅读中..."
+      "navigation": "阅读中...",
+      "query": "搜索中..."
     },
     "references": {
       "title": "参考资料",
@@ -243,12 +247,14 @@
       "upload": "上傳檔案 (支援 txt/pdf/png/jpeg/webp 格式)",
       "stop": "停止",
       "navigation": "讀取 URLs 中",
+      "query": "在網路上搜尋",
       "download": "下載"
     },
     "think": {
       "initial": "思考中...",
       "toggle": "思考過程",
-      "navigation": "讀取中..."
+      "navigation": "讀取中...",
+      "query": "搜尋中..."
     },
     "references": {
       "title": "參考資料",
@@ -349,12 +355,14 @@
       "upload": "ファイルをアップロード (txt/pdf/png/jpeg/webp形式)",
       "stop": "停止",
       "navigation": "URLを読み込み中",
+      "query": "ウェブで検索中",
       "download": "ダウンロード"
     },
     "think": {
       "initial": "思考中...",
       "toggle": "思考プロセス",
-      "navigation": "読み込み中..."
+      "navigation": "読み込み中...",
+      "query": "検索中..."
     },
     "references": {
       "title": "参考資料",
@@ -455,12 +463,14 @@
       "upload": "Télécharger des fichiers (formats txt/pdf/png/jpeg/webp pris en charge)",
       "stop": "Arrêter",
       "navigation": "Lecture des URL",
+      "query": "Recherche sur le web",
       "download": "Télécharger"
     },
     "think": {
       "initial": "Réflexion en cours...",
       "toggle": "Processus de réflexion",
-      "navigation": "Lecture en cours..."
+      "navigation": "Lecture en cours...",
+      "query": "Recherche en cours..."
     },
     "references": {
       "title": "Références",
@@ -561,12 +571,14 @@
       "stop": "Stop",
       "recent": "Kürzlich angesehene Konversationen",
       "navigation": "URLs werden gelesen",
+      "query": "Im Web suchen",
       "download": "Herunterladen"
     },
     "think": {
       "initial": "Denke nach...",
       "toggle": "Denkprozess",
-      "navigation": "Wird gelesen..."
+      "navigation": "Wird gelesen...",
+      "query": "Suche läuft..."
     },
     "references": {
       "title": "Referenzen",
@@ -665,12 +677,14 @@
       "stop": "중지",
       "recent": "최근 대화 보기",
       "navigation": "URL 읽는 중",
+      "query": "웹에서 검색 중",
       "download": "다운로드"
     },
     "think": {
       "initial": "생각 중...",
       "toggle": "사고 과정",
-      "navigation": "읽는 중..."
+      "navigation": "읽는 중...",
+      "query": "검색 중..."
     },
     "references": {
       "title": "참조",
