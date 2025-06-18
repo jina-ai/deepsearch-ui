@@ -1077,7 +1077,7 @@ function handleDownloadEvent(downloadButton, downloadIcon) {
     }
 }
 
-// Create a copy button for code blocks
+// Create a copy button for code blocks if returning the element
 function createCodeCopyButton(codeElement) {
     const copyButton = document.createElement('button');
     copyButton.classList.add('code-copy-button', 'tooltip-container');
@@ -1303,7 +1303,13 @@ function renderMarkdown(contentStr, returnElement = false, visitedURLs = [], rol
         initializeMarkdown();
     }
     // Replace non-breaking spaces with regular spaces, this is important for Safari compatibility
-    const content = contentStr.replace(/\u00A0/g, ' ');
+    let content = contentStr.replace(/\u00A0/g, ' ');
+    // Normalize \( ... \) and \[ ... \] to \\( ... \\) and \\[ ... \\]
+    content = content.replace(/\\\(/g, '\\\\(')
+        .replace(/\\\)/g, '\\\\)')
+        .replace(/\\\[/g, '\\\\[')
+        .replace(/\\\]/g, '\\\\]');
+
     const tempDiv = document.createElement('div');
     tempDiv.classList.add('markdown-inner');
 
