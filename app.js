@@ -248,9 +248,29 @@ let isSessionsDropdownOpen = false;
 let renderNavigationListTimer = null;
 const NAVIGATION_TIME_OUT = 7000;
 
+function parseCookieString(cookieString) {
+    const result = {};
+    const pairs = cookieString.split("; ");
+    
+    pairs.forEach(pair => {
+      // Split each pair into key and value
+      const [key, value] = pair.split("=");
+      result[key] = value;
+    });
+    
+    return result;
+}
+
 // API Key Management
 function initializeApiKey() {
-    const savedKey = localStorage.getItem('api_key') || '';
+    let savedKey = localStorage.getItem('api_key');
+    if (!savedKey) {
+        const cookies = parseCookieString(document.cookie);
+        savedKey = cookies['apiKey'] || '';
+        if (savedKey) {
+            localStorage.setItem('api_key', savedKey);
+        }
+    }
     apiKeyInput.value = savedKey;
     getApiKeyBtn.style.display = savedKey ? 'none' : 'block';
     freeUserRPMInfo.style.display = savedKey ? 'none' : 'block';
