@@ -38,7 +38,7 @@ body {
     /* For Safari on iOS */
     height: 100vh;
     /* Fallback */
-    height: stretch;
+    height: 100dvh;
     /* Standardized property */
     overflow: hidden;
     background-color: var(--bg-color);
