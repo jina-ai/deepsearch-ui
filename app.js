@@ -207,7 +207,7 @@ const navigationDialog = document.getElementById('navigation-dialog');
 const imageReferencesDialog = document.getElementById('image-references-dialog');
 const selectedImageReference = document.getElementById('selected-image-reference');
 
-const BASE_ORIGIN = 'https://api.jina.ai/';
+const BASE_ORIGIN = 'https://deepsearch.jina.ai';
 const FAVICON_BASE_URL = 'https://favicon-fetcher.jina.ai';
 
 // SVG icons
